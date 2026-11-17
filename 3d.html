@@ -397,7 +397,7 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
     <label class="ck"><input type="checkbox" id="snapNums" checked> Step numbers</label>
     <label class="ck"><input type="checkbox" id="snapTitle" checked> Title</label>
     <label class="ck"><input type="checkbox" id="snapMarks"> Mark problem spots</label>
-    <label class="ck" title="Adds “Made with Flow Explainer · flow-explainer.laravel.cloud · by Solution Forest” at the bottom"><input type="checkbox" id="snapCredit" checked> Credit line</label>
+    <label class="ck" title="Adds “Made with Flow Explainer · flow-explainer.laravel.cloud” at the bottom"><input type="checkbox" id="snapCredit" checked> Credit line</label>
     <button class="btn ghost" id="snapAngle" title="Try many camera angles and pick the one with the fewest overlaps">Find a clean angle</button>
   </div>
   <div class="chk" id="snapCheck">Checking…</div>
@@ -2499,7 +2499,7 @@ function drawLegend(ctx,W,H,k){
   items.forEach(([t,c])=>{const w=ctx.measureText(t).width+30*k;ctx.fillStyle=DS.plate;ctx.strokeStyle=DS.dark?DS.plateBd:'#d9d2c3';ctx.lineWidth=k;rrect(ctx,x,y-10*k,w,20*k,10*k);ctx.fill();ctx.stroke();
     ctx.fillStyle=c;ctx.strokeStyle=DS.ink;rrect(ctx,x+8*k,y-4.5*k,9*k,9*k,2.5*k);ctx.fill();ctx.stroke();ctx.fillStyle=DS.plateFg;ctx.fillText(t,x+22*k,y+.5*k);x+=w+6*k});
 }
-// credit line at the bottom of Snapshot PNGs (icon + "Made with Flow Explainer" + site + "by Solution Forest")
+// credit line at the bottom of Snapshot PNGs (icon + "Made with Flow Explainer" + site)
 const SITE_HOST='flow-explainer.laravel.cloud',FX_ICON=new Image();FX_ICON.src='favicon.svg';
 function drawCredit(ctx,W,H,k){
   const h=40*k,y=H-h,cy=y+h/2,dark=!!DS.dark,fg=dark?'#e2e8f0':'#0f172a',mu=dark?'#94a3b8':'#64748b',sans=' Inter, ui-sans-serif, system-ui, sans-serif';
@@ -2508,9 +2508,7 @@ function drawCredit(ctx,W,H,k){
   if(FX_ICON.complete&&FX_ICON.naturalWidth){ctx.drawImage(FX_ICON,x,cy-s/2,s,s);x+=s+8*k}
   ctx.font='500 '+(12*k)+'px'+sans;ctx.fillStyle=mu;ctx.fillText('Made with ',x,cy);x+=ctx.measureText('Made with ').width;
   ctx.font='700 '+(12*k)+'px'+sans;ctx.fillStyle=fg;ctx.fillText('Flow Explainer',x,cy);x+=ctx.measureText('Flow Explainer').width+12*k;
-  ctx.font='500 '+(11.5*k)+'px ui-monospace, Menlo, monospace';ctx.fillStyle=dark?'#5eead4':'#007c90';ctx.fillText(SITE_HOST,x,cy);x+=ctx.measureText(SITE_HOST).width;
-  ctx.font='500 '+(11.5*k)+'px'+sans;const by='by Solution Forest';
-  if(x+ctx.measureText(by).width+40*k<W){ctx.textAlign='right';ctx.fillStyle=mu;ctx.fillText(by,W-20*k,cy)}
+  ctx.font='500 '+(11.5*k)+'px ui-monospace, Menlo, monospace';ctx.fillStyle=dark?'#5eead4':'#007c90';ctx.fillText(SITE_HOST,x,cy);
   ctx.restore();
 }
 function rrect(ctx,x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}

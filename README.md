@@ -204,7 +204,7 @@ sequenceDiagram
 ![Snapshot window showing the overlap check and export buttons](docs/images/snapshot-window.png)
 
 - **Preview** with the diagram title on top and numbered markers on each arrow that match the step list.
-- **Credit line** (on by default, untick to remove): a thin strip at the bottom with the Flow Explainer icon, *Made with Flow Explainer*, `flow-explainer.laravel.cloud` and *by Solution Forest*.
+- **Credit line** (on by default, untick to remove): a thin strip at the bottom with the Flow Explainer icon, *Made with Flow Explainer* and `flow-explainer.laravel.cloud`.
 - **Overlap check:** "✓ Nothing overlaps", or a list such as *label "Order Database" covers box "Show error to customer"*. A label sitting on an arrow line is marked **minor**.
 - **2D** moves labels up or sideways automatically to make room.
 - **3D** labels stay with their blocks, so **Find a clean angle** tries 64 camera angles and keeps the one with the fewest overlaps. **What I see now** uses your current camera.
