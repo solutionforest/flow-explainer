@@ -21,7 +21,7 @@ header{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:
 .brand{font-family:var(--mono);font-weight:700;font-size:14px;white-space:nowrap}
 .brand span{background:var(--ink);color:var(--paper);padding:2px 6px;border-radius:5px;margin-right:6px}
 .doc-title{font-size:14px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0}
-.btn{border:1.5px solid var(--ink);background:var(--card);border-radius:8px;padding:6px 11px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;box-shadow:0 2px 0 var(--ink);transition:transform .08s,box-shadow .08s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:34px;border:1.5px solid var(--ink);background:var(--card);border-radius:8px;padding:6px 11px;font-size:13px;font-weight:600;line-height:1.2;cursor:pointer;white-space:nowrap;box-shadow:0 2px 0 var(--ink);transition:transform .08s,box-shadow .08s}
 .btn:active{transform:translateY(2px);box-shadow:0 0 0 var(--ink)}
 .btn.primary{background:#b9e6b3}
 .btn.ghost{box-shadow:none;border-color:var(--line)}
@@ -117,7 +117,7 @@ body.client .edit-only{display:none}
   .panel h2{font-size:17px}
   .steps-list{display:none}
   .brand em{display:none}
-  .btn{padding:6px 9px;font-size:12.5px}
+  .btn{min-height:32px;padding:6px 9px;font-size:12.5px}
   .hide-m{display:none}
 }
 .credit{font-family:var(--mono);font-size:11px;color:var(--ink);opacity:.65;text-decoration:none;white-space:nowrap}.credit:hover{opacity:1;text-decoration:underline}
