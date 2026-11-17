@@ -153,6 +153,19 @@ footer{border-top:1px solid var(--line);background:var(--card);display:flex;alig
 .toast{position:fixed;left:50%;bottom:76px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:8px 14px;border-radius:999px;font-size:13px;opacity:0;transition:.25s;z-index:70;pointer-events:none}
 .toast.show{opacity:1;transform:translate(-50%,0)}
 body.client .edit-only{display:none}
+/* embed: compact chrome for iframes / third-party hosts */
+body.embed header .brand,
+body.embed header #btnShare,
+body.embed header a.btn.icon,
+body.embed header #btnSet,
+body.embed .credit,
+body.embed .about{display:none!important}
+body.embed header{padding:6px 10px;gap:6px;border-bottom-color:var(--line)}
+body.embed .doc-title{border:0;padding-left:0;margin:0;font-size:13px}
+body.embed footer{padding:6px 10px}
+body.embed .toast{bottom:58px}
+body.embed .panel{padding:14px 14px 10px;gap:10px}
+body.embed .panel h2{font-size:18px}
 /* settings + share popovers */
 .pop-scrim{position:fixed;inset:0;z-index:38;display:none}
 .pop-scrim.open{display:block}
@@ -307,6 +320,7 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 </style>
 </head>
 <body data-view="3d">
+<script>(function(){const p=location.pathname,q=location.search;if(/(?:^|\/)embed(?:\/|$)/.test(p)||/(?:^|[?&])embed(?:=1)?(?:&|$)/.test(q))document.body.classList.add('embed','client')})()</script>
 <div class="app">
   <header>
     <button class="brand" id="btnAbout" title="About Flow Explainer">Flow Explainer<small>3D</small></button>
@@ -377,6 +391,7 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
     <li><b>Copies stay where you paste them.</b> Chat apps, email and browser history keep the full link.</li>
   </ul>
   <div class="sh-foot">Opens view-only: no Edit or Snapshot.</div>
+  <button class="btn" id="shareEmbed" type="button" title="Copy a compact /embed URL for iframes">Copy embed link</button>
 </div>
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer">
@@ -2064,7 +2079,28 @@ function openPop(name){
   $('#popScrim').classList.toggle('open',!!name);
 }
 const popOpen=()=>!!document.querySelector('.pop.open');
-const clientLink=async()=>location.origin+location.pathname+'#c='+await encode(S.md)+(DSK!=='original'?'&s='+DSK:'')+(ICONS_ON?'':'&i=0');
+const isEmbed=()=>/(?:^|\/)embed(?:\/|$)/.test(location.pathname)||/(?:^|[?&])embed(?:=1)?(?:&|$)/.test(location.search);
+const is3dView=()=>document.body.dataset.view==='3d';
+function appBase(){
+  let p=location.pathname;
+  p=p.replace(/\/(?:index|3d)\.html$/,'');
+  p=p.replace(/\/embed(?:\/3d)?\/?$/,'');
+  p=p.replace(/\/3d\/?$/,'');
+  return p.replace(/\/$/,'')||'';
+}
+const rootUrl=()=>location.origin+appBase();
+/** @param {string} u */
+const tidyUrl=u=>u.replace(/([^:]\/)\/+/g,'$1');
+const linkOpts=()=>(DSK!=='original'?'&s='+DSK:'')+(ICONS_ON?'':'&i=0');
+const clientLink=async()=>tidyUrl(rootUrl()+(is3dView()?'/3d':'')+'/')+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
+const embedLink=async()=>tidyUrl(rootUrl()+'/embed'+(is3dView()?'/3d':'')+'/')+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
+/** @param {'2d'|'3d'} dim */
+function viewHref(dim){
+  const h=location.hash||'';
+  if(isEmbed()) return tidyUrl(rootUrl()+'/embed'+(dim==='3d'?'/3d':'')+'/')+h;
+  if(/\.html$/.test(location.pathname)) return tidyUrl(rootUrl()+'/'+(dim==='3d'?'3d.html':'index.html'))+(/(?:^|[?&])embed/.test(location.search)?'?embed=1':'')+h;
+  return tidyUrl(rootUrl()+(dim==='3d'?'/3d':'')+'/')+h;
+}
 function stepsHtml(g,i){
   const n=g.steps.length,by=id=>g.nodes.find(x=>x.id===id);
   if(S.stepsOpen==null)S.stepsOpen=!matchMedia('(max-width:820px)').matches;
@@ -2093,6 +2129,10 @@ function wireUi(){
     if(!ok){$('#shareUrl').focus();$('#shareUrl').select()}
   };
   $('#shareCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#shareUrl').value);toast('Client link copied')}catch(e){$('#shareUrl').select()}};
+  $('#shareEmbed').onclick=async()=>{
+    const url=await embedLink();
+    try{await navigator.clipboard.writeText(url);toast('Embed link copied')}catch(e){prompt('Copy this embed link',url)}
+  };
   $('#panel').addEventListener('keydown',e=>{const li=e.target.closest&&e.target.closest('.stepper li');if(li&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();go(+li.dataset.s)}});
   const ab=$('#about'),about=o=>{ab.classList.toggle('open',o);if(o){openPop(null);ab.querySelector('.about-card').scrollTop=0;$('#aboutClose').focus({preventScroll:true})}};
   $('#btnAbout').onclick=()=>about(true);$('#aboutClose').onclick=()=>about(false);ab.onclick=e=>{if(e.target===ab)about(false)};
@@ -2124,7 +2164,7 @@ const iconFor=n=>{if(n.icon)return n.icon;if(n.shape==='hex')return '🔀';for(c
 
 const S={doc:null,scene:null,si:0,step:0,playing:false,timer:null,labs:[],pick:[],active:null,rev:false,t0:0};
 const canvas=$('#scene'),stage=$('.stage'),labels=$('#labels');
-const to2d=()=>{const p=location.pathname;location.replace((/3d\.html$/.test(p)?p.replace(/3d\.html$/,'index.html'):p.replace(/\/3d\/?$/,''))+location.hash)};
+const to2d=()=>{location.replace(viewHref('2d'))};
 let renderer;
 try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true})}catch(e){to2d();throw e}
 renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));
@@ -2755,10 +2795,11 @@ $('#snapAngle').onclick=cleanAngle;
 addEventListener('hashchange',()=>location.reload());
 
 (async function init(){
+  if(isEmbed())document.body.classList.add('embed','client');
   let md=null;const m=location.hash.match(/^#([cd])=([^&]+)/);initStyle();wireUi();
   if(m){try{md=await decode(m[2]);if(m[1]==='c')document.body.classList.add('client')}catch(e){md=null}}
-  if(md==null&&!m)try{md=localStorage.getItem('flowx.md')}catch(e){}
-  if(md)try{load(md,!!m);return}catch(e){}
+  if(md==null&&!m&&!isEmbed())try{md=localStorage.getItem('flowx.md')}catch(e){}
+  if(md)try{load(md,!!m||isEmbed());return}catch(e){}
   const t=document.title;load($('#ex1').textContent.trim()+'\n',true);document.title=t; // keep the descriptive page title for the built-in demo
 })();
 </script>

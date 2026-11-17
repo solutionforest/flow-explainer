@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /embed
 
 Sitemap: https://flow-explainer.laravel.cloud/sitemap.xml

@@ -41,6 +41,14 @@ function safeJoin(root, requestPath) {
 
 function resolveFile(urlPath) {
   let pathname = urlPath === '/' ? '/index.html' : urlPath;
+
+  // Compact embed shell (same HTML as the main player; CSS/JS detect /embed)
+  if (pathname === '/embed' || pathname === '/embed/') {
+    pathname = '/index.html';
+  } else if (pathname === '/embed/3d' || pathname === '/embed/3d/') {
+    pathname = '/3d.html';
+  }
+
   let filePath = safeJoin(ROOT, pathname);
   if (!filePath) {
     return null;

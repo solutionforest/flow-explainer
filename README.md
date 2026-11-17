@@ -273,6 +273,21 @@ python3 -m http.server 8000
 
 To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or any web server. Both `/3d.html` and an extensionless `/3d` path work.
 
+### Embed in another site
+
+Use the compact player at `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload. In the app, **Copy client link** → **Copy embed link**, then iframe it:
+
+```html
+<iframe
+  src="https://flow-explainer.laravel.cloud/embed#c=…"
+  title="Flow Explainer"
+  style="width:100%;height:640px;border:0;border-radius:12px"
+  allow="fullscreen"
+></iframe>
+```
+
+The host must allow framing (this Cloud app uses `X-Frame-Options` / frame = `all`). Diagram data still lives only in the URL hash.
+
 ## Privacy
 
 - Your markdown is kept in your browser's local storage (`flowx.md`) so it survives a reload.
