@@ -7,6 +7,19 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "check": "npm run check:sync && npm run lint && npm run typecheck && npm run typecheck:strict",
+    "check:sync": "node tools/check-sync.mjs",
+    "lint": "node tools/extract-scripts.mjs && eslint .check server.js tools eslint.config.mjs",
+    "typecheck": "node tools/extract-scripts.mjs && tsc -p tsconfig.basic.json",
+    "typecheck:strict": "node tools/typecheck-strict.mjs",
+    "typecheck:baseline": "node tools/typecheck-strict.mjs --update-baseline"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/three": "^0.187.0",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "typescript": "^7.0.2"
   }
 }

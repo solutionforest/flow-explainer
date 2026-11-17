@@ -8,7 +8,7 @@ Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you ca
 
 Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
 
-Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant, git graph, xychart, sankey, block, architecture, C4, kanban, packet or requirement) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
+Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant, git graph, xychart, sankey, block, architecture, C4, kanban, packet, requirement, radar, treemap or ZenUML) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
 
@@ -47,7 +47,7 @@ Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel
 2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
 4. Press **Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot, and in the diagram style you picked.
-5. Open **⚙ Settings** (top right) to pick a diagram style or switch between 3D and 2D.
+5. Open **⚙ Settings** (top right) to pick a diagram style, show or hide the emoji icons on the blocks, or switch between 3D and 2D.
 6. Click **Flow Explainer** (top left) or **About** in the footer for a short intro, the privacy notes and the GitHub link.
 
 ![3D player on step 3 of the ticket-order example, with the All steps list on the right](docs/images/player-desktop.png)
@@ -95,11 +95,11 @@ flowchart LR
 flowchart TD
   A[Mermaid block] --> B{Which type?}
   B -->|flowchart / graph| C[Each arrow = one step]
-  B -->|sequenceDiagram| D[Each message = one step]
+  B -->|sequenceDiagram / zenuml| D[Each message = one step]
   B -->|state / class / ER / mindmap| H[Each line between boxes = one step]
   B -->|gantt / pie / journey / quadrant| I[Each task, slice or point = one step]
   B -->|timeline / git graph| J[Each period or commit = one step]
-  B -->|xychart / packet / kanban| K[Each category, field or column = one step]
+  B -->|xychart / packet / kanban / radar / treemap| K[Each category, field, column, axis or section = one step]
   B -->|sankey / block / architecture / C4 / requirement| L[Each flow or link = one step]
   C --> E{Numbered list below it?}
   D --> E
@@ -129,6 +129,8 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 
 ![XY chart, sankey, block, architecture, C4, kanban, packet and requirement examples rendered by Flow Explainer](docs/images/diagram-types-3.png)
 
+![Radar, treemap and ZenUML examples rendered by Flow Explainer](docs/images/diagram-types-4.png)
+
 | Type | What one step shows | Example |
 |---|---|---|
 | State | One change, e.g. "When **approve** happens, **Review** changes to **Approved**." | [`article-lifecycle.md`](examples/article-lifecycle.md) |
@@ -149,6 +151,9 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 | Kanban | One column, e.g. "**In progress** has **2 cards**: **New checkout page** and **Faster search**. **New checkout page** is high priority." | [`project-board.md`](examples/project-board.md) |
 | Packet | One field, e.g. "Next, bits **16–31** hold **Receiver port** (16 bits, 2 bytes)." Each 32-bit row is a zone. | [`network-message.md`](examples/network-message.md) |
 | Requirement | One relationship, e.g. "**Login page** meets the requirement **Sign in**." ID, text, risk and test method become the box note. | [`login-requirements.md`](examples/login-requirements.md) |
+| Radar | One axis, comparing every curve, e.g. "On **Backend**: Platform team **5**, Web team **3**. Platform team leads here." Points sit on a circle, further out and taller for higher values; each curve is a colour. | [`team-skills.md`](examples/team-skills.md) |
+| Treemap | One top-level section, e.g. "**Build** is **63%** of the total (750). Biggest part: **Website** (320)…" Each section is a zone; block height follows the value. | [`where-the-budget-goes.md`](examples/where-the-budget-goes.md) |
+| ZenUML | One message, like a sequence diagram. `// comments` above a call become the step text; `if` / `else` / `par`… become the step tag. | [`checkout-zenuml.md`](examples/checkout-zenuml.md) |
 
 
 | Feature | Supported |
@@ -178,7 +183,10 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 | `kanban`: columns (zones) and cards, with `assigned`, `priority` and `ticket` metadata | ✅ |
 | `packet-beta` / `packet`: `0-15: "Field"` and `+16: "Field"`; one 32-bit row per zone | ✅ |
 | `requirementDiagram`: all requirement kinds, `element`, the seven relationship types (forward and `<-` reverse) | ✅ (styles ignored) |
-| Other types (e.g. radar, treemap, zenuml) | ❌ shows "not supported yet" |
+| `radar-beta`: `axis` (with labels), `curve` with a value list or `axis: value` pairs, `min` / `max`; one step per axis, each curve a colour | ✅ (`graticule`, `ticks` ignored) |
+| `treemap-beta`: nested sections and `"Item": value` leaves; one column per top section, block height follows the value | ✅ (`classDef` / `:::class` ignored) |
+| `zenuml`: participants with `@Actor` / `@Database` / other annotators, `group { }`, `@Starter`, sync calls `A.method()` with nested `{ }`, async `A->B: msg`, `new X()`, `return`, `if` / `else` / `while` / `for` / `loop` / `par` / `opt` / `try` / `catch`, `// comments` as the step text | ✅ (colours and stereotypes ignored) |
+| Anything else | ❌ shows "not supported yet" |
 
 ## Snapshot: a README picture with an overlap check
 
@@ -249,6 +257,8 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 
 Each style is one entry in the `STYLES` list in `index.html` (background, block colours, outline, highlight, label colours, and the 3D material). To add a style, copy an entry, change the values, and run `python3 tools/sync-parser.py` so `3d.html` gets it too. The site itself always uses the Solution Forest colours; only the diagram changes.
 
+**Icons:** the emoji on the blocks (🧑 💳 🗄️ …) are **shown by default**. **⚙ Settings → Icons → Hide** turns them off for a cleaner look. The choice is saved in your browser, and a client link made while they are hidden adds `&i=0` so the client sees the same.
+
 ## Run it yourself
 
 Any static file server works. The 3D page loads Three.js as an ES module, so open it over `http://`, not `file://`.
@@ -280,10 +290,37 @@ vendor/             Three.js 0.187.0 (three.module.js + three.core.js, MIT)
                     Inter and Raleway web fonts (latin subset, SIL OFL 1.1, licences next to them)
 examples/           Sample markdown files, ready to paste
 tools/sync-parser.py  Copies the shared parser and diagram styles from index.html into 3d.html
+tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
+server.js           Tiny static server used on Laravel Cloud (npm start)
 docs/images/        Images used in this README
 ```
 
 Both pages share the same markdown reader, step panel, timeline, settings and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) and the diagram styles block (`/* ---------- diagram styles + settings` … `end of diagram styles + settings`) in `index.html`, then run `python3 tools/sync-parser.py` to copy them into `3d.html`.
+
+## Code checks
+
+The pages have no build step, but the code inside them is checked the way a typed project would be. `npm run check` runs four steps, and GitHub Actions runs the same on every push and pull request ([`check.yml`](.github/workflows/check.yml)):
+
+| Step | Command | What it does | Must be |
+|---|---|---|---|
+| Shared code in sync | `npm run check:sync` | The parser and diagram-style blocks in `3d.html` match `index.html` | in sync |
+| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on the page scripts, `server.js` and `tools/` | 0 problems |
+| Type check | `npm run typecheck` | TypeScript reads the page scripts as JavaScript (`checkJs`) and reports wrong property names, wrong argument types and similar mistakes | 0 errors |
+| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode, the closest match to PHPStan level 10: no implicit `any`, null checks, strict function types | no **new** errors |
+
+How the strict level works, like a PHPStan baseline:
+- The known strict-mode errors are listed in [`tsc-baseline.json`](tsc-baseline.json), counted per file and message, not per line.
+- Any error that is not in the baseline fails the check.
+- After you fix some, run `npm run typecheck:baseline` so the baseline shrinks. Never grow it to hide a real problem.
+
+Most of the remaining errors are function parameters without type information. Adding JSDoc types (`/** @param {string} label */`) as code is touched brings the baseline down.
+
+The page code lives inside the HTML files, so [`tools/extract-scripts.mjs`](tools/extract-scripts.mjs) first copies each script into `.check/*.js`. It keeps the same line numbers, so every reported line matches `index.html` or `3d.html`.
+
+```bash
+npm install        # dev tools only: eslint, typescript, @types/three
+npm run check
+```
 
 ## Known limits
 
