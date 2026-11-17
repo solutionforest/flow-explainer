@@ -73,7 +73,7 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  let pathname = '/';
+  let pathname;
   try {
     pathname = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`).pathname;
   } catch {

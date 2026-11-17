@@ -1,0 +1,28 @@
+name: Check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci
+      - name: Shared blocks in sync (index.html -> 3d.html)
+        run: npm run check:sync
+      - name: ESLint
+        run: npm run lint
+      - name: Type check
+        run: npm run typecheck
+      - name: Strict type check (no new errors vs baseline)
+        run: npm run typecheck:strict

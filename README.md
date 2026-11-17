@@ -257,6 +257,8 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 
 Each style is one entry in the `STYLES` list in `index.html` (background, block colours, outline, highlight, label colours, and the 3D material). To add a style, copy an entry, change the values, and run `python3 tools/sync-parser.py` so `3d.html` gets it too. The site itself always uses the Solution Forest colours; only the diagram changes.
 
+**Icons:** the emoji on the blocks (🧑 💳 🗄️ …) are **shown by default**. **⚙ Settings → Icons → Hide** turns them off for a cleaner look. The choice is saved in your browser, and a client link made while they are hidden adds `&i=0` so the client sees the same.
+
 ## Run it yourself
 
 Any static file server works. The 3D page loads Three.js as an ES module, so open it over `http://`, not `file://`.
@@ -288,10 +290,37 @@ vendor/             Three.js 0.187.0 (three.module.js + three.core.js, MIT)
                     Inter and Raleway web fonts (latin subset, SIL OFL 1.1, licences next to them)
 examples/           Sample markdown files, ready to paste
 tools/sync-parser.py  Copies the shared parser and diagram styles from index.html into 3d.html
+tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
+server.js           Tiny static server used on Laravel Cloud (npm start)
 docs/images/        Images used in this README
 ```
 
 Both pages share the same markdown reader, step panel, timeline, settings and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) and the diagram styles block (`/* ---------- diagram styles + settings` … `end of diagram styles + settings`) in `index.html`, then run `python3 tools/sync-parser.py` to copy them into `3d.html`.
+
+## Code checks
+
+The pages have no build step, but the code inside them is checked the way a typed project would be. `npm run check` runs four steps, and GitHub Actions runs the same on every push and pull request ([`check.yml`](.github/workflows/check.yml)):
+
+| Step | Command | What it does | Must be |
+|---|---|---|---|
+| Shared code in sync | `npm run check:sync` | The parser and diagram-style blocks in `3d.html` match `index.html` | in sync |
+| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on the page scripts, `server.js` and `tools/` | 0 problems |
+| Type check | `npm run typecheck` | TypeScript reads the page scripts as JavaScript (`checkJs`) and reports wrong property names, wrong argument types and similar mistakes | 0 errors |
+| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode, the closest match to PHPStan level 10: no implicit `any`, null checks, strict function types | no **new** errors |
+
+How the strict level works, like a PHPStan baseline:
+- The known strict-mode errors are listed in [`tsc-baseline.json`](tsc-baseline.json), counted per file and message, not per line.
+- Any error that is not in the baseline fails the check.
+- After you fix some, run `npm run typecheck:baseline` so the baseline shrinks. Never grow it to hide a real problem.
+
+Most of the remaining errors are function parameters without type information. Adding JSDoc types (`/** @param {string} label */`) as code is touched brings the baseline down.
+
+The page code lives inside the HTML files, so [`tools/extract-scripts.mjs`](tools/extract-scripts.mjs) first copies each script into `.check/*.js`. It keeps the same line numbers, so every reported line matches `index.html` or `3d.html`.
+
+```bash
+npm install        # dev tools only: eslint, typescript, @types/three
+npm run check
+```
 
 ## Known limits
 
