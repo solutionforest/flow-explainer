@@ -35,7 +35,7 @@ export default [
   { files: ['.check/index.js'], rules: { 'no-implicit-globals': 'off' } },
   { files: ['.check/3d.js'], languageOptions: { sourceType: 'module' } },
   {
-    files: ['server.js', 'tools/**/*.mjs', 'eslint.config.mjs'],
+    files: ['server.js', 'tools/**/*.mjs', 'tests/**/*.mjs', 'eslint.config.mjs'],
     languageOptions: { ecmaVersion: 2023, globals: { ...globals.node } },
   },
   { files: ['server.js'], languageOptions: { sourceType: 'commonjs' } },

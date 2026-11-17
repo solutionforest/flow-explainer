@@ -1,0 +1,7481 @@
+{
+ "ex1": [
+  {
+   "n": [
+    [
+     "C",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "S",
+     "Online Shop",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "P",
+     "Payment Gateway",
+     "box",
+     null,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "D",
+     "Payment OK?",
+     "hex",
+     null,
+     "",
+     9.3,
+     0
+    ],
+    [
+     "F",
+     "Show error to customer",
+     "box",
+     null,
+     "",
+     12.4,
+     -1.15
+    ],
+    [
+     "O",
+     "Order Database",
+     "cyl",
+     null,
+     "",
+     12.4,
+     1.15
+    ],
+    [
+     "T",
+     "Ticket Allocation",
+     "box",
+     null,
+     "",
+     15.5,
+     1.15
+    ],
+    [
+     "M",
+     "Email Service",
+     "box",
+     null,
+     "",
+     18.6,
+     1.15
+    ],
+    [
+     "I",
+     "Customer inbox",
+     "pill",
+     null,
+     "",
+     21.7,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "C",
+     "S",
+     "Places order",
+     false,
+     true
+    ],
+    [
+     "S",
+     "P",
+     "Asks for payment",
+     false,
+     true
+    ],
+    [
+     "P",
+     "D",
+     "",
+     false,
+     true
+    ],
+    [
+     "D",
+     "F",
+     "No",
+     false,
+     true
+    ],
+    [
+     "D",
+     "O",
+     "Yes",
+     false,
+     true
+    ],
+    [
+     "O",
+     "T",
+     "",
+     false,
+     true
+    ],
+    [
+     "T",
+     "M",
+     "Sends PDF ticket",
+     false,
+     true
+    ],
+    [
+     "M",
+     "I",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Online Shop",
+     "**Customer** → **Online Shop**: Places order.",
+     "",
+     "Places order"
+    ],
+    [
+     "edge",
+     "Online Shop → Payment Gateway",
+     "**Online Shop** → **Payment Gateway**: Asks for payment.",
+     "",
+     "Asks for payment"
+    ],
+    [
+     "edge",
+     "Payment Gateway → Payment OK?",
+     "**Payment Gateway** hands over to **Payment OK?**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Payment OK? → Show error to customer",
+     "If the answer is **No**, continue to **Show error to customer**.",
+     "",
+     "No"
+    ],
+    [
+     "edge",
+     "Payment OK? → Order Database",
+     "If the answer is **Yes**, continue to **Order Database**.",
+     "",
+     "Yes"
+    ],
+    [
+     "edge",
+     "Order Database → Ticket Allocation",
+     "**Order Database** hands over to **Ticket Allocation**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Ticket Allocation → Email Service",
+     "**Ticket Allocation** → **Email Service**: Sends PDF ticket.",
+     "",
+     "Sends PDF ticket"
+    ],
+    [
+     "edge",
+     "Email Service → Customer inbox",
+     "**Email Service** hands over to **Customer inbox**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex2": [
+  {
+   "n": [
+    [
+     "U",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "W",
+     "Website",
+     "box",
+     null,
+     "",
+     3.1,
+     0.46
+    ],
+    [
+     "A",
+     "Login Service",
+     "box",
+     null,
+     "",
+     6.2,
+     0.46
+    ],
+    [
+     "D",
+     "Database",
+     "cyl",
+     null,
+     "",
+     9.3,
+     -0.34
+    ],
+    [
+     "E",
+     "Email Service",
+     "box",
+     null,
+     "",
+     9.3,
+     1.95
+    ]
+   ],
+   "l": [
+    [
+     "U",
+     "W",
+     "",
+     false,
+     false
+    ],
+    [
+     "W",
+     "A",
+     "",
+     false,
+     false
+    ],
+    [
+     "A",
+     "D",
+     "",
+     false,
+     false
+    ],
+    [
+     "A",
+     "E",
+     "",
+     false,
+     false
+    ],
+    [
+     "E",
+     "U",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Enters email address",
+     "**Customer** sends this to **Website**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Request sign-in code",
+     "**Website** sends this to **Login Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Save one-time code",
+     "**Login Service** sends this to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Send code by email",
+     "**Login Service** sends this to **Email Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Email with 6-digit code",
+     "**Email Service** replies to **Customer**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Types the code",
+     "**Customer** sends this to **Website**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Check the code",
+     "**Website** sends this to **Login Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Compare with saved code",
+     "**Login Service** sends this to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Signed in",
+     "**Login Service** replies to **Website**.",
+     "When: Code is correct",
+     ""
+    ],
+    [
+     "edge",
+     "Shows account page",
+     "**Website** replies to **Customer**.",
+     "When: Code is correct",
+     ""
+    ],
+    [
+     "edge",
+     "Rejected",
+     "**Login Service** replies to **Website**.",
+     "Otherwise: Code is wrong",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex3": [
+  {
+   "n": [
+    [
+     "B",
+     "Browser",
+     "box",
+     0,
+     "",
+     0,
+     -1.15
+    ],
+    [
+     "M",
+     "Mobile App",
+     "box",
+     0,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "G",
+     "API Gateway",
+     "box",
+     1,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "O",
+     "Order Service",
+     "box",
+     1,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "Q",
+     "Job Queue",
+     "box",
+     1,
+     "",
+     9.3,
+     -2.3
+    ],
+    [
+     "DB",
+     "Database",
+     "cyl",
+     1,
+     "",
+     9.3,
+     0
+    ],
+    [
+     "P",
+     "Stripe Payments",
+     "box",
+     2,
+     "",
+     9.3,
+     2.3
+    ],
+    [
+     "E",
+     "Email Provider",
+     "box",
+     2,
+     "",
+     12.4,
+     -2.3
+    ]
+   ],
+   "l": [
+    [
+     "B",
+     "G",
+     "",
+     false,
+     true
+    ],
+    [
+     "M",
+     "G",
+     "",
+     false,
+     true
+    ],
+    [
+     "G",
+     "O",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "DB",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "P",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "Q",
+     "",
+     true,
+     true
+    ],
+    [
+     "Q",
+     "E",
+     "",
+     true,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Browser → API Gateway",
+     "**Browser** hands over to **API Gateway**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Mobile App → API Gateway",
+     "**Mobile App** hands over to **API Gateway**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "API Gateway → Order Service",
+     "**API Gateway** hands over to **Order Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Database",
+     "**Order Service** hands over to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Stripe Payments",
+     "**Order Service** hands over to **Stripe Payments**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Job Queue",
+     "**Order Service** hands over to **Job Queue**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Job Queue → Email Provider",
+     "**Job Queue** hands over to **Email Provider**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex4": [
+  {
+   "n": [
+    [
+     "__start_root",
+     "Start",
+     "circle",
+     null,
+     "",
+     0,
+     -1.15
+    ],
+    [
+     "Draft",
+     "Draft",
+     "box",
+     null,
+     "The writer is still working on it",
+     3.1,
+     -1.15
+    ],
+    [
+     "Review",
+     "Review",
+     "box",
+     null,
+     "An editor reads and checks it",
+     6.2,
+     -1.15
+    ],
+    [
+     "Approved",
+     "Approved",
+     "box",
+     null,
+     "",
+     9.3,
+     -1.15
+    ],
+    [
+     "__start_0",
+     "Start (Approved)",
+     "circle",
+     0,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "Scheduled",
+     "Scheduled",
+     "box",
+     0,
+     "",
+     3.1,
+     1.15
+    ],
+    [
+     "Live",
+     "Live",
+     "box",
+     0,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "Archived",
+     "Archived",
+     "box",
+     null,
+     "",
+     9.3,
+     1.15
+    ],
+    [
+     "__end_root",
+     "End",
+     "circle",
+     null,
+     "",
+     12.4,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "__start_root",
+     "Draft",
+     "",
+     false,
+     true
+    ],
+    [
+     "Draft",
+     "Review",
+     "submit",
+     false,
+     true
+    ],
+    [
+     "Review",
+     "Draft",
+     "changes requested",
+     false,
+     true
+    ],
+    [
+     "Review",
+     "Approved",
+     "approve",
+     false,
+     true
+    ],
+    [
+     "__start_0",
+     "Scheduled",
+     "",
+     false,
+     true
+    ],
+    [
+     "Scheduled",
+     "Live",
+     "publish date",
+     false,
+     true
+    ],
+    [
+     "Live",
+     "Archived",
+     "after 1 year",
+     false,
+     true
+    ],
+    [
+     "Archived",
+     "__end_root",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Start → Draft",
+     "It all starts in **Draft**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Draft → Review",
+     "When **submit** happens, **Draft** changes to **Review**.",
+     "",
+     "submit"
+    ],
+    [
+     "edge",
+     "Review → Draft",
+     "When **changes requested** happens, **Review** changes to **Draft**.",
+     "",
+     "changes requested"
+    ],
+    [
+     "edge",
+     "Review → Approved",
+     "When **approve** happens, **Review** changes to **Approved**.",
+     "",
+     "approve"
+    ],
+    [
+     "edge",
+     "Start → Scheduled",
+     "Inside **Approved**, it starts in **Scheduled**.",
+     "Approved",
+     ""
+    ],
+    [
+     "edge",
+     "Scheduled → Live",
+     "When **publish date** happens, **Scheduled** changes to **Live**.",
+     "Approved",
+     "publish date"
+    ],
+    [
+     "edge",
+     "Live → Archived",
+     "When **after 1 year** happens, **Live** changes to **Archived**.",
+     "",
+     "after 1 year"
+    ],
+    [
+     "edge",
+     "Archived → End",
+     "**Archived** is where it finishes.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex5": [
+  {
+   "n": [
+    [
+     "Product",
+     "Product",
+     "box",
+     null,
+     "Holds: String name, Money price. Can do: isInStock() bool.",
+     9.3,
+     -1.15
+    ],
+    [
+     "Ticket",
+     "Ticket",
+     "box",
+     null,
+     "",
+     12.4,
+     -2.3
+    ],
+    [
+     "Merchandise",
+     "Merchandise",
+     "box",
+     null,
+     "",
+     12.4,
+     0
+    ],
+    [
+     "Customer",
+     "Customer",
+     "box",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "Order",
+     "Order",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "OrderLine",
+     "OrderLine",
+     "box",
+     null,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "PaymentGateway",
+     "PaymentGateway",
+     "box",
+     null,
+     "",
+     6.2,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "Product",
+     "Ticket",
+     "",
+     false,
+     false
+    ],
+    [
+     "Product",
+     "Merchandise",
+     "",
+     false,
+     false
+    ],
+    [
+     "Customer",
+     "Order",
+     "places",
+     false,
+     true
+    ],
+    [
+     "Order",
+     "OrderLine",
+     "",
+     false,
+     false
+    ],
+    [
+     "OrderLine",
+     "Product",
+     "refers to",
+     false,
+     true
+    ],
+    [
+     "Order",
+     "PaymentGateway",
+     "charges through",
+     true,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Product → Ticket",
+     "**Ticket** is a kind of **Product**, so it gets everything Product has.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Product → Merchandise",
+     "**Merchandise** is a kind of **Product**, so it gets everything Product has.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Customer → Order",
+     "**Customer** places **Order** (uses). One side: one Customer. Other side: many Order.",
+     "",
+     "one → many"
+    ],
+    [
+     "edge",
+     "Order → OrderLine",
+     "**Order** is made up of **OrderLine**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "OrderLine → Product",
+     "**OrderLine** refers to **Product** (uses).",
+     "",
+     "refers to"
+    ],
+    [
+     "edge",
+     "Order → PaymentGateway",
+     "**Order** charges through **PaymentGateway** (depends on).",
+     "",
+     "charges through"
+    ]
+   ]
+  }
+ ],
+ "ex6": [
+  {
+   "n": [
+    [
+     "CUSTOMER",
+     "Customer",
+     "box",
+     null,
+     "Stores: id (ID), name, email.",
+     0,
+     -0.57
+    ],
+    [
+     "ORDER",
+     "Order",
+     "box",
+     null,
+     "Stores: id (ID), customer id (link), placed on.",
+     3.1,
+     -0.57
+    ],
+    [
+     "ORDER-LINE",
+     "Order line",
+     "box",
+     null,
+     "",
+     6.2,
+     0.57
+    ],
+    [
+     "PRODUCT",
+     "Product",
+     "box",
+     null,
+     "",
+     3.1,
+     1.73
+    ]
+   ],
+   "l": [
+    [
+     "CUSTOMER",
+     "ORDER",
+     "places",
+     false,
+     false
+    ],
+    [
+     "ORDER",
+     "ORDER-LINE",
+     "contains",
+     false,
+     false
+    ],
+    [
+     "PRODUCT",
+     "ORDER-LINE",
+     "appears in",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Order",
+     "Each **Customer** places **zero or more** order. Each order is linked to **exactly one** customer.",
+     "",
+     "places"
+    ],
+    [
+     "edge",
+     "Order → Order line",
+     "Each **Order** contains **one or more** order line. Each order line is linked to **exactly one** order.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Product → Order line",
+     "Each **Product** appears in **zero or more** order line. Each order line is linked to **exactly one** product.",
+     "",
+     "appears in"
+    ]
+   ]
+  }
+ ],
+ "ex7": [
+  {
+   "n": [
+    [
+     "w1",
+     "Wireframes",
+     "box",
+     0,
+     "When: 5 Jan 2026 → 10 Jan 2026 · Done",
+     0,
+     0
+    ],
+    [
+     "v1",
+     "Visual design",
+     "box",
+     0,
+     "When: 10 Jan 2026 → 24 Jan 2026 · In progress",
+     3.1,
+     -1.15
+    ],
+    [
+     "f1",
+     "Front end",
+     "box",
+     1,
+     "When: 24 Jan 2026 → 3 Feb 2026",
+     6.2,
+     -1.15
+    ],
+    [
+     "b1",
+     "Back end",
+     "box",
+     1,
+     "When: 12 Jan 2026 → 2 Feb 2026",
+     3.1,
+     1.15
+    ],
+    [
+     "t1",
+     "Testing",
+     "box",
+     1,
+     "When: 3 Feb 2026 → 8 Feb 2026 · Critical",
+     9.3,
+     0
+    ],
+    [
+     "task6",
+     "Go live",
+     "circle",
+     2,
+     "Date: 8 Feb 2026",
+     12.4,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "w1",
+     "v1",
+     "",
+     false,
+     true
+    ],
+    [
+     "w1",
+     "b1",
+     "",
+     true,
+     true
+    ],
+    [
+     "v1",
+     "f1",
+     "",
+     false,
+     true
+    ],
+    [
+     "f1",
+     "t1",
+     "",
+     false,
+     true
+    ],
+    [
+     "b1",
+     "t1",
+     "",
+     false,
+     true
+    ],
+    [
+     "t1",
+     "task6",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Wireframes",
+     "**Wireframes** starts on **5 Jan 2026**. It takes 5 days and ends on 10 Jan 2026.",
+     "Design · Done",
+     ""
+    ],
+    [
+     "edge",
+     "Visual design",
+     "**Visual design** starts once **Wireframes** is finished (10 Jan 2026). It takes 2 weeks and ends on 24 Jan 2026.",
+     "Design · In progress",
+     "10 Jan 2026"
+    ],
+    [
+     "edge",
+     "Back end",
+     "**Back end** starts on **12 Jan 2026**. It takes 3 weeks and ends on 2 Feb 2026.",
+     "Build",
+     "12 Jan 2026"
+    ],
+    [
+     "edge",
+     "Front end",
+     "**Front end** starts once **Visual design** is finished (24 Jan 2026). It takes 10 days and ends on 3 Feb 2026.",
+     "Build",
+     "24 Jan 2026"
+    ],
+    [
+     "edge",
+     "Testing",
+     "**Testing** starts once **Front end** and **Back end** are finished (3 Feb 2026). It takes 5 days and ends on 8 Feb 2026.",
+     "Build · Critical",
+     "3 Feb 2026"
+    ],
+    [
+     "edge",
+     "Go live",
+     "**Go live** is reached once **Testing** is finished (8 Feb 2026).",
+     "Launch",
+     "8 Feb 2026"
+    ]
+   ]
+  }
+ ],
+ "ex8": [
+  {
+   "n": [
+    [
+     "slice1",
+     "Search · 61%",
+     "box",
+     null,
+     "386 of 636 in total (61%).",
+     0,
+     0
+    ],
+    [
+     "slice2",
+     "Direct · 24%",
+     "box",
+     null,
+     "150 of 636 in total (24%).",
+     2.7,
+     0
+    ],
+    [
+     "slice3",
+     "Social · 13%",
+     "box",
+     null,
+     "85 of 636 in total (13%).",
+     5.4,
+     0
+    ],
+    [
+     "slice4",
+     "Email · 2.4%",
+     "box",
+     null,
+     "15 of 636 in total (2.4%).",
+     8.1,
+     0
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Search",
+     "**Search** is **61%** of the total (386 of 636) — the biggest share.",
+     "",
+     "61%"
+    ],
+    [
+     "node",
+     "Direct",
+     "**Direct** is **24%** of the total (150 of 636) — number 2 of 4.",
+     "",
+     "24%"
+    ],
+    [
+     "node",
+     "Social",
+     "**Social** is **13%** of the total (85 of 636) — number 3 of 4.",
+     "",
+     "13%"
+    ],
+    [
+     "node",
+     "Email",
+     "**Email** is **2.4%** of the total (15 of 636) — the smallest share.",
+     "",
+     "2.4%"
+    ]
+   ]
+  }
+ ],
+ "ex9": [
+  {
+   "n": [
+    [
+     "m1",
+     "Online shop",
+     "circle",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "m2",
+     "Products",
+     "box",
+     0,
+     "",
+     3.1,
+     -2.3
+    ],
+    [
+     "m3",
+     "Catalogue",
+     "box",
+     0,
+     "",
+     6.2,
+     -5.75
+    ],
+    [
+     "m4",
+     "Stock levels",
+     "box",
+     0,
+     "",
+     6.2,
+     -3.45
+    ],
+    [
+     "m5",
+     "Orders",
+     "box",
+     1,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "m6",
+     "Payment",
+     "box",
+     1,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "m7",
+     "Delivery",
+     "box",
+     1,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "m8",
+     "Customers",
+     "box",
+     2,
+     "",
+     3.1,
+     2.3
+    ],
+    [
+     "m9",
+     "Accounts",
+     "box",
+     2,
+     "",
+     6.2,
+     3.45
+    ],
+    [
+     "m10",
+     "Support",
+     "box",
+     2,
+     "",
+     6.2,
+     5.75
+    ]
+   ],
+   "l": [
+    [
+     "m1",
+     "m2",
+     "",
+     false,
+     false
+    ],
+    [
+     "m2",
+     "m3",
+     "",
+     false,
+     false
+    ],
+    [
+     "m2",
+     "m4",
+     "",
+     false,
+     false
+    ],
+    [
+     "m1",
+     "m5",
+     "",
+     false,
+     false
+    ],
+    [
+     "m5",
+     "m6",
+     "",
+     false,
+     false
+    ],
+    [
+     "m5",
+     "m7",
+     "",
+     false,
+     false
+    ],
+    [
+     "m1",
+     "m8",
+     "",
+     false,
+     false
+    ],
+    [
+     "m8",
+     "m9",
+     "",
+     false,
+     false
+    ],
+    [
+     "m8",
+     "m10",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Products",
+     "One main part of **Online shop** is **Products**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Catalogue",
+     "**Products** includes **Catalogue**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Stock levels",
+     "**Products** includes **Stock levels**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Orders",
+     "One main part of **Online shop** is **Orders**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Payment",
+     "**Orders** includes **Payment**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Delivery",
+     "**Orders** includes **Delivery**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Customers",
+     "One main part of **Online shop** is **Customers**.",
+     "Customers",
+     ""
+    ],
+    [
+     "edge",
+     "Accounts",
+     "**Customers** includes **Accounts**.",
+     "Customers",
+     ""
+    ],
+    [
+     "edge",
+     "Support",
+     "**Customers** includes **Support**.",
+     "Customers",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex10": [
+  {
+   "n": [
+    [
+     "t1",
+     "Search for the show",
+     "box",
+     0,
+     "Feeling: good (4 out of 5). Who: Customer.",
+     0,
+     0
+    ],
+    [
+     "t2",
+     "Compare seats",
+     "box",
+     0,
+     "Feeling: okay (3 out of 5). Who: Customer.",
+     3.1,
+     0
+    ],
+    [
+     "t3",
+     "Enter card details",
+     "box",
+     1,
+     "Feeling: frustrating (2 out of 5). Who: Customer, Shop.",
+     6.2,
+     0
+    ],
+    [
+     "t4",
+     "Get confirmation email",
+     "box",
+     1,
+     "Feeling: great (5 out of 5). Who: Customer, Shop.",
+     9.3,
+     0
+    ],
+    [
+     "t5",
+     "Show ticket at the door",
+     "box",
+     2,
+     "Feeling: good (4 out of 5). Who: Customer, Staff.",
+     12.4,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "t1",
+     "t2",
+     "",
+     false,
+     true
+    ],
+    [
+     "t2",
+     "t3",
+     "",
+     false,
+     true
+    ],
+    [
+     "t3",
+     "t4",
+     "",
+     false,
+     true
+    ],
+    [
+     "t4",
+     "t5",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Search for the show",
+     "It starts with **Search for the show**. This feels **good** for **Customer** (4 out of 5).",
+     "Find",
+     "🙂 4/5"
+    ],
+    [
+     "edge",
+     "Compare seats",
+     "Next: **Compare seats**. This feels **okay** for **Customer** (3 out of 5).",
+     "Find",
+     "😐 3/5"
+    ],
+    [
+     "edge",
+     "Enter card details",
+     "Next: **Enter card details**. This feels **frustrating** for **Customer** and **Shop** (2 out of 5). A pain point worth fixing.",
+     "Buy",
+     "😟 2/5"
+    ],
+    [
+     "edge",
+     "Get confirmation email",
+     "Next: **Get confirmation email**. This feels **great** for **Customer** and **Shop** (5 out of 5).",
+     "Buy",
+     "😀 5/5"
+    ],
+    [
+     "edge",
+     "Show ticket at the door",
+     "Next: **Show ticket at the door**. This feels **good** for **Customer** and **Staff** (4 out of 5).",
+     "Attend",
+     "🙂 4/5"
+    ]
+   ]
+  }
+ ],
+ "ex11": [
+  {
+   "n": [
+    [
+     "p1",
+     "2023",
+     "box",
+     0,
+     "Shop opens online",
+     0,
+     0
+    ],
+    [
+     "p1e1",
+     "Shop opens online",
+     "pill",
+     0,
+     "",
+     0,
+     2.9
+    ],
+    [
+     "p2",
+     "2024",
+     "box",
+     0,
+     "Mobile app launches · Loyalty points added",
+     3.1,
+     0
+    ],
+    [
+     "p2e1",
+     "Mobile app launches",
+     "pill",
+     0,
+     "",
+     3.1,
+     2.9
+    ],
+    [
+     "p2e2",
+     "Loyalty points added",
+     "pill",
+     0,
+     "",
+     3.1,
+     5.8
+    ],
+    [
+     "p3",
+     "2025",
+     "box",
+     1,
+     "Second warehouse opens",
+     6.2,
+     0
+    ],
+    [
+     "p3e1",
+     "Second warehouse opens",
+     "pill",
+     1,
+     "",
+     6.2,
+     2.9
+    ],
+    [
+     "p4",
+     "2026",
+     "box",
+     1,
+     "Same-day delivery · Three new cities",
+     9.3,
+     0
+    ],
+    [
+     "p4e1",
+     "Same-day delivery",
+     "pill",
+     1,
+     "",
+     9.3,
+     2.9
+    ],
+    [
+     "p4e2",
+     "Three new cities",
+     "pill",
+     1,
+     "",
+     9.3,
+     5.8
+    ]
+   ],
+   "l": [
+    [
+     "p1",
+     "p1e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p2e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p2e2",
+     "",
+     true,
+     false
+    ],
+    [
+     "p1",
+     "p2",
+     "",
+     false,
+     true
+    ],
+    [
+     "p3",
+     "p3e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p3",
+     "",
+     false,
+     true
+    ],
+    [
+     "p4",
+     "p4e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p4",
+     "p4e2",
+     "",
+     true,
+     false
+    ],
+    [
+     "p3",
+     "p4",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "2023",
+     "**2023**: **Shop opens online**.",
+     "Getting started",
+     ""
+    ],
+    [
+     "edge",
+     "2024",
+     "**2024**: **Mobile app launches** and **Loyalty points added**.",
+     "Getting started",
+     ""
+    ],
+    [
+     "edge",
+     "2025",
+     "**2025**: **Second warehouse opens**.",
+     "Growing",
+     ""
+    ],
+    [
+     "edge",
+     "2026",
+     "**2026**: **Same-day delivery** and **Three new cities**.",
+     "Growing",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex12": [
+  {
+   "n": [
+    [
+     "pt1",
+     "Gift cards",
+     "box",
+     1,
+     "Across: 25% (Low effort → High effort). Up: 80% (Low value → High value).",
+     2.94,
+     2.33
+    ],
+    [
+     "pt2",
+     "Wish list",
+     "box",
+     1,
+     "Across: 40% (Low effort → High effort). Up: 62% (Low value → High value).",
+     4.86,
+     4.63
+    ],
+    [
+     "pt3",
+     "Live chat",
+     "box",
+     0,
+     "Across: 72% (Low effort → High effort). Up: 75% (Low value → High value).",
+     8.64,
+     3
+    ],
+    [
+     "pt4",
+     "Dark mode",
+     "box",
+     2,
+     "Across: 20% (Low effort → High effort). Up: 30% (Low value → High value).",
+     2.4,
+     8.4
+    ],
+    [
+     "pt5",
+     "Custom reports",
+     "box",
+     3,
+     "Across: 80% (Low effort → High effort). Up: 25% (Low value → High value).",
+     9.6,
+     9
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Live chat",
+     "**Live chat** is **high effort** and **high value**, so it lands in **Plan carefully**.",
+     "Plan carefully",
+     "Plan carefully"
+    ],
+    [
+     "node",
+     "Gift cards",
+     "**Gift cards** is **low effort** and **high value**, so it lands in **Do first**.",
+     "Do first",
+     "Do first"
+    ],
+    [
+     "node",
+     "Wish list",
+     "**Wish list** is **low effort** and **high value**, so it lands in **Do first**.",
+     "Do first",
+     "Do first"
+    ],
+    [
+     "node",
+     "Dark mode",
+     "**Dark mode** is **low effort** and **low value**, so it lands in **Maybe later**.",
+     "Maybe later",
+     "Maybe later"
+    ],
+    [
+     "node",
+     "Custom reports",
+     "**Custom reports** is **high effort** and **low value**, so it lands in **Skip for now**.",
+     "Skip for now",
+     "Skip for now"
+    ]
+   ]
+  }
+ ],
+ "ex13": [
+  {
+   "n": [
+    [
+     "c1",
+     "Start project",
+     "circle",
+     0,
+     "",
+     0,
+     0
+    ],
+    [
+     "c2",
+     "Add home page",
+     "circle",
+     0,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "c3",
+     "Build checkout",
+     "circle",
+     1,
+     "",
+     6.2,
+     2.3
+    ],
+    [
+     "c4",
+     "Fix card bug",
+     "circle",
+     1,
+     "",
+     9.3,
+     2.3
+    ],
+    [
+     "c5",
+     "Update prices",
+     "circle",
+     0,
+     "",
+     12.4,
+     0
+    ],
+    [
+     "c6",
+     "Release checkout",
+     "hex",
+     0,
+     "Tag: v1.0.",
+     15.5,
+     0
+    ],
+    [
+     "c7",
+     "Small text fix",
+     "circle",
+     0,
+     "",
+     18.6,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "c1",
+     "c2",
+     "",
+     false,
+     true
+    ],
+    [
+     "c2",
+     "c3",
+     "",
+     false,
+     true
+    ],
+    [
+     "c3",
+     "c4",
+     "",
+     false,
+     true
+    ],
+    [
+     "c2",
+     "c5",
+     "",
+     false,
+     true
+    ],
+    [
+     "c5",
+     "c6",
+     "",
+     false,
+     true
+    ],
+    [
+     "c4",
+     "c6",
+     "",
+     false,
+     true
+    ],
+    [
+     "c6",
+     "c7",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Start project",
+     "The project starts on **main** with **Start project**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "Add home page",
+     "**main** saves a new change: **Add home page**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "Build checkout",
+     "A separate copy called **checkout** splits off from **main** at **Add home page**, and saves its first change: **Build checkout**.",
+     "checkout",
+     ""
+    ],
+    [
+     "edge",
+     "Fix card bug",
+     "**checkout** saves a new change: **Fix card bug**.",
+     "checkout",
+     ""
+    ],
+    [
+     "edge",
+     "Update prices",
+     "**main** saves a new change: **Update prices**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "checkout → main",
+     "All the work on **checkout** is merged back into **main**. This version is marked as **v1.0**.",
+     "main",
+     "v1.0"
+    ],
+    [
+     "edge",
+     "Small text fix",
+     "**main** saves a new change: **Small text fix**.",
+     "main",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex14": [
+  {
+   "n": [
+    [
+     "s0p0",
+     "Jan · 42,000",
+     "box",
+     null,
+     "42,000 (Sales (HK$)).",
+     0,
+     0
+    ],
+    [
+     "s0p1",
+     "Feb · 51,000",
+     "box",
+     null,
+     "51,000 (Sales (HK$)).",
+     2.7,
+     0
+    ],
+    [
+     "s0p2",
+     "Mar · 68,000",
+     "box",
+     null,
+     "68,000 (Sales (HK$)).",
+     5.4,
+     0
+    ],
+    [
+     "s0p3",
+     "Apr · 61,000",
+     "box",
+     null,
+     "61,000 (Sales (HK$)).",
+     8.1,
+     0
+    ],
+    [
+     "s0p4",
+     "May · 87,000",
+     "box",
+     null,
+     "87,000 (Sales (HK$)).",
+     10.8,
+     0
+    ],
+    [
+     "s0p5",
+     "Jun · 104,000",
+     "box",
+     null,
+     "104,000 (Sales (HK$)).",
+     13.5,
+     0
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Jan",
+     "It starts at **42,000** in **Jan**. This is the lowest point.",
+     "",
+     "42,000"
+    ],
+    [
+     "node",
+     "Feb",
+     "In **Feb**: **51,000**, up 21% from Jan.",
+     "",
+     "51,000"
+    ],
+    [
+     "node",
+     "Mar",
+     "In **Mar**: **68,000**, up 33% from Feb.",
+     "",
+     "68,000"
+    ],
+    [
+     "node",
+     "Apr",
+     "In **Apr**: **61,000**, down 10% from Mar.",
+     "",
+     "61,000"
+    ],
+    [
+     "node",
+     "May",
+     "In **May**: **87,000**, up 43% from Apr.",
+     "",
+     "87,000"
+    ],
+    [
+     "node",
+     "Jun",
+     "In **Jun**: **104,000**, up 20% from May. This is the highest point.",
+     "",
+     "104,000"
+    ]
+   ]
+  }
+ ],
+ "ex15": [
+  {
+   "n": [
+    [
+     "k_Ticket sales",
+     "Ticket sales",
+     "box",
+     null,
+     "Goes out: 100.",
+     0,
+     0
+    ],
+    [
+     "k_Event organiser",
+     "Event organiser",
+     "box",
+     null,
+     "Comes in: 80.",
+     3.1,
+     -1.15
+    ],
+    [
+     "k_Shop fees",
+     "Shop fees",
+     "box",
+     null,
+     "Comes in: 20. Goes out: 20.",
+     3.1,
+     1.15
+    ],
+    [
+     "k_Card payments",
+     "Card payments",
+     "box",
+     null,
+     "Comes in: 4.",
+     6.2,
+     -2.3
+    ],
+    [
+     "k_Hosting",
+     "Hosting",
+     "box",
+     null,
+     "Comes in: 3.",
+     6.2,
+     0
+    ],
+    [
+     "k_Support team",
+     "Support team",
+     "box",
+     null,
+     "Comes in: 6.",
+     6.2,
+     2.3
+    ],
+    [
+     "k_Profit",
+     "Profit",
+     "box",
+     null,
+     "Comes in: 7.",
+     6.2,
+     4.6
+    ]
+   ],
+   "l": [
+    [
+     "k_Ticket sales",
+     "k_Event organiser",
+     "80",
+     false,
+     true
+    ],
+    [
+     "k_Ticket sales",
+     "k_Shop fees",
+     "20",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Card payments",
+     "4",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Hosting",
+     "3",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Support team",
+     "6",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Profit",
+     "7",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Ticket sales → Event organiser",
+     "**Ticket sales** sends **80** to **Event organiser** — 80% of everything leaving Ticket sales.",
+     "",
+     "80"
+    ],
+    [
+     "edge",
+     "Ticket sales → Shop fees",
+     "**Ticket sales** sends **20** to **Shop fees** — 20% of everything leaving Ticket sales.",
+     "",
+     "20"
+    ],
+    [
+     "edge",
+     "Shop fees → Card payments",
+     "**Shop fees** sends **4** to **Card payments** — 20% of everything leaving Shop fees.",
+     "",
+     "4"
+    ],
+    [
+     "edge",
+     "Shop fees → Hosting",
+     "**Shop fees** sends **3** to **Hosting** — 15% of everything leaving Shop fees.",
+     "",
+     "3"
+    ],
+    [
+     "edge",
+     "Shop fees → Support team",
+     "**Shop fees** sends **6** to **Support team** — 30% of everything leaving Shop fees.",
+     "",
+     "6"
+    ],
+    [
+     "edge",
+     "Shop fees → Profit",
+     "**Shop fees** sends **7** to **Profit** — 35% of everything leaving Shop fees.",
+     "",
+     "7"
+    ]
+   ]
+  }
+ ],
+ "ex16": [
+  {
+   "n": [
+    [
+     "browser",
+     "Visitor's browser",
+     "box",
+     null,
+     "",
+     4.65,
+     1.32
+    ],
+    [
+     "pages",
+     "Web pages",
+     "box",
+     0,
+     "",
+     1.55,
+     6.61
+    ],
+    [
+     "cart",
+     "Shopping cart",
+     "box",
+     0,
+     "",
+     4.65,
+     6.61
+    ],
+    [
+     "cms",
+     "Content editor",
+     "box",
+     null,
+     "",
+     7.75,
+     6.61
+    ],
+    [
+     "db",
+     "Database",
+     "cyl",
+     null,
+     "",
+     4.65,
+     9.26
+    ]
+   ],
+   "l": [
+    [
+     "browser",
+     "pages",
+     "",
+     false,
+     true
+    ],
+    [
+     "pages",
+     "cart",
+     "",
+     false,
+     true
+    ],
+    [
+     "cart",
+     "db",
+     "",
+     false,
+     true
+    ],
+    [
+     "cms",
+     "db",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Visitor's browser → Web pages",
+     "**Visitor's browser** hands over to **Web pages**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Web pages → Shopping cart",
+     "**Web pages** hands over to **Shopping cart**.",
+     "Online shop",
+     ""
+    ],
+    [
+     "edge",
+     "Shopping cart → Database",
+     "**Shopping cart** hands over to **Database**.",
+     "Online shop",
+     ""
+    ],
+    [
+     "edge",
+     "Content editor → Database",
+     "**Content editor** hands over to **Database**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex17": [
+  {
+   "n": [
+    [
+     "visitor",
+     "Visitors",
+     "circle",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "cdn",
+     "Fast delivery network",
+     "box",
+     0,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "app",
+     "Shop server",
+     "box",
+     0,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "db",
+     "Database",
+     "cyl",
+     0,
+     "",
+     9.3,
+     -1.15
+    ],
+    [
+     "files",
+     "Photo storage",
+     "cyl",
+     0,
+     "",
+     9.3,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "visitor",
+     "cdn",
+     "",
+     false,
+     true
+    ],
+    [
+     "cdn",
+     "app",
+     "",
+     false,
+     true
+    ],
+    [
+     "app",
+     "db",
+     "",
+     false,
+     true
+    ],
+    [
+     "app",
+     "files",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Visitors → Fast delivery network",
+     "**Visitors** sends to **Fast delivery network**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Fast delivery network → Shop server",
+     "**Fast delivery network** sends to **Shop server**.",
+     "Website",
+     ""
+    ],
+    [
+     "edge",
+     "Shop server → Database",
+     "**Shop server** sends to **Database**.",
+     "Website",
+     ""
+    ],
+    [
+     "edge",
+     "Shop server → Photo storage",
+     "**Shop server** sends to **Photo storage**.",
+     "Website",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex18": [
+  {
+   "n": [
+    [
+     "customer",
+     "Customer",
+     "pill",
+     null,
+     "Buys tickets on the website.",
+     0,
+     -1.15
+    ],
+    [
+     "staff",
+     "Shop staff",
+     "pill",
+     null,
+     "Adds events and answers questions.",
+     0,
+     1.15
+    ],
+    [
+     "shop",
+     "Online shop",
+     "box",
+     0,
+     "Sells tickets and sends them out.",
+     3.1,
+     0
+    ],
+    [
+     "db",
+     "Order database",
+     "cyl",
+     0,
+     "Keeps every order.",
+     6.2,
+     -2.3
+    ],
+    [
+     "pay",
+     "Payment provider",
+     "box",
+     null,
+     "Takes card payments. Outside our own system.",
+     6.2,
+     0
+    ],
+    [
+     "mail",
+     "Email service",
+     "box",
+     null,
+     "Delivers emails. Outside our own system.",
+     6.2,
+     2.3
+    ]
+   ],
+   "l": [
+    [
+     "customer",
+     "shop",
+     "Buys tickets on",
+     false,
+     true
+    ],
+    [
+     "staff",
+     "shop",
+     "Manages events in",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "db",
+     "Saves orders to",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "pay",
+     "Takes payment through",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "mail",
+     "Sends tickets by",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Online shop",
+     "**Customer** buys tickets on **Online shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Shop staff → Online shop",
+     "**Shop staff** manages events in **Online shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Online shop → Order database",
+     "**Online shop** saves orders to **Order database**.",
+     "Our system",
+     ""
+    ],
+    [
+     "edge",
+     "Online shop → Payment provider",
+     "**Online shop** takes payment through **Payment provider** (using HTTPS).",
+     "Our system",
+     "HTTPS"
+    ],
+    [
+     "edge",
+     "Online shop → Email service",
+     "**Online shop** sends tickets by **Email service** (using SMTP).",
+     "Our system",
+     "SMTP"
+    ]
+   ]
+  }
+ ],
+ "ex19": [
+  {
+   "n": [
+    [
+     "col1",
+     "To do",
+     "box",
+     0,
+     "2 cards.",
+     0,
+     0
+    ],
+    [
+     "col1c1",
+     "Write About page text",
+     "pill",
+     0,
+     "",
+     0,
+     2.9
+    ],
+    [
+     "col1c2",
+     "Choose photos for events",
+     "pill",
+     0,
+     "Assigned to May. Priority: High.",
+     0,
+     5.8
+    ],
+    [
+     "col2",
+     "In progress",
+     "box",
+     1,
+     "2 cards.",
+     3.1,
+     0
+    ],
+    [
+     "col2c1",
+     "New checkout page",
+     "pill",
+     1,
+     "Assigned to Ken. Priority: Very High. Ticket: WEB-42.",
+     3.1,
+     2.9
+    ],
+    [
+     "col2c2",
+     "Faster search",
+     "pill",
+     1,
+     "Assigned to Jo.",
+     3.1,
+     5.8
+    ],
+    [
+     "col3",
+     "Waiting for client",
+     "box",
+     2,
+     "1 card.",
+     6.2,
+     0
+    ],
+    [
+     "col3c1",
+     "Homepage design",
+     "pill",
+     2,
+     "",
+     6.2,
+     2.9
+    ],
+    [
+     "col4",
+     "Done",
+     "box",
+     3,
+     "2 cards.",
+     9.3,
+     0
+    ],
+    [
+     "col4c1",
+     "Set up hosting",
+     "pill",
+     3,
+     "",
+     9.3,
+     2.9
+    ],
+    [
+     "col4c2",
+     "Connect payments",
+     "pill",
+     3,
+     "",
+     9.3,
+     5.8
+    ]
+   ],
+   "l": [
+    [
+     "col1",
+     "col1c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col1",
+     "col1c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col2c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col2c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col1",
+     "col2",
+     "",
+     false,
+     true
+    ],
+    [
+     "col3",
+     "col3c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col3",
+     "",
+     false,
+     true
+    ],
+    [
+     "col4",
+     "col4c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col4",
+     "col4c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col3",
+     "col4",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "To do",
+     "**To do** has **2 cards**: **Write About page text** and **Choose photos for events**. **Choose photos for events** is high priority. Assigned to May.",
+     "",
+     "2"
+    ],
+    [
+     "edge",
+     "In progress",
+     "**In progress** has **2 cards**: **New checkout page** and **Faster search**. **New checkout page** is high priority. Assigned to Ken, Jo.",
+     "",
+     "2"
+    ],
+    [
+     "edge",
+     "Waiting for client",
+     "**Waiting for client** has **1 card**: **Homepage design**.",
+     "",
+     "1"
+    ],
+    [
+     "edge",
+     "Done",
+     "**Done** has **2 cards**: **Set up hosting** and **Connect payments**.",
+     "",
+     "2"
+    ]
+   ]
+  }
+ ],
+ "ex20": [
+  {
+   "n": [
+    [
+     "f1",
+     "Sender port",
+     "box",
+     0,
+     "Bits 0–15 (16 bits, 2 bytes).",
+     0,
+     0
+    ],
+    [
+     "f2",
+     "Receiver port",
+     "box",
+     0,
+     "Bits 16–31 (16 bits, 2 bytes).",
+     3.1,
+     0
+    ],
+    [
+     "f3",
+     "Length",
+     "box",
+     1,
+     "Bits 32–47 (16 bits, 2 bytes).",
+     0,
+     2.9
+    ],
+    [
+     "f4",
+     "Checksum",
+     "box",
+     1,
+     "Bits 48–63 (16 bits, 2 bytes).",
+     3.1,
+     2.9
+    ],
+    [
+     "f5",
+     "Data",
+     "box",
+     2,
+     "Bits 64–95 (32 bits, 4 bytes).",
+     0,
+     5.8
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Sender port",
+     "The message starts with **Sender port** in bits **0–15** (16 bits, 2 bytes).",
+     "Bits 0–31",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Receiver port",
+     "Next, bits **16–31** hold **Receiver port** (16 bits, 2 bytes).",
+     "Bits 0–31",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Length",
+     "Next, bits **32–47** hold **Length** (16 bits, 2 bytes).",
+     "Bits 32–63",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Checksum",
+     "Next, bits **48–63** hold **Checksum** (16 bits, 2 bytes).",
+     "Bits 32–63",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Data",
+     "Next, bits **64–95** hold **Data** (32 bits, 4 bytes).",
+     "Bits 64–95",
+     "32 bits"
+    ]
+   ]
+  }
+ ],
+ "ex21": [
+  {
+   "n": [
+    [
+     "sign_in",
+     "Sign in",
+     "box",
+     null,
+     "ID 1 · Requirement. “Customers can sign in with email and a code.” Risk: high. Checked by: test.",
+     3.1,
+     -0.57
+    ],
+    [
+     "code_expiry",
+     "Code expiry",
+     "box",
+     null,
+     "ID 1.1 · Functional requirement. “A sign-in code stops working after 10 minutes.” Risk: medium. Checked by: test.",
+     6.2,
+     1.15
+    ],
+    [
+     "fast_email",
+     "Fast email",
+     "box",
+     null,
+     "ID 1.2 · Performance requirement. “The code email arrives within 30 seconds.” Risk: low. Checked by: demonstration.",
+     6.2,
+     -1.15
+    ],
+    [
+     "login_page",
+     "Login page",
+     "pill",
+     null,
+     "Type: web page.",
+     0,
+     -0.57
+    ],
+    [
+     "login_tests",
+     "Login tests",
+     "pill",
+     null,
+     "Type: automated tests.",
+     3.1,
+     1.73
+    ]
+   ],
+   "l": [
+    [
+     "sign_in",
+     "code_expiry",
+     "contains",
+     false,
+     true
+    ],
+    [
+     "sign_in",
+     "fast_email",
+     "contains",
+     false,
+     true
+    ],
+    [
+     "login_page",
+     "sign_in",
+     "satisfies",
+     false,
+     true
+    ],
+    [
+     "login_tests",
+     "code_expiry",
+     "verifies",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Sign in → Code expiry",
+     "**Sign in** includes **Code expiry**.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Sign in → Fast email",
+     "**Sign in** includes **Fast email**.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Login page → Sign in",
+     "**Login page** meets the requirement **Sign in**.",
+     "",
+     "satisfies"
+    ],
+    [
+     "edge",
+     "Login tests → Code expiry",
+     "**Login tests** checks that **Code expiry** is met.",
+     "",
+     "verifies"
+    ]
+   ]
+  }
+ ],
+ "ex22": [
+  {
+   "n": [
+    [
+     "c0a0",
+     "Design · 5",
+     "circle",
+     0,
+     "Web team, Design: 5 (scale 0–5).",
+     -0.48,
+     -5.96
+    ],
+    [
+     "c0a1",
+     "Frontend · 5",
+     "circle",
+     0,
+     "Web team, Frontend: 5 (scale 0–5).",
+     4.92,
+     -3.39
+    ],
+    [
+     "c0a2",
+     "Backend · 3",
+     "circle",
+     0,
+     "Web team, Backend: 3 (scale 0–5).",
+     3.86,
+     1.84
+    ],
+    [
+     "c0a3",
+     "Data · 2",
+     "circle",
+     0,
+     "Web team, Data: 2 (scale 0–5).",
+     0.27,
+     3.42
+    ],
+    [
+     "c0a4",
+     "DevOps · 3",
+     "circle",
+     0,
+     "Web team, DevOps: 3 (scale 0–5).",
+     -3.52,
+     2.43
+    ],
+    [
+     "c0a5",
+     "Support · 4",
+     "circle",
+     0,
+     "Web team, Support: 4 (scale 0–5).",
+     -4.63,
+     -2.2
+    ],
+    [
+     "c1a0",
+     "Design · 2",
+     "circle",
+     1,
+     "Platform team, Design: 2 (scale 0–5).",
+     0.27,
+     -3.42
+    ],
+    [
+     "c1a1",
+     "Frontend · 3",
+     "circle",
+     1,
+     "Platform team, Frontend: 3 (scale 0–5).",
+     3.86,
+     -1.84
+    ],
+    [
+     "c1a2",
+     "Backend · 5",
+     "circle",
+     1,
+     "Platform team, Backend: 5 (scale 0–5).",
+     4.92,
+     3.39
+    ],
+    [
+     "c1a3",
+     "Data · 4",
+     "circle",
+     1,
+     "Platform team, Data: 4 (scale 0–5).",
+     -0.41,
+     5.11
+    ],
+    [
+     "c1a4",
+     "DevOps · 5",
+     "circle",
+     1,
+     "Platform team, DevOps: 5 (scale 0–5).",
+     -5.4,
+     2.57
+    ],
+    [
+     "c1a5",
+     "Support · 3",
+     "circle",
+     1,
+     "Platform team, Support: 3 (scale 0–5).",
+     -3.52,
+     -2.43
+    ]
+   ],
+   "l": [
+    [
+     "c0a0",
+     "c0a1",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a1",
+     "c0a2",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a2",
+     "c0a3",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a3",
+     "c0a4",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a4",
+     "c0a5",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a5",
+     "c0a0",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a0",
+     "c1a1",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a1",
+     "c1a2",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a2",
+     "c1a3",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a3",
+     "c1a4",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a4",
+     "c1a5",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a5",
+     "c1a0",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Design",
+     "On **Design**: Web team **5**, Platform team **2**. Web team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Frontend",
+     "On **Frontend**: Web team **5**, Platform team **3**. Web team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Backend",
+     "On **Backend**: Platform team **5**, Web team **3**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Data",
+     "On **Data**: Platform team **4**, Web team **2**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "DevOps",
+     "On **DevOps**: Platform team **5**, Web team **3**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Support",
+     "On **Support**: Web team **4**, Platform team **3**. Web team leads here.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "ex23": [
+  {
+   "n": [
+    [
+     "t1",
+     "Build · 63%",
+     "box",
+     0,
+     "750 of 1,200 (63%).",
+     0,
+     0
+    ],
+    [
+     "t2",
+     "Website · 320",
+     "box",
+     0,
+     "320 — 43% of Build, 27% of everything.",
+     0,
+     2.6
+    ],
+    [
+     "t3",
+     "Mobile app · 280",
+     "box",
+     0,
+     "280 — 37% of Build, 23% of everything.",
+     0,
+     5.2
+    ],
+    [
+     "t4",
+     "Back office · 150",
+     "box",
+     0,
+     "150 — 20% of Build, 13% of everything.",
+     0,
+     7.8
+    ],
+    [
+     "t5",
+     "Run · 18%",
+     "box",
+     1,
+     "210 of 1,200 (18%).",
+     3.1,
+     0
+    ],
+    [
+     "t6",
+     "Hosting · 90",
+     "box",
+     1,
+     "90 — 43% of Run, 7.5% of everything.",
+     3.1,
+     2.6
+    ],
+    [
+     "t7",
+     "Support · 120",
+     "box",
+     1,
+     "120 — 57% of Run, 10% of everything.",
+     3.1,
+     5.2
+    ],
+    [
+     "t8",
+     "Grow · 20%",
+     "box",
+     2,
+     "240 of 1,200 (20%).",
+     6.2,
+     0
+    ],
+    [
+     "t9",
+     "Marketing · 170",
+     "pill",
+     2,
+     "170 — 71% of Grow, 14% of everything.",
+     6.2,
+     2.6
+    ],
+    [
+     "t10",
+     "› Ads · 110",
+     "box",
+     2,
+     "110 — 65% of Marketing, 9.2% of everything.",
+     6.55,
+     5.2
+    ],
+    [
+     "t11",
+     "› Content · 60",
+     "box",
+     2,
+     "60 — 35% of Marketing, 5% of everything.",
+     6.55,
+     7.8
+    ],
+    [
+     "t12",
+     "Research · 70",
+     "box",
+     2,
+     "70 — 29% of Grow, 5.8% of everything.",
+     6.2,
+     10.4
+    ]
+   ],
+   "l": [
+    [
+     "t1",
+     "t2",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t3",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t4",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t6",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t7",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t5",
+     "",
+     false,
+     true
+    ],
+    [
+     "t8",
+     "t9",
+     "",
+     true,
+     false
+    ],
+    [
+     "t9",
+     "t10",
+     "",
+     true,
+     false
+    ],
+    [
+     "t9",
+     "t11",
+     "",
+     true,
+     false
+    ],
+    [
+     "t8",
+     "t12",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t8",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Build",
+     "**Build** is **63%** of the total (750). Biggest part: **Website** (320), then **Mobile app** and **Back office**.",
+     "",
+     "63%"
+    ],
+    [
+     "edge",
+     "Run",
+     "**Run** is **18%** of the total (210). Biggest part: **Support** (120), then **Hosting**.",
+     "",
+     "18%"
+    ],
+    [
+     "edge",
+     "Grow",
+     "**Grow** is **20%** of the total (240). Biggest part: **Marketing** (170), then **Research**.",
+     "",
+     "20%"
+    ]
+   ]
+  }
+ ],
+ "ex24": [
+  {
+   "n": [
+    [
+     "Customer",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "Shop",
+     "Shop",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "Orders",
+     "Orders",
+     "box",
+     null,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "OrderDB",
+     "OrderDB",
+     "cyl",
+     null,
+     "",
+     9.3,
+     -2.3
+    ],
+    [
+     "Payments",
+     "Payments",
+     "box",
+     null,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "Order",
+     "Order",
+     "box",
+     null,
+     "",
+     9.3,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "Customer",
+     "Shop",
+     "",
+     false,
+     false
+    ],
+    [
+     "Shop",
+     "Orders",
+     "",
+     false,
+     false
+    ],
+    [
+     "Orders",
+     "Order",
+     "",
+     false,
+     false
+    ],
+    [
+     "Orders",
+     "OrderDB",
+     "",
+     false,
+     false
+    ],
+    [
+     "Shop",
+     "Payments",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Checkout (cart)",
+     "The customer presses Pay",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Create (cart)",
+     "**Shop** asks **Orders** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Create Order",
+     "**Orders** creates a new **Order** with cart.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Save (order)",
+     "**Orders** asks **OrderDB** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Returns order",
+     "**Orders** replies to **Shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Charge (order)",
+     "**Shop** asks **Payments** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Mark Paid (order)",
+     "**Shop** asks **Orders** to do this.",
+     "If: result == paid",
+     ""
+    ],
+    [
+     "node",
+     "Show Error",
+     "**Shop** does this on its own.",
+     "Otherwise",
+     ""
+    ],
+    [
+     "edge",
+     "Returns receipt",
+     "**Shop** replies to **Customer**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/article-lifecycle.md": [
+  {
+   "n": [
+    [
+     "__start_root",
+     "Start",
+     "circle",
+     null,
+     "",
+     0,
+     -1.15
+    ],
+    [
+     "Draft",
+     "Draft",
+     "box",
+     null,
+     "The writer is still working on it",
+     3.1,
+     -1.15
+    ],
+    [
+     "Review",
+     "Review",
+     "box",
+     null,
+     "An editor reads and checks it",
+     6.2,
+     -1.15
+    ],
+    [
+     "Approved",
+     "Approved",
+     "box",
+     null,
+     "",
+     9.3,
+     -1.15
+    ],
+    [
+     "__start_0",
+     "Start (Approved)",
+     "circle",
+     0,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "Scheduled",
+     "Scheduled",
+     "box",
+     0,
+     "",
+     3.1,
+     1.15
+    ],
+    [
+     "Live",
+     "Live",
+     "box",
+     0,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "Archived",
+     "Archived",
+     "box",
+     null,
+     "",
+     9.3,
+     1.15
+    ],
+    [
+     "__end_root",
+     "End",
+     "circle",
+     null,
+     "",
+     12.4,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "__start_root",
+     "Draft",
+     "",
+     false,
+     true
+    ],
+    [
+     "Draft",
+     "Review",
+     "submit",
+     false,
+     true
+    ],
+    [
+     "Review",
+     "Draft",
+     "changes requested",
+     false,
+     true
+    ],
+    [
+     "Review",
+     "Approved",
+     "approve",
+     false,
+     true
+    ],
+    [
+     "__start_0",
+     "Scheduled",
+     "",
+     false,
+     true
+    ],
+    [
+     "Scheduled",
+     "Live",
+     "publish date",
+     false,
+     true
+    ],
+    [
+     "Live",
+     "Archived",
+     "after 1 year",
+     false,
+     true
+    ],
+    [
+     "Archived",
+     "__end_root",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Start → Draft",
+     "It all starts in **Draft**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Draft → Review",
+     "When **submit** happens, **Draft** changes to **Review**.",
+     "",
+     "submit"
+    ],
+    [
+     "edge",
+     "Review → Draft",
+     "When **changes requested** happens, **Review** changes to **Draft**.",
+     "",
+     "changes requested"
+    ],
+    [
+     "edge",
+     "Review → Approved",
+     "When **approve** happens, **Review** changes to **Approved**.",
+     "",
+     "approve"
+    ],
+    [
+     "edge",
+     "Start → Scheduled",
+     "Inside **Approved**, it starts in **Scheduled**.",
+     "Approved",
+     ""
+    ],
+    [
+     "edge",
+     "Scheduled → Live",
+     "When **publish date** happens, **Scheduled** changes to **Live**.",
+     "Approved",
+     "publish date"
+    ],
+    [
+     "edge",
+     "Live → Archived",
+     "When **after 1 year** happens, **Live** changes to **Archived**.",
+     "",
+     "after 1 year"
+    ],
+    [
+     "edge",
+     "Archived → End",
+     "**Archived** is where it finishes.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/checkout-zenuml.md": [
+  {
+   "n": [
+    [
+     "Customer",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "Shop",
+     "Shop",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "Orders",
+     "Orders",
+     "box",
+     null,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "OrderDB",
+     "OrderDB",
+     "cyl",
+     null,
+     "",
+     9.3,
+     -2.3
+    ],
+    [
+     "Payments",
+     "Payments",
+     "box",
+     null,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "Order",
+     "Order",
+     "box",
+     null,
+     "",
+     9.3,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "Customer",
+     "Shop",
+     "",
+     false,
+     false
+    ],
+    [
+     "Shop",
+     "Orders",
+     "",
+     false,
+     false
+    ],
+    [
+     "Orders",
+     "Order",
+     "",
+     false,
+     false
+    ],
+    [
+     "Orders",
+     "OrderDB",
+     "",
+     false,
+     false
+    ],
+    [
+     "Shop",
+     "Payments",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Checkout (cart)",
+     "The customer presses Pay",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Create (cart)",
+     "**Shop** asks **Orders** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Create Order",
+     "**Orders** creates a new **Order** with cart.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Save (order)",
+     "**Orders** asks **OrderDB** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Returns order",
+     "**Orders** replies to **Shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Charge (order)",
+     "**Shop** asks **Payments** to do this.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Mark Paid (order)",
+     "**Shop** asks **Orders** to do this.",
+     "If: result == paid",
+     ""
+    ],
+    [
+     "node",
+     "Show Error",
+     "**Shop** does this on its own.",
+     "Otherwise",
+     ""
+    ],
+    [
+     "edge",
+     "Returns receipt",
+     "**Shop** replies to **Customer**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/cloud-setup.md": [
+  {
+   "n": [
+    [
+     "visitor",
+     "Visitors",
+     "circle",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "cdn",
+     "Fast delivery network",
+     "box",
+     0,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "app",
+     "Shop server",
+     "box",
+     0,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "db",
+     "Database",
+     "cyl",
+     0,
+     "",
+     9.3,
+     -1.15
+    ],
+    [
+     "files",
+     "Photo storage",
+     "cyl",
+     0,
+     "",
+     9.3,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "visitor",
+     "cdn",
+     "",
+     false,
+     true
+    ],
+    [
+     "cdn",
+     "app",
+     "",
+     false,
+     true
+    ],
+    [
+     "app",
+     "db",
+     "",
+     false,
+     true
+    ],
+    [
+     "app",
+     "files",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Visitors → Fast delivery network",
+     "**Visitors** sends to **Fast delivery network**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Fast delivery network → Shop server",
+     "**Fast delivery network** sends to **Shop server**.",
+     "Website",
+     ""
+    ],
+    [
+     "edge",
+     "Shop server → Database",
+     "**Shop server** sends to **Database**.",
+     "Website",
+     ""
+    ],
+    [
+     "edge",
+     "Shop server → Photo storage",
+     "**Shop server** sends to **Photo storage**.",
+     "Website",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/customer-journey.md": [
+  {
+   "n": [
+    [
+     "t1",
+     "Search for the show",
+     "box",
+     0,
+     "Feeling: good (4 out of 5). Who: Customer.",
+     0,
+     0
+    ],
+    [
+     "t2",
+     "Compare seats",
+     "box",
+     0,
+     "Feeling: okay (3 out of 5). Who: Customer.",
+     3.1,
+     0
+    ],
+    [
+     "t3",
+     "Enter card details",
+     "box",
+     1,
+     "Feeling: frustrating (2 out of 5). Who: Customer, Shop.",
+     6.2,
+     0
+    ],
+    [
+     "t4",
+     "Get confirmation email",
+     "box",
+     1,
+     "Feeling: great (5 out of 5). Who: Customer, Shop.",
+     9.3,
+     0
+    ],
+    [
+     "t5",
+     "Show ticket at the door",
+     "box",
+     2,
+     "Feeling: good (4 out of 5). Who: Customer, Staff.",
+     12.4,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "t1",
+     "t2",
+     "",
+     false,
+     true
+    ],
+    [
+     "t2",
+     "t3",
+     "",
+     false,
+     true
+    ],
+    [
+     "t3",
+     "t4",
+     "",
+     false,
+     true
+    ],
+    [
+     "t4",
+     "t5",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Search for the show",
+     "It starts with **Search for the show**. This feels **good** for **Customer** (4 out of 5).",
+     "Find",
+     "🙂 4/5"
+    ],
+    [
+     "edge",
+     "Compare seats",
+     "Next: **Compare seats**. This feels **okay** for **Customer** (3 out of 5).",
+     "Find",
+     "😐 3/5"
+    ],
+    [
+     "edge",
+     "Enter card details",
+     "Next: **Enter card details**. This feels **frustrating** for **Customer** and **Shop** (2 out of 5). A pain point worth fixing.",
+     "Buy",
+     "😟 2/5"
+    ],
+    [
+     "edge",
+     "Get confirmation email",
+     "Next: **Get confirmation email**. This feels **great** for **Customer** and **Shop** (5 out of 5).",
+     "Buy",
+     "😀 5/5"
+    ],
+    [
+     "edge",
+     "Show ticket at the door",
+     "Next: **Show ticket at the door**. This feels **good** for **Customer** and **Staff** (4 out of 5).",
+     "Attend",
+     "🙂 4/5"
+    ]
+   ]
+  }
+ ],
+ "examples/feature-priorities.md": [
+  {
+   "n": [
+    [
+     "pt1",
+     "Gift cards",
+     "box",
+     1,
+     "Across: 25% (Low effort → High effort). Up: 80% (Low value → High value).",
+     2.94,
+     2.33
+    ],
+    [
+     "pt2",
+     "Wish list",
+     "box",
+     1,
+     "Across: 40% (Low effort → High effort). Up: 62% (Low value → High value).",
+     4.86,
+     4.63
+    ],
+    [
+     "pt3",
+     "Live chat",
+     "box",
+     0,
+     "Across: 72% (Low effort → High effort). Up: 75% (Low value → High value).",
+     8.64,
+     3
+    ],
+    [
+     "pt4",
+     "Dark mode",
+     "box",
+     2,
+     "Across: 20% (Low effort → High effort). Up: 30% (Low value → High value).",
+     2.4,
+     8.4
+    ],
+    [
+     "pt5",
+     "Custom reports",
+     "box",
+     3,
+     "Across: 80% (Low effort → High effort). Up: 25% (Low value → High value).",
+     9.6,
+     9
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Live chat",
+     "**Live chat** is **high effort** and **high value**, so it lands in **Plan carefully**.",
+     "Plan carefully",
+     "Plan carefully"
+    ],
+    [
+     "node",
+     "Gift cards",
+     "**Gift cards** is **low effort** and **high value**, so it lands in **Do first**.",
+     "Do first",
+     "Do first"
+    ],
+    [
+     "node",
+     "Wish list",
+     "**Wish list** is **low effort** and **high value**, so it lands in **Do first**.",
+     "Do first",
+     "Do first"
+    ],
+    [
+     "node",
+     "Dark mode",
+     "**Dark mode** is **low effort** and **low value**, so it lands in **Maybe later**.",
+     "Maybe later",
+     "Maybe later"
+    ],
+    [
+     "node",
+     "Custom reports",
+     "**Custom reports** is **high effort** and **low value**, so it lands in **Skip for now**.",
+     "Skip for now",
+     "Skip for now"
+    ]
+   ]
+  }
+ ],
+ "examples/how-it-works.md": [
+  {
+   "n": [
+    [
+     "You",
+     "You",
+     "pill",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "Edit",
+     "Edit drawer",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "Reader",
+     "Markdown reader",
+     "box",
+     null,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "Scene",
+     "Animated scene",
+     "box",
+     null,
+     "",
+     9.3,
+     0
+    ],
+    [
+     "Png",
+     "README image",
+     "cyl",
+     null,
+     "",
+     12.4,
+     -1.15
+    ],
+    [
+     "Link",
+     "Share link",
+     "box",
+     null,
+     "",
+     12.4,
+     1.15
+    ],
+    [
+     "Client",
+     "Your client",
+     "pill",
+     null,
+     "",
+     15.5,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "You",
+     "Edit",
+     "Paste markdown",
+     false,
+     true
+    ],
+    [
+     "Edit",
+     "Reader",
+     "Press Render",
+     false,
+     true
+    ],
+    [
+     "Reader",
+     "Scene",
+     "Boxes and arrows",
+     false,
+     true
+    ],
+    [
+     "Scene",
+     "Png",
+     "Snapshot",
+     false,
+     true
+    ],
+    [
+     "Scene",
+     "Link",
+     "Copy client link",
+     false,
+     true
+    ],
+    [
+     "Link",
+     "Client",
+     "Opens in browser",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "You → Edit drawer",
+     "**You** → **Edit drawer**: Paste markdown.",
+     "",
+     "Paste markdown"
+    ],
+    [
+     "edge",
+     "Edit drawer → Markdown reader",
+     "**Edit drawer** → **Markdown reader**: Press Render.",
+     "",
+     "Press Render"
+    ],
+    [
+     "edge",
+     "Markdown reader → Animated scene",
+     "**Markdown reader** → **Animated scene**: Boxes and arrows.",
+     "",
+     "Boxes and arrows"
+    ],
+    [
+     "edge",
+     "Animated scene → README image",
+     "**Animated scene** → **README image**: Snapshot.",
+     "",
+     "Snapshot"
+    ],
+    [
+     "edge",
+     "Animated scene → Share link",
+     "**Animated scene** → **Share link**: Copy client link.",
+     "",
+     "Copy client link"
+    ],
+    [
+     "edge",
+     "Share link → Your client",
+     "**Share link** → **Your client**: Opens in browser.",
+     "",
+     "Opens in browser"
+    ]
+   ]
+  }
+ ],
+ "examples/launch-plan.md": [
+  {
+   "n": [
+    [
+     "w1",
+     "Wireframes",
+     "box",
+     0,
+     "When: 5 Jan 2026 → 10 Jan 2026 · Done",
+     0,
+     0
+    ],
+    [
+     "v1",
+     "Visual design",
+     "box",
+     0,
+     "When: 10 Jan 2026 → 24 Jan 2026 · In progress",
+     3.1,
+     -1.15
+    ],
+    [
+     "f1",
+     "Front end",
+     "box",
+     1,
+     "When: 24 Jan 2026 → 3 Feb 2026",
+     6.2,
+     -1.15
+    ],
+    [
+     "b1",
+     "Back end",
+     "box",
+     1,
+     "When: 12 Jan 2026 → 2 Feb 2026",
+     3.1,
+     1.15
+    ],
+    [
+     "t1",
+     "Testing",
+     "box",
+     1,
+     "When: 3 Feb 2026 → 8 Feb 2026 · Critical",
+     9.3,
+     0
+    ],
+    [
+     "task6",
+     "Go live",
+     "circle",
+     2,
+     "Date: 8 Feb 2026",
+     12.4,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "w1",
+     "v1",
+     "",
+     false,
+     true
+    ],
+    [
+     "w1",
+     "b1",
+     "",
+     true,
+     true
+    ],
+    [
+     "v1",
+     "f1",
+     "",
+     false,
+     true
+    ],
+    [
+     "f1",
+     "t1",
+     "",
+     false,
+     true
+    ],
+    [
+     "b1",
+     "t1",
+     "",
+     false,
+     true
+    ],
+    [
+     "t1",
+     "task6",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Wireframes",
+     "**Wireframes** starts on **5 Jan 2026**. It takes 5 days and ends on 10 Jan 2026.",
+     "Design · Done",
+     ""
+    ],
+    [
+     "edge",
+     "Visual design",
+     "**Visual design** starts once **Wireframes** is finished (10 Jan 2026). It takes 2 weeks and ends on 24 Jan 2026.",
+     "Design · In progress",
+     "10 Jan 2026"
+    ],
+    [
+     "edge",
+     "Back end",
+     "**Back end** starts on **12 Jan 2026**. It takes 3 weeks and ends on 2 Feb 2026.",
+     "Build",
+     "12 Jan 2026"
+    ],
+    [
+     "edge",
+     "Front end",
+     "**Front end** starts once **Visual design** is finished (24 Jan 2026). It takes 10 days and ends on 3 Feb 2026.",
+     "Build",
+     "24 Jan 2026"
+    ],
+    [
+     "edge",
+     "Testing",
+     "**Testing** starts once **Front end** and **Back end** are finished (3 Feb 2026). It takes 5 days and ends on 8 Feb 2026.",
+     "Build · Critical",
+     "3 Feb 2026"
+    ],
+    [
+     "edge",
+     "Go live",
+     "**Go live** is reached once **Testing** is finished (8 Feb 2026).",
+     "Launch",
+     "8 Feb 2026"
+    ]
+   ]
+  }
+ ],
+ "examples/login-requirements.md": [
+  {
+   "n": [
+    [
+     "sign_in",
+     "Sign in",
+     "box",
+     null,
+     "ID 1 · Requirement. “Customers can sign in with email and a code.” Risk: high. Checked by: test.",
+     3.1,
+     -0.57
+    ],
+    [
+     "code_expiry",
+     "Code expiry",
+     "box",
+     null,
+     "ID 1.1 · Functional requirement. “A sign-in code stops working after 10 minutes.” Risk: medium. Checked by: test.",
+     6.2,
+     1.15
+    ],
+    [
+     "fast_email",
+     "Fast email",
+     "box",
+     null,
+     "ID 1.2 · Performance requirement. “The code email arrives within 30 seconds.” Risk: low. Checked by: demonstration.",
+     6.2,
+     -1.15
+    ],
+    [
+     "login_page",
+     "Login page",
+     "pill",
+     null,
+     "Type: web page.",
+     0,
+     -0.57
+    ],
+    [
+     "login_tests",
+     "Login tests",
+     "pill",
+     null,
+     "Type: automated tests.",
+     3.1,
+     1.73
+    ]
+   ],
+   "l": [
+    [
+     "sign_in",
+     "code_expiry",
+     "contains",
+     false,
+     true
+    ],
+    [
+     "sign_in",
+     "fast_email",
+     "contains",
+     false,
+     true
+    ],
+    [
+     "login_page",
+     "sign_in",
+     "satisfies",
+     false,
+     true
+    ],
+    [
+     "login_tests",
+     "code_expiry",
+     "verifies",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Sign in → Code expiry",
+     "**Sign in** includes **Code expiry**.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Sign in → Fast email",
+     "**Sign in** includes **Fast email**.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Login page → Sign in",
+     "**Login page** meets the requirement **Sign in**.",
+     "",
+     "satisfies"
+    ],
+    [
+     "edge",
+     "Login tests → Code expiry",
+     "**Login tests** checks that **Code expiry** is met.",
+     "",
+     "verifies"
+    ]
+   ]
+  }
+ ],
+ "examples/monthly-sales.md": [
+  {
+   "n": [
+    [
+     "s0p0",
+     "Jan · 42,000",
+     "box",
+     null,
+     "42,000 (Sales (HK$)).",
+     0,
+     0
+    ],
+    [
+     "s0p1",
+     "Feb · 51,000",
+     "box",
+     null,
+     "51,000 (Sales (HK$)).",
+     2.7,
+     0
+    ],
+    [
+     "s0p2",
+     "Mar · 68,000",
+     "box",
+     null,
+     "68,000 (Sales (HK$)).",
+     5.4,
+     0
+    ],
+    [
+     "s0p3",
+     "Apr · 61,000",
+     "box",
+     null,
+     "61,000 (Sales (HK$)).",
+     8.1,
+     0
+    ],
+    [
+     "s0p4",
+     "May · 87,000",
+     "box",
+     null,
+     "87,000 (Sales (HK$)).",
+     10.8,
+     0
+    ],
+    [
+     "s0p5",
+     "Jun · 104,000",
+     "box",
+     null,
+     "104,000 (Sales (HK$)).",
+     13.5,
+     0
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Jan",
+     "It starts at **42,000** in **Jan**. This is the lowest point.",
+     "",
+     "42,000"
+    ],
+    [
+     "node",
+     "Feb",
+     "In **Feb**: **51,000**, up 21% from Jan.",
+     "",
+     "51,000"
+    ],
+    [
+     "node",
+     "Mar",
+     "In **Mar**: **68,000**, up 33% from Feb.",
+     "",
+     "68,000"
+    ],
+    [
+     "node",
+     "Apr",
+     "In **Apr**: **61,000**, down 10% from Mar.",
+     "",
+     "61,000"
+    ],
+    [
+     "node",
+     "May",
+     "In **May**: **87,000**, up 43% from Apr.",
+     "",
+     "87,000"
+    ],
+    [
+     "node",
+     "Jun",
+     "In **Jun**: **104,000**, up 20% from May. This is the highest point.",
+     "",
+     "104,000"
+    ]
+   ]
+  }
+ ],
+ "examples/network-message.md": [
+  {
+   "n": [
+    [
+     "f1",
+     "Sender port",
+     "box",
+     0,
+     "Bits 0–15 (16 bits, 2 bytes).",
+     0,
+     0
+    ],
+    [
+     "f2",
+     "Receiver port",
+     "box",
+     0,
+     "Bits 16–31 (16 bits, 2 bytes).",
+     3.1,
+     0
+    ],
+    [
+     "f3",
+     "Length",
+     "box",
+     1,
+     "Bits 32–47 (16 bits, 2 bytes).",
+     0,
+     2.9
+    ],
+    [
+     "f4",
+     "Checksum",
+     "box",
+     1,
+     "Bits 48–63 (16 bits, 2 bytes).",
+     3.1,
+     2.9
+    ],
+    [
+     "f5",
+     "Data",
+     "box",
+     2,
+     "Bits 64–95 (32 bits, 4 bytes).",
+     0,
+     5.8
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Sender port",
+     "The message starts with **Sender port** in bits **0–15** (16 bits, 2 bytes).",
+     "Bits 0–31",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Receiver port",
+     "Next, bits **16–31** hold **Receiver port** (16 bits, 2 bytes).",
+     "Bits 0–31",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Length",
+     "Next, bits **32–47** hold **Length** (16 bits, 2 bytes).",
+     "Bits 32–63",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Checksum",
+     "Next, bits **48–63** hold **Checksum** (16 bits, 2 bytes).",
+     "Bits 32–63",
+     "16 bits"
+    ],
+    [
+     "node",
+     "Data",
+     "Next, bits **64–95** hold **Data** (32 bits, 4 bytes).",
+     "Bits 64–95",
+     "32 bits"
+    ]
+   ]
+  }
+ ],
+ "examples/project-board.md": [
+  {
+   "n": [
+    [
+     "col1",
+     "To do",
+     "box",
+     0,
+     "2 cards.",
+     0,
+     0
+    ],
+    [
+     "col1c1",
+     "Write About page text",
+     "pill",
+     0,
+     "",
+     0,
+     2.9
+    ],
+    [
+     "col1c2",
+     "Choose photos for events",
+     "pill",
+     0,
+     "Assigned to May. Priority: High.",
+     0,
+     5.8
+    ],
+    [
+     "col2",
+     "In progress",
+     "box",
+     1,
+     "2 cards.",
+     3.1,
+     0
+    ],
+    [
+     "col2c1",
+     "New checkout page",
+     "pill",
+     1,
+     "Assigned to Ken. Priority: Very High. Ticket: WEB-42.",
+     3.1,
+     2.9
+    ],
+    [
+     "col2c2",
+     "Faster search",
+     "pill",
+     1,
+     "Assigned to Jo.",
+     3.1,
+     5.8
+    ],
+    [
+     "col3",
+     "Waiting for client",
+     "box",
+     2,
+     "1 card.",
+     6.2,
+     0
+    ],
+    [
+     "col3c1",
+     "Homepage design",
+     "pill",
+     2,
+     "",
+     6.2,
+     2.9
+    ],
+    [
+     "col4",
+     "Done",
+     "box",
+     3,
+     "2 cards.",
+     9.3,
+     0
+    ],
+    [
+     "col4c1",
+     "Set up hosting",
+     "pill",
+     3,
+     "",
+     9.3,
+     2.9
+    ],
+    [
+     "col4c2",
+     "Connect payments",
+     "pill",
+     3,
+     "",
+     9.3,
+     5.8
+    ]
+   ],
+   "l": [
+    [
+     "col1",
+     "col1c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col1",
+     "col1c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col2c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col2c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col1",
+     "col2",
+     "",
+     false,
+     true
+    ],
+    [
+     "col3",
+     "col3c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col2",
+     "col3",
+     "",
+     false,
+     true
+    ],
+    [
+     "col4",
+     "col4c1",
+     "",
+     true,
+     false
+    ],
+    [
+     "col4",
+     "col4c2",
+     "",
+     true,
+     false
+    ],
+    [
+     "col3",
+     "col4",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "To do",
+     "**To do** has **2 cards**: **Write About page text** and **Choose photos for events**. **Choose photos for events** is high priority. Assigned to May.",
+     "",
+     "2"
+    ],
+    [
+     "edge",
+     "In progress",
+     "**In progress** has **2 cards**: **New checkout page** and **Faster search**. **New checkout page** is high priority. Assigned to Ken, Jo.",
+     "",
+     "2"
+    ],
+    [
+     "edge",
+     "Waiting for client",
+     "**Waiting for client** has **1 card**: **Homepage design**.",
+     "",
+     "1"
+    ],
+    [
+     "edge",
+     "Done",
+     "**Done** has **2 cards**: **Set up hosting** and **Connect payments**.",
+     "",
+     "2"
+    ]
+   ]
+  }
+ ],
+ "examples/release-history.md": [
+  {
+   "n": [
+    [
+     "c1",
+     "Start project",
+     "circle",
+     0,
+     "",
+     0,
+     0
+    ],
+    [
+     "c2",
+     "Add home page",
+     "circle",
+     0,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "c3",
+     "Build checkout",
+     "circle",
+     1,
+     "",
+     6.2,
+     2.3
+    ],
+    [
+     "c4",
+     "Fix card bug",
+     "circle",
+     1,
+     "",
+     9.3,
+     2.3
+    ],
+    [
+     "c5",
+     "Update prices",
+     "circle",
+     0,
+     "",
+     12.4,
+     0
+    ],
+    [
+     "c6",
+     "Release checkout",
+     "hex",
+     0,
+     "Tag: v1.0.",
+     15.5,
+     0
+    ],
+    [
+     "c7",
+     "Small text fix",
+     "circle",
+     0,
+     "",
+     18.6,
+     0
+    ]
+   ],
+   "l": [
+    [
+     "c1",
+     "c2",
+     "",
+     false,
+     true
+    ],
+    [
+     "c2",
+     "c3",
+     "",
+     false,
+     true
+    ],
+    [
+     "c3",
+     "c4",
+     "",
+     false,
+     true
+    ],
+    [
+     "c2",
+     "c5",
+     "",
+     false,
+     true
+    ],
+    [
+     "c5",
+     "c6",
+     "",
+     false,
+     true
+    ],
+    [
+     "c4",
+     "c6",
+     "",
+     false,
+     true
+    ],
+    [
+     "c6",
+     "c7",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Start project",
+     "The project starts on **main** with **Start project**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "Add home page",
+     "**main** saves a new change: **Add home page**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "Build checkout",
+     "A separate copy called **checkout** splits off from **main** at **Add home page**, and saves its first change: **Build checkout**.",
+     "checkout",
+     ""
+    ],
+    [
+     "edge",
+     "Fix card bug",
+     "**checkout** saves a new change: **Fix card bug**.",
+     "checkout",
+     ""
+    ],
+    [
+     "edge",
+     "Update prices",
+     "**main** saves a new change: **Update prices**.",
+     "main",
+     ""
+    ],
+    [
+     "edge",
+     "checkout → main",
+     "All the work on **checkout** is merged back into **main**. This version is marked as **v1.0**.",
+     "main",
+     "v1.0"
+    ],
+    [
+     "edge",
+     "Small text fix",
+     "**main** saves a new change: **Small text fix**.",
+     "main",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/shop-c4.md": [
+  {
+   "n": [
+    [
+     "customer",
+     "Customer",
+     "pill",
+     null,
+     "Buys tickets on the website.",
+     0,
+     -1.15
+    ],
+    [
+     "staff",
+     "Shop staff",
+     "pill",
+     null,
+     "Adds events and answers questions.",
+     0,
+     1.15
+    ],
+    [
+     "shop",
+     "Online shop",
+     "box",
+     0,
+     "Sells tickets and sends them out.",
+     3.1,
+     0
+    ],
+    [
+     "db",
+     "Order database",
+     "cyl",
+     0,
+     "Keeps every order.",
+     6.2,
+     -2.3
+    ],
+    [
+     "pay",
+     "Payment provider",
+     "box",
+     null,
+     "Takes card payments. Outside our own system.",
+     6.2,
+     0
+    ],
+    [
+     "mail",
+     "Email service",
+     "box",
+     null,
+     "Delivers emails. Outside our own system.",
+     6.2,
+     2.3
+    ]
+   ],
+   "l": [
+    [
+     "customer",
+     "shop",
+     "Buys tickets on",
+     false,
+     true
+    ],
+    [
+     "staff",
+     "shop",
+     "Manages events in",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "db",
+     "Saves orders to",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "pay",
+     "Takes payment through",
+     false,
+     true
+    ],
+    [
+     "shop",
+     "mail",
+     "Sends tickets by",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Online shop",
+     "**Customer** buys tickets on **Online shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Shop staff → Online shop",
+     "**Shop staff** manages events in **Online shop**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Online shop → Order database",
+     "**Online shop** saves orders to **Order database**.",
+     "Our system",
+     ""
+    ],
+    [
+     "edge",
+     "Online shop → Payment provider",
+     "**Online shop** takes payment through **Payment provider** (using HTTPS).",
+     "Our system",
+     "HTTPS"
+    ],
+    [
+     "edge",
+     "Online shop → Email service",
+     "**Online shop** sends tickets by **Email service** (using SMTP).",
+     "Our system",
+     "SMTP"
+    ]
+   ]
+  }
+ ],
+ "examples/shop-classes.md": [
+  {
+   "n": [
+    [
+     "Product",
+     "Product",
+     "box",
+     null,
+     "Holds: String name, Money price. Can do: isInStock() bool.",
+     9.3,
+     -1.15
+    ],
+    [
+     "Ticket",
+     "Ticket",
+     "box",
+     null,
+     "",
+     12.4,
+     -2.3
+    ],
+    [
+     "Merchandise",
+     "Merchandise",
+     "box",
+     null,
+     "",
+     12.4,
+     0
+    ],
+    [
+     "Customer",
+     "Customer",
+     "box",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "Order",
+     "Order",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "OrderLine",
+     "OrderLine",
+     "box",
+     null,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "PaymentGateway",
+     "PaymentGateway",
+     "box",
+     null,
+     "",
+     6.2,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "Product",
+     "Ticket",
+     "",
+     false,
+     false
+    ],
+    [
+     "Product",
+     "Merchandise",
+     "",
+     false,
+     false
+    ],
+    [
+     "Customer",
+     "Order",
+     "places",
+     false,
+     true
+    ],
+    [
+     "Order",
+     "OrderLine",
+     "",
+     false,
+     false
+    ],
+    [
+     "OrderLine",
+     "Product",
+     "refers to",
+     false,
+     true
+    ],
+    [
+     "Order",
+     "PaymentGateway",
+     "charges through",
+     true,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Product → Ticket",
+     "**Ticket** is a kind of **Product**, so it gets everything Product has.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Product → Merchandise",
+     "**Merchandise** is a kind of **Product**, so it gets everything Product has.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Customer → Order",
+     "**Customer** places **Order** (uses). One side: one Customer. Other side: many Order.",
+     "",
+     "one → many"
+    ],
+    [
+     "edge",
+     "Order → OrderLine",
+     "**Order** is made up of **OrderLine**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "OrderLine → Product",
+     "**OrderLine** refers to **Product** (uses).",
+     "",
+     "refers to"
+    ],
+    [
+     "edge",
+     "Order → PaymentGateway",
+     "**Order** charges through **PaymentGateway** (depends on).",
+     "",
+     "charges through"
+    ]
+   ]
+  }
+ ],
+ "examples/shop-database.md": [
+  {
+   "n": [
+    [
+     "CUSTOMER",
+     "Customer",
+     "box",
+     null,
+     "Stores: id (ID), name, email.",
+     0,
+     -0.57
+    ],
+    [
+     "ORDER",
+     "Order",
+     "box",
+     null,
+     "Stores: id (ID), customer id (link), placed on.",
+     3.1,
+     -0.57
+    ],
+    [
+     "ORDER-LINE",
+     "Order line",
+     "box",
+     null,
+     "",
+     6.2,
+     0.57
+    ],
+    [
+     "PRODUCT",
+     "Product",
+     "box",
+     null,
+     "",
+     3.1,
+     1.73
+    ]
+   ],
+   "l": [
+    [
+     "CUSTOMER",
+     "ORDER",
+     "places",
+     false,
+     false
+    ],
+    [
+     "ORDER",
+     "ORDER-LINE",
+     "contains",
+     false,
+     false
+    ],
+    [
+     "PRODUCT",
+     "ORDER-LINE",
+     "appears in",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Order",
+     "Each **Customer** places **zero or more** order. Each order is linked to **exactly one** customer.",
+     "",
+     "places"
+    ],
+    [
+     "edge",
+     "Order → Order line",
+     "Each **Order** contains **one or more** order line. Each order line is linked to **exactly one** order.",
+     "",
+     "contains"
+    ],
+    [
+     "edge",
+     "Product → Order line",
+     "Each **Product** appears in **zero or more** order line. Each order line is linked to **exactly one** product.",
+     "",
+     "appears in"
+    ]
+   ]
+  }
+ ],
+ "examples/shop-mindmap.md": [
+  {
+   "n": [
+    [
+     "m1",
+     "Online shop",
+     "circle",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "m2",
+     "Products",
+     "box",
+     0,
+     "",
+     3.1,
+     -2.3
+    ],
+    [
+     "m3",
+     "Catalogue",
+     "box",
+     0,
+     "",
+     6.2,
+     -5.75
+    ],
+    [
+     "m4",
+     "Stock levels",
+     "box",
+     0,
+     "",
+     6.2,
+     -3.45
+    ],
+    [
+     "m5",
+     "Orders",
+     "box",
+     1,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "m6",
+     "Payment",
+     "box",
+     1,
+     "",
+     6.2,
+     -1.15
+    ],
+    [
+     "m7",
+     "Delivery",
+     "box",
+     1,
+     "",
+     6.2,
+     1.15
+    ],
+    [
+     "m8",
+     "Customers",
+     "box",
+     2,
+     "",
+     3.1,
+     2.3
+    ],
+    [
+     "m9",
+     "Accounts",
+     "box",
+     2,
+     "",
+     6.2,
+     3.45
+    ],
+    [
+     "m10",
+     "Support",
+     "box",
+     2,
+     "",
+     6.2,
+     5.75
+    ]
+   ],
+   "l": [
+    [
+     "m1",
+     "m2",
+     "",
+     false,
+     false
+    ],
+    [
+     "m2",
+     "m3",
+     "",
+     false,
+     false
+    ],
+    [
+     "m2",
+     "m4",
+     "",
+     false,
+     false
+    ],
+    [
+     "m1",
+     "m5",
+     "",
+     false,
+     false
+    ],
+    [
+     "m5",
+     "m6",
+     "",
+     false,
+     false
+    ],
+    [
+     "m5",
+     "m7",
+     "",
+     false,
+     false
+    ],
+    [
+     "m1",
+     "m8",
+     "",
+     false,
+     false
+    ],
+    [
+     "m8",
+     "m9",
+     "",
+     false,
+     false
+    ],
+    [
+     "m8",
+     "m10",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Products",
+     "One main part of **Online shop** is **Products**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Catalogue",
+     "**Products** includes **Catalogue**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Stock levels",
+     "**Products** includes **Stock levels**.",
+     "Products",
+     ""
+    ],
+    [
+     "edge",
+     "Orders",
+     "One main part of **Online shop** is **Orders**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Payment",
+     "**Orders** includes **Payment**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Delivery",
+     "**Orders** includes **Delivery**.",
+     "Orders",
+     ""
+    ],
+    [
+     "edge",
+     "Customers",
+     "One main part of **Online shop** is **Customers**.",
+     "Customers",
+     ""
+    ],
+    [
+     "edge",
+     "Accounts",
+     "**Customers** includes **Accounts**.",
+     "Customers",
+     ""
+    ],
+    [
+     "edge",
+     "Support",
+     "**Customers** includes **Support**.",
+     "Customers",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/shop-timeline.md": [
+  {
+   "n": [
+    [
+     "p1",
+     "2023",
+     "box",
+     0,
+     "Shop opens online",
+     0,
+     0
+    ],
+    [
+     "p1e1",
+     "Shop opens online",
+     "pill",
+     0,
+     "",
+     0,
+     2.9
+    ],
+    [
+     "p2",
+     "2024",
+     "box",
+     0,
+     "Mobile app launches · Loyalty points added",
+     3.1,
+     0
+    ],
+    [
+     "p2e1",
+     "Mobile app launches",
+     "pill",
+     0,
+     "",
+     3.1,
+     2.9
+    ],
+    [
+     "p2e2",
+     "Loyalty points added",
+     "pill",
+     0,
+     "",
+     3.1,
+     5.8
+    ],
+    [
+     "p3",
+     "2025",
+     "box",
+     1,
+     "Second warehouse opens",
+     6.2,
+     0
+    ],
+    [
+     "p3e1",
+     "Second warehouse opens",
+     "pill",
+     1,
+     "",
+     6.2,
+     2.9
+    ],
+    [
+     "p4",
+     "2026",
+     "box",
+     1,
+     "Same-day delivery · Three new cities",
+     9.3,
+     0
+    ],
+    [
+     "p4e1",
+     "Same-day delivery",
+     "pill",
+     1,
+     "",
+     9.3,
+     2.9
+    ],
+    [
+     "p4e2",
+     "Three new cities",
+     "pill",
+     1,
+     "",
+     9.3,
+     5.8
+    ]
+   ],
+   "l": [
+    [
+     "p1",
+     "p1e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p2e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p2e2",
+     "",
+     true,
+     false
+    ],
+    [
+     "p1",
+     "p2",
+     "",
+     false,
+     true
+    ],
+    [
+     "p3",
+     "p3e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p2",
+     "p3",
+     "",
+     false,
+     true
+    ],
+    [
+     "p4",
+     "p4e1",
+     "",
+     true,
+     false
+    ],
+    [
+     "p4",
+     "p4e2",
+     "",
+     true,
+     false
+    ],
+    [
+     "p3",
+     "p4",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "2023",
+     "**2023**: **Shop opens online**.",
+     "Getting started",
+     ""
+    ],
+    [
+     "edge",
+     "2024",
+     "**2024**: **Mobile app launches** and **Loyalty points added**.",
+     "Getting started",
+     ""
+    ],
+    [
+     "edge",
+     "2025",
+     "**2025**: **Second warehouse opens**.",
+     "Growing",
+     ""
+    ],
+    [
+     "edge",
+     "2026",
+     "**2026**: **Same-day delivery** and **Three new cities**.",
+     "Growing",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/sign-in-code.md": [
+  {
+   "n": [
+    [
+     "U",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "W",
+     "Website",
+     "box",
+     null,
+     "",
+     3.1,
+     0.46
+    ],
+    [
+     "A",
+     "Login Service",
+     "box",
+     null,
+     "",
+     6.2,
+     0.46
+    ],
+    [
+     "D",
+     "Database",
+     "cyl",
+     null,
+     "",
+     9.3,
+     -0.34
+    ],
+    [
+     "E",
+     "Email Service",
+     "box",
+     null,
+     "",
+     9.3,
+     1.95
+    ]
+   ],
+   "l": [
+    [
+     "U",
+     "W",
+     "",
+     false,
+     false
+    ],
+    [
+     "W",
+     "A",
+     "",
+     false,
+     false
+    ],
+    [
+     "A",
+     "D",
+     "",
+     false,
+     false
+    ],
+    [
+     "A",
+     "E",
+     "",
+     false,
+     false
+    ],
+    [
+     "E",
+     "U",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Enters email address",
+     "**Customer** sends this to **Website**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Request sign-in code",
+     "**Website** sends this to **Login Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Save one-time code",
+     "**Login Service** sends this to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Send code by email",
+     "**Login Service** sends this to **Email Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Email with 6-digit code",
+     "**Email Service** replies to **Customer**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Types the code",
+     "**Customer** sends this to **Website**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Check the code",
+     "**Website** sends this to **Login Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Compare with saved code",
+     "**Login Service** sends this to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Signed in",
+     "**Login Service** replies to **Website**.",
+     "When: Code is correct",
+     ""
+    ],
+    [
+     "edge",
+     "Shows account page",
+     "**Website** replies to **Customer**.",
+     "When: Code is correct",
+     ""
+    ],
+    [
+     "edge",
+     "Rejected",
+     "**Login Service** replies to **Website**.",
+     "Otherwise: Code is wrong",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/team-skills.md": [
+  {
+   "n": [
+    [
+     "c0a0",
+     "Design · 5",
+     "circle",
+     0,
+     "Web team, Design: 5 (scale 0–5).",
+     -0.48,
+     -5.96
+    ],
+    [
+     "c0a1",
+     "Frontend · 5",
+     "circle",
+     0,
+     "Web team, Frontend: 5 (scale 0–5).",
+     4.92,
+     -3.39
+    ],
+    [
+     "c0a2",
+     "Backend · 3",
+     "circle",
+     0,
+     "Web team, Backend: 3 (scale 0–5).",
+     3.86,
+     1.84
+    ],
+    [
+     "c0a3",
+     "Data · 2",
+     "circle",
+     0,
+     "Web team, Data: 2 (scale 0–5).",
+     0.27,
+     3.42
+    ],
+    [
+     "c0a4",
+     "DevOps · 3",
+     "circle",
+     0,
+     "Web team, DevOps: 3 (scale 0–5).",
+     -3.52,
+     2.43
+    ],
+    [
+     "c0a5",
+     "Support · 4",
+     "circle",
+     0,
+     "Web team, Support: 4 (scale 0–5).",
+     -4.63,
+     -2.2
+    ],
+    [
+     "c1a0",
+     "Design · 2",
+     "circle",
+     1,
+     "Platform team, Design: 2 (scale 0–5).",
+     0.27,
+     -3.42
+    ],
+    [
+     "c1a1",
+     "Frontend · 3",
+     "circle",
+     1,
+     "Platform team, Frontend: 3 (scale 0–5).",
+     3.86,
+     -1.84
+    ],
+    [
+     "c1a2",
+     "Backend · 5",
+     "circle",
+     1,
+     "Platform team, Backend: 5 (scale 0–5).",
+     4.92,
+     3.39
+    ],
+    [
+     "c1a3",
+     "Data · 4",
+     "circle",
+     1,
+     "Platform team, Data: 4 (scale 0–5).",
+     -0.41,
+     5.11
+    ],
+    [
+     "c1a4",
+     "DevOps · 5",
+     "circle",
+     1,
+     "Platform team, DevOps: 5 (scale 0–5).",
+     -5.4,
+     2.57
+    ],
+    [
+     "c1a5",
+     "Support · 3",
+     "circle",
+     1,
+     "Platform team, Support: 3 (scale 0–5).",
+     -3.52,
+     -2.43
+    ]
+   ],
+   "l": [
+    [
+     "c0a0",
+     "c0a1",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a1",
+     "c0a2",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a2",
+     "c0a3",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a3",
+     "c0a4",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a4",
+     "c0a5",
+     "",
+     false,
+     false
+    ],
+    [
+     "c0a5",
+     "c0a0",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a0",
+     "c1a1",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a1",
+     "c1a2",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a2",
+     "c1a3",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a3",
+     "c1a4",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a4",
+     "c1a5",
+     "",
+     false,
+     false
+    ],
+    [
+     "c1a5",
+     "c1a0",
+     "",
+     false,
+     false
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Design",
+     "On **Design**: Web team **5**, Platform team **2**. Web team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Frontend",
+     "On **Frontend**: Web team **5**, Platform team **3**. Web team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Backend",
+     "On **Backend**: Platform team **5**, Web team **3**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Data",
+     "On **Data**: Platform team **4**, Web team **2**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "DevOps",
+     "On **DevOps**: Platform team **5**, Web team **3**. Platform team leads here.",
+     "",
+     ""
+    ],
+    [
+     "node",
+     "Support",
+     "On **Support**: Web team **4**, Platform team **3**. Web team leads here.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/ticket-order.md": [
+  {
+   "n": [
+    [
+     "C",
+     "Customer",
+     "pill",
+     null,
+     "",
+     0,
+     0
+    ],
+    [
+     "S",
+     "Online Shop",
+     "box",
+     null,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "P",
+     "Payment Gateway",
+     "box",
+     null,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "D",
+     "Payment OK?",
+     "hex",
+     null,
+     "",
+     9.3,
+     0
+    ],
+    [
+     "F",
+     "Show error to customer",
+     "box",
+     null,
+     "",
+     12.4,
+     -1.15
+    ],
+    [
+     "O",
+     "Order Database",
+     "cyl",
+     null,
+     "",
+     12.4,
+     1.15
+    ],
+    [
+     "T",
+     "Ticket Allocation",
+     "box",
+     null,
+     "",
+     15.5,
+     1.15
+    ],
+    [
+     "M",
+     "Email Service",
+     "box",
+     null,
+     "",
+     18.6,
+     1.15
+    ],
+    [
+     "I",
+     "Customer inbox",
+     "pill",
+     null,
+     "",
+     21.7,
+     1.15
+    ]
+   ],
+   "l": [
+    [
+     "C",
+     "S",
+     "Places order",
+     false,
+     true
+    ],
+    [
+     "S",
+     "P",
+     "Asks for payment",
+     false,
+     true
+    ],
+    [
+     "P",
+     "D",
+     "",
+     false,
+     true
+    ],
+    [
+     "D",
+     "F",
+     "No",
+     false,
+     true
+    ],
+    [
+     "D",
+     "O",
+     "Yes",
+     false,
+     true
+    ],
+    [
+     "O",
+     "T",
+     "",
+     false,
+     true
+    ],
+    [
+     "T",
+     "M",
+     "Sends PDF ticket",
+     false,
+     true
+    ],
+    [
+     "M",
+     "I",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Customer → Online Shop",
+     "**Customer** → **Online Shop**: Places order.",
+     "",
+     "Places order"
+    ],
+    [
+     "edge",
+     "Online Shop → Payment Gateway",
+     "**Online Shop** → **Payment Gateway**: Asks for payment.",
+     "",
+     "Asks for payment"
+    ],
+    [
+     "edge",
+     "Payment Gateway → Payment OK?",
+     "**Payment Gateway** hands over to **Payment OK?**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Payment OK? → Show error to customer",
+     "If the answer is **No**, continue to **Show error to customer**.",
+     "",
+     "No"
+    ],
+    [
+     "edge",
+     "Payment OK? → Order Database",
+     "If the answer is **Yes**, continue to **Order Database**.",
+     "",
+     "Yes"
+    ],
+    [
+     "edge",
+     "Order Database → Ticket Allocation",
+     "**Order Database** hands over to **Ticket Allocation**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Ticket Allocation → Email Service",
+     "**Ticket Allocation** → **Email Service**: Sends PDF ticket.",
+     "",
+     "Sends PDF ticket"
+    ],
+    [
+     "edge",
+     "Email Service → Customer inbox",
+     "**Email Service** hands over to **Customer inbox**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/traffic-sources.md": [
+  {
+   "n": [
+    [
+     "slice1",
+     "Search · 61%",
+     "box",
+     null,
+     "386 of 636 in total (61%).",
+     0,
+     0
+    ],
+    [
+     "slice2",
+     "Direct · 24%",
+     "box",
+     null,
+     "150 of 636 in total (24%).",
+     2.7,
+     0
+    ],
+    [
+     "slice3",
+     "Social · 13%",
+     "box",
+     null,
+     "85 of 636 in total (13%).",
+     5.4,
+     0
+    ],
+    [
+     "slice4",
+     "Email · 2.4%",
+     "box",
+     null,
+     "15 of 636 in total (2.4%).",
+     8.1,
+     0
+    ]
+   ],
+   "l": [],
+   "s": [
+    [
+     "node",
+     "Search",
+     "**Search** is **61%** of the total (386 of 636) — the biggest share.",
+     "",
+     "61%"
+    ],
+    [
+     "node",
+     "Direct",
+     "**Direct** is **24%** of the total (150 of 636) — number 2 of 4.",
+     "",
+     "24%"
+    ],
+    [
+     "node",
+     "Social",
+     "**Social** is **13%** of the total (85 of 636) — number 3 of 4.",
+     "",
+     "13%"
+    ],
+    [
+     "node",
+     "Email",
+     "**Email** is **2.4%** of the total (15 of 636) — the smallest share.",
+     "",
+     "2.4%"
+    ]
+   ]
+  }
+ ],
+ "examples/website-parts.md": [
+  {
+   "n": [
+    [
+     "browser",
+     "Visitor's browser",
+     "box",
+     null,
+     "",
+     4.65,
+     1.32
+    ],
+    [
+     "pages",
+     "Web pages",
+     "box",
+     0,
+     "",
+     1.55,
+     6.61
+    ],
+    [
+     "cart",
+     "Shopping cart",
+     "box",
+     0,
+     "",
+     4.65,
+     6.61
+    ],
+    [
+     "cms",
+     "Content editor",
+     "box",
+     null,
+     "",
+     7.75,
+     6.61
+    ],
+    [
+     "db",
+     "Database",
+     "cyl",
+     null,
+     "",
+     4.65,
+     9.26
+    ]
+   ],
+   "l": [
+    [
+     "browser",
+     "pages",
+     "",
+     false,
+     true
+    ],
+    [
+     "pages",
+     "cart",
+     "",
+     false,
+     true
+    ],
+    [
+     "cart",
+     "db",
+     "",
+     false,
+     true
+    ],
+    [
+     "cms",
+     "db",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Visitor's browser → Web pages",
+     "**Visitor's browser** hands over to **Web pages**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Web pages → Shopping cart",
+     "**Web pages** hands over to **Shopping cart**.",
+     "Online shop",
+     ""
+    ],
+    [
+     "edge",
+     "Shopping cart → Database",
+     "**Shopping cart** hands over to **Database**.",
+     "Online shop",
+     ""
+    ],
+    [
+     "edge",
+     "Content editor → Database",
+     "**Content editor** hands over to **Database**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/where-everything-lives.md": [
+  {
+   "n": [
+    [
+     "B",
+     "Browser",
+     "box",
+     0,
+     "",
+     0,
+     -1.15
+    ],
+    [
+     "M",
+     "Mobile App",
+     "box",
+     0,
+     "",
+     0,
+     1.15
+    ],
+    [
+     "G",
+     "API Gateway",
+     "box",
+     1,
+     "",
+     3.1,
+     0
+    ],
+    [
+     "O",
+     "Order Service",
+     "box",
+     1,
+     "",
+     6.2,
+     0
+    ],
+    [
+     "Q",
+     "Job Queue",
+     "box",
+     1,
+     "",
+     9.3,
+     -2.3
+    ],
+    [
+     "DB",
+     "Database",
+     "cyl",
+     1,
+     "",
+     9.3,
+     0
+    ],
+    [
+     "P",
+     "Stripe Payments",
+     "box",
+     2,
+     "",
+     9.3,
+     2.3
+    ],
+    [
+     "E",
+     "Email Provider",
+     "box",
+     2,
+     "",
+     12.4,
+     -2.3
+    ]
+   ],
+   "l": [
+    [
+     "B",
+     "G",
+     "",
+     false,
+     true
+    ],
+    [
+     "M",
+     "G",
+     "",
+     false,
+     true
+    ],
+    [
+     "G",
+     "O",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "DB",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "P",
+     "",
+     false,
+     true
+    ],
+    [
+     "O",
+     "Q",
+     "",
+     true,
+     true
+    ],
+    [
+     "Q",
+     "E",
+     "",
+     true,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Browser → API Gateway",
+     "**Browser** hands over to **API Gateway**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Mobile App → API Gateway",
+     "**Mobile App** hands over to **API Gateway**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "API Gateway → Order Service",
+     "**API Gateway** hands over to **Order Service**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Database",
+     "**Order Service** hands over to **Database**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Stripe Payments",
+     "**Order Service** hands over to **Stripe Payments**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Order Service → Job Queue",
+     "**Order Service** hands over to **Job Queue**.",
+     "",
+     ""
+    ],
+    [
+     "edge",
+     "Job Queue → Email Provider",
+     "**Job Queue** hands over to **Email Provider**.",
+     "",
+     ""
+    ]
+   ]
+  }
+ ],
+ "examples/where-money-goes.md": [
+  {
+   "n": [
+    [
+     "k_Ticket sales",
+     "Ticket sales",
+     "box",
+     null,
+     "Goes out: 100.",
+     0,
+     0
+    ],
+    [
+     "k_Event organiser",
+     "Event organiser",
+     "box",
+     null,
+     "Comes in: 80.",
+     3.1,
+     -1.15
+    ],
+    [
+     "k_Shop fees",
+     "Shop fees",
+     "box",
+     null,
+     "Comes in: 20. Goes out: 20.",
+     3.1,
+     1.15
+    ],
+    [
+     "k_Card payments",
+     "Card payments",
+     "box",
+     null,
+     "Comes in: 4.",
+     6.2,
+     -2.3
+    ],
+    [
+     "k_Hosting",
+     "Hosting",
+     "box",
+     null,
+     "Comes in: 3.",
+     6.2,
+     0
+    ],
+    [
+     "k_Support team",
+     "Support team",
+     "box",
+     null,
+     "Comes in: 6.",
+     6.2,
+     2.3
+    ],
+    [
+     "k_Profit",
+     "Profit",
+     "box",
+     null,
+     "Comes in: 7.",
+     6.2,
+     4.6
+    ]
+   ],
+   "l": [
+    [
+     "k_Ticket sales",
+     "k_Event organiser",
+     "80",
+     false,
+     true
+    ],
+    [
+     "k_Ticket sales",
+     "k_Shop fees",
+     "20",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Card payments",
+     "4",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Hosting",
+     "3",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Support team",
+     "6",
+     false,
+     true
+    ],
+    [
+     "k_Shop fees",
+     "k_Profit",
+     "7",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "edge",
+     "Ticket sales → Event organiser",
+     "**Ticket sales** sends **80** to **Event organiser** — 80% of everything leaving Ticket sales.",
+     "",
+     "80"
+    ],
+    [
+     "edge",
+     "Ticket sales → Shop fees",
+     "**Ticket sales** sends **20** to **Shop fees** — 20% of everything leaving Ticket sales.",
+     "",
+     "20"
+    ],
+    [
+     "edge",
+     "Shop fees → Card payments",
+     "**Shop fees** sends **4** to **Card payments** — 20% of everything leaving Shop fees.",
+     "",
+     "4"
+    ],
+    [
+     "edge",
+     "Shop fees → Hosting",
+     "**Shop fees** sends **3** to **Hosting** — 15% of everything leaving Shop fees.",
+     "",
+     "3"
+    ],
+    [
+     "edge",
+     "Shop fees → Support team",
+     "**Shop fees** sends **6** to **Support team** — 30% of everything leaving Shop fees.",
+     "",
+     "6"
+    ],
+    [
+     "edge",
+     "Shop fees → Profit",
+     "**Shop fees** sends **7** to **Profit** — 35% of everything leaving Shop fees.",
+     "",
+     "7"
+    ]
+   ]
+  }
+ ],
+ "examples/where-the-budget-goes.md": [
+  {
+   "n": [
+    [
+     "t1",
+     "Build · 63%",
+     "box",
+     0,
+     "750 of 1,200 (63%).",
+     0,
+     0
+    ],
+    [
+     "t2",
+     "Website · 320",
+     "box",
+     0,
+     "320 — 43% of Build, 27% of everything.",
+     0,
+     2.6
+    ],
+    [
+     "t3",
+     "Mobile app · 280",
+     "box",
+     0,
+     "280 — 37% of Build, 23% of everything.",
+     0,
+     5.2
+    ],
+    [
+     "t4",
+     "Back office · 150",
+     "box",
+     0,
+     "150 — 20% of Build, 13% of everything.",
+     0,
+     7.8
+    ],
+    [
+     "t5",
+     "Run · 18%",
+     "box",
+     1,
+     "210 of 1,200 (18%).",
+     3.1,
+     0
+    ],
+    [
+     "t6",
+     "Hosting · 90",
+     "box",
+     1,
+     "90 — 43% of Run, 7.5% of everything.",
+     3.1,
+     2.6
+    ],
+    [
+     "t7",
+     "Support · 120",
+     "box",
+     1,
+     "120 — 57% of Run, 10% of everything.",
+     3.1,
+     5.2
+    ],
+    [
+     "t8",
+     "Grow · 20%",
+     "box",
+     2,
+     "240 of 1,200 (20%).",
+     6.2,
+     0
+    ],
+    [
+     "t9",
+     "Marketing · 170",
+     "pill",
+     2,
+     "170 — 71% of Grow, 14% of everything.",
+     6.2,
+     2.6
+    ],
+    [
+     "t10",
+     "› Ads · 110",
+     "box",
+     2,
+     "110 — 65% of Marketing, 9.2% of everything.",
+     6.55,
+     5.2
+    ],
+    [
+     "t11",
+     "› Content · 60",
+     "box",
+     2,
+     "60 — 35% of Marketing, 5% of everything.",
+     6.55,
+     7.8
+    ],
+    [
+     "t12",
+     "Research · 70",
+     "box",
+     2,
+     "70 — 29% of Grow, 5.8% of everything.",
+     6.2,
+     10.4
+    ]
+   ],
+   "l": [
+    [
+     "t1",
+     "t2",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t3",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t4",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t6",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t7",
+     "",
+     true,
+     false
+    ],
+    [
+     "t1",
+     "t5",
+     "",
+     false,
+     true
+    ],
+    [
+     "t8",
+     "t9",
+     "",
+     true,
+     false
+    ],
+    [
+     "t9",
+     "t10",
+     "",
+     true,
+     false
+    ],
+    [
+     "t9",
+     "t11",
+     "",
+     true,
+     false
+    ],
+    [
+     "t8",
+     "t12",
+     "",
+     true,
+     false
+    ],
+    [
+     "t5",
+     "t8",
+     "",
+     false,
+     true
+    ]
+   ],
+   "s": [
+    [
+     "node",
+     "Build",
+     "**Build** is **63%** of the total (750). Biggest part: **Website** (320), then **Mobile app** and **Back office**.",
+     "",
+     "63%"
+    ],
+    [
+     "edge",
+     "Run",
+     "**Run** is **18%** of the total (210). Biggest part: **Support** (120), then **Hosting**.",
+     "",
+     "18%"
+    ],
+    [
+     "edge",
+     "Grow",
+     "**Grow** is **20%** of the total (240). Biggest part: **Marketing** (170), then **Research**.",
+     "",
+     "20%"
+    ]
+   ]
+  }
+ ]
+}
