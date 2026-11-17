@@ -415,6 +415,7 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
     <label class="ck"><input type="checkbox" id="snapNums" checked> Step numbers</label>
     <label class="ck"><input type="checkbox" id="snapTitle" checked> Title</label>
     <label class="ck"><input type="checkbox" id="snapMarks"> Mark problem spots</label>
+    <label class="ck" title="Adds “Made with Flow Explainer · flow-explainer.laravel.cloud” at the bottom"><input type="checkbox" id="snapCredit" checked> Credit line</label>
   </div>
   <div class="chk" id="snapCheck">Checking…</div>
   <div class="snap-prev"><img id="snapImg" alt="Snapshot preview"></div>
@@ -2288,15 +2289,16 @@ async function makeSnapshot(o){
   const issues=(o.nums?g.issuesNums:g.issues).filter(inView);
   if(o.marks)issues.forEach(x=>{const r=x.r;extra+='<rect x="'+(r.x-5).toFixed(1)+'" y="'+(r.y-5).toFixed(1)+'" width="'+(r.w+10).toFixed(1)+'" height="'+(r.h+10).toFixed(1)+'" rx="9" fill="rgba(214,69,43,.10)" stroke="#d6452b" stroke-width="3" stroke-dasharray="7 5"/>'});
   let k=Math.max(1,Math.min(3,1800/v.w));k=Math.min(k,Math.sqrt(14e6/(v.w*v.h)));
-  const W=Math.round(v.w*k),Hd=Math.round(v.h*k),u=Math.max(1.2,Math.min(3,W/1000)),hh=o.title?Math.round(80*u):0,lh=g.groups.length?Math.round(40*u):0;
+  const W=Math.round(v.w*k),Hd=Math.round(v.h*k),u=Math.max(1.2,Math.min(3,W/1000)),hh=o.title?Math.round(80*u):0,lh=g.groups.length?Math.round(40*u):0,ch=o.credit?Math.round(40*u):0;
   const ser=new XMLSerializer(),defs=svg.querySelector('defs');
   const src='<svg xmlns="http://www.w3.org/2000/svg" width="'+W+'" height="'+Hd+'" viewBox="'+[v.x,v.y,v.w,v.h].map(n=>n.toFixed(2)).join(' ')+'"><style>'+sceneCss().replace(/</g,'')+'</style>'
     +(defs?ser.serializeToString(defs):'')+ser.serializeToString(c)+'<g xmlns="http://www.w3.org/2000/svg">'+extra+'</g></svg>';
   const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(src);await img.decode();
-  const cv=document.createElement('canvas');cv.width=W;cv.height=hh+Hd+lh;const ctx=cv.getContext('2d');
+  const cv=document.createElement('canvas');cv.width=W;cv.height=hh+Hd+lh+ch;const ctx=cv.getContext('2d');
   paper(ctx,W,cv.height);ctx.drawImage(img,0,hh,W,Hd);
   if(o.title)drawHeader(ctx,W,u);
-  if(lh)drawLegend(ctx,W,cv.height,u);
+  if(lh)drawLegend(ctx,W,cv.height-ch,u);
+  if(ch)drawCredit(ctx,W,cv.height,u);
   return {canvas:cv,issues,fixed:g.moved?'moved '+g.moved+' label'+(g.moved>1?'s':'')+' to make room':''};
 }
 
@@ -2307,7 +2309,7 @@ const snapName=()=>slug(S.scene.title||S.doc.docTitle)+(IS3D?'-3d':'')+'.png';
 const snapOpen=()=>$('#snap').classList.contains('open');
 async function refreshSnap(){
   const id=++SN.busy,c=$('#snapCheck');c.className='chk';c.textContent='Making the picture…';
-  const r=await makeSnapshot({frame:SN.frame,nums:$('#snapNums').checked,title:$('#snapTitle').checked,marks:$('#snapMarks').checked});
+  const r=await makeSnapshot({frame:SN.frame,nums:$('#snapNums').checked,title:$('#snapTitle').checked,marks:$('#snapMarks').checked,credit:$('#snapCredit').checked});
   if(id!==SN.busy)return;
   const blob=await new Promise(res=>r.canvas.toBlob(res,'image/png'));if(id!==SN.busy)return;
   SN.blob=blob;if(SN.url)URL.revokeObjectURL(SN.url);SN.url=URL.createObjectURL(blob);$('#snapImg').src=SN.url;
@@ -2328,7 +2330,7 @@ $('#btnSnap').onclick=()=>{stop();$('#snap').classList.add('open');refreshSnap()
 $('#snapClose').onclick=()=>$('#snap').classList.remove('open');
 $('#snap').onclick=e=>{if(e.target.id==='snap')$('#snap').classList.remove('open')};
 $('#snapFrame').onclick=e=>{const b=e.target.closest('button');if(!b)return;SN.frame=b.dataset.v;[...$('#snapFrame').children].forEach(x=>x.classList.toggle('on',x===b));refreshSnap()};
-['#snapNums','#snapTitle','#snapMarks'].forEach(k=>$(k).onchange=refreshSnap);
+['#snapNums','#snapTitle','#snapMarks','#snapCredit'].forEach(k=>$(k).onchange=refreshSnap);
 $('#snapDl').onclick=()=>{if(!SN.url)return;const a=document.createElement('a');a.href=SN.url;a.download=snapName();document.body.appendChild(a);a.click();a.remove()};
 $('#snapCopyImg').onclick=async()=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':SN.blob})]);toast('Image copied')}catch(e){toast('This browser can’t copy images — use Download')}};
 $('#snapCopyMd').onclick=async()=>{const t=readmeText();try{await navigator.clipboard.writeText(t);toast('README text copied')}catch(e){prompt('Copy this text',t)}};
@@ -2345,6 +2347,18 @@ function drawLegend(ctx,W,H,k){
   let x=20*k;const y=H-20*k;ctx.font='600 '+(11*k)+'px ui-monospace, Menlo, monospace';ctx.textBaseline='middle';
   items.forEach(([t,c])=>{const w=ctx.measureText(t).width+30*k;ctx.fillStyle=DS.plate;ctx.strokeStyle=DS.dark?DS.plateBd:'#d9d2c3';ctx.lineWidth=k;rrect(ctx,x,y-10*k,w,20*k,10*k);ctx.fill();ctx.stroke();
     ctx.fillStyle=c;ctx.strokeStyle=DS.ink;rrect(ctx,x+8*k,y-4.5*k,9*k,9*k,2.5*k);ctx.fill();ctx.stroke();ctx.fillStyle=DS.plateFg;ctx.fillText(t,x+22*k,y+.5*k);x+=w+6*k});
+}
+// credit line at the bottom of Snapshot PNGs (icon + "Made with Flow Explainer" + site)
+const SITE_HOST='flow-explainer.laravel.cloud',FX_ICON=new Image();FX_ICON.src='favicon.svg';
+function drawCredit(ctx,W,H,k){
+  const h=40*k,y=H-h,cy=y+h/2,dark=!!DS.dark,fg=dark?'#e2e8f0':'#0f172a',mu=dark?'#94a3b8':'#64748b',sans=' Inter, ui-sans-serif, system-ui, sans-serif';
+  ctx.save();ctx.strokeStyle=dark?'rgba(226,232,240,.22)':'rgba(15,23,42,.12)';ctx.lineWidth=k;ctx.beginPath();ctx.moveTo(0,y+.5*k);ctx.lineTo(W,y+.5*k);ctx.stroke();
+  ctx.textBaseline='middle';ctx.textAlign='left';let x=20*k;const s=18*k;
+  if(FX_ICON.complete&&FX_ICON.naturalWidth){ctx.drawImage(FX_ICON,x,cy-s/2,s,s);x+=s+8*k}
+  ctx.font='500 '+(12*k)+'px'+sans;ctx.fillStyle=mu;ctx.fillText('Made with ',x,cy);x+=ctx.measureText('Made with ').width;
+  ctx.font='700 '+(12*k)+'px'+sans;ctx.fillStyle=fg;ctx.fillText('Flow Explainer',x,cy);x+=ctx.measureText('Flow Explainer').width+12*k;
+  ctx.font='500 '+(11.5*k)+'px ui-monospace, Menlo, monospace';ctx.fillStyle=dark?'#5eead4':'#007c90';ctx.fillText(SITE_HOST,x,cy);
+  ctx.restore();
 }
 function rrect(ctx,x,y,w,h,r){r=Math.min(r,w/2,h/2);ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 function paper(ctx,W,H){ctx.fillStyle=DS.bg;ctx.fillRect(0,0,W,H);const gr=ctx.createRadialGradient(W/2,H*.4,0,W/2,H*.4,Math.max(W,H)*.7);gr.addColorStop(0,DS.bg2);gr.addColorStop(1,DS.bg+'00');ctx.fillStyle=gr;ctx.fillRect(0,0,W,H)}
