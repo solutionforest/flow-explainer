@@ -2,11 +2,11 @@
 
 Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client.
 
+Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
+
 Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie or mindmap) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
-
-**Try it:** [2D](https://alanlam.zo.space/flow-explainer) · [3D](https://alanlam.zo.space/flow-explainer/3d) · [this README's diagram as a client link](https://alanlam.zo.space/flow-explainer#c=zXZNLbtswEIb3OsUPdBMTsYA-F10USFM3WSSp4bSLwAiQkTi2CFMclaQsG_AteoBeo8fqEQrSj6DZCNK85_tHr3AtA75aGTDZdJaMY49B_CoUxdPTU8u-JaOLhZWhbshH3MwK4EH6s_mD9I8jjMefdlMKkdGSX2kZ3A4TbeI8PaA9DewfC2TbPthzCJix0-x3mDFp9vPbQy58_k4Je09O-SwbDiCnQd7LEHa4r9nx_MKZliJrhPSZkrI959w76kIjcYepW87PZpOLL7cTmJaWPPo_8lK6LWpr2EVY41Y73Bi3mt835DkbUngy5ehvHbsA41ClSdIKlzk18_CHOo-jBK8oXpcJFbrMh3Bl4nVfnUBhYSwjNhRRi4tkXADhgBza0NJTWxZvSmRmxi2h1B6cUmjI6YDYMCJvIqLk96o3No7NEWSJO4lNyjQBfWeFNOuyeFtisma_RSUbVFxLm_iislKvMmfO3kz75BfHCJG7c3SWtqwxmNjkpjW17AkLsVaG1IysuGVZvCuh1N_fv_7gqIZSqBuuVwEL8ZA1e0tdl1IsVWz3Igda53Gmd1c5bJvA7gUsi_ep5kvJlEJHqWqaZmjE8hEfjDuQSXEwMbBdlMWHLMxRLkgW9RSVhugScg5Qamppq9TH7A7UMgayq9h46ZfNeYYgfcxe1iamXaKIDWVRjKHUi8tOhX4kBUPM-p1-rMPq_LNnV5_GDwl2H_YIXN9W7FnDmhBBAY68p2jElbnV88WmLt-bZwjWJKLGBaP5tOY5QibjOR2HEwT2a_YQD6pr6V2EcWux63Qx_wA)
 
 No build step, no server and no account. It is two HTML files plus Three.js, and your diagram never leaves the browser.
 
@@ -37,7 +37,7 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 
 ## Quick start
 
-1. Open the [2D](https://alanlam.zo.space/flow-explainer) or [3D](https://alanlam.zo.space/flow-explainer/3d) page, or [run it yourself](#run-it-yourself).
+1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
 2. Press **✎ Edit**, paste your markdown (or press **Open .md**, or pick an example), then **Render ▶**.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
 4. Press **🔗 Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot.
@@ -222,6 +222,10 @@ Both pages share the same markdown reader, step panel, timeline and client-link 
 - The interface is in English. Diagram text can be any language, including Chinese.
 - Copy image depends on browser clipboard support; use Download PNG where it is blocked.
 
+## About
+
+Flow Explainer is made by [Solution Forest Limited](https://solutionforest.net/), a digital agency in Hong Kong. We use it to explain system designs and project plans to our clients.
+
 ## License
 
-[MIT](LICENSE) © Solution Forest. Three.js is MIT-licensed by the three.js authors.
+[MIT](LICENSE) © Solution Forest Limited. Three.js is MIT-licensed by the three.js authors.
