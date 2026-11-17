@@ -42,10 +42,11 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 ## Quick start
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
-2. Press **Edit**, paste your markdown (or press **Open .md**, or pick an example), then **Render ▶**.
+2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
 4. Press **Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot, and in the diagram style you picked.
 5. Open **⚙ Settings** (top right) to pick a diagram style or switch between 3D and 2D.
+6. Click **Flow Explainer** (top left) or **About** in the footer for a short intro, the privacy notes and the GitHub link.
 
 ![3D player on step 3 of the ticket-order example, with the All steps list on the right](docs/images/player-desktop.png)
 
@@ -56,6 +57,8 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 | Settings: diagram style | Copy client link |
 |---|---|
 | ![Settings dropdown with the five diagram styles and the 3D / 2D switch](docs/images/settings-diagram-style.png) | ![Client link copied, with the not uploaded / not secret notice](docs/images/client-link-notice.png) |
+
+<img src="docs/images/about.png" alt="About dialog: what Flow Explainer does, how it works, privacy notes and the GitHub link" width="720">
 
 The **2D / 3D** button in the corner of the diagram (or **⚙ Settings → View**) switches views and keeps the same diagram. The layout adapts to phones and tablets: the step panel moves under the diagram and **All steps** folds up.
 
