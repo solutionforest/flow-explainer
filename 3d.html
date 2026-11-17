@@ -4,7 +4,32 @@
 <meta charset="utf-8">
 <meta name="author" content="Solution Forest Limited">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Flow Explainer 3D</title>
+<title>Flow Explainer 3D · Turn Mermaid diagrams into animated 3D walkthroughs</title>
+<meta name="description" content="Paste a GitHub markdown file with a Mermaid diagram and get an animated, step-by-step walkthrough you can send to a client. 2D and 3D, 20 diagram types, runs in your browser. Free and open source.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://flow-explainer.laravel.cloud/3d">
+<meta name="theme-color" content="#007c90">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<!-- social sharing (Open Graph: Facebook, LinkedIn, WhatsApp, Slack; Twitter / X card) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Flow Explainer">
+<meta property="og:title" content="Flow Explainer 3D · Turn Mermaid diagrams into animated 3D walkthroughs">
+<meta property="og:description" content="Paste a GitHub markdown file with a Mermaid diagram and get an animated, step-by-step walkthrough you can send to a client. 2D and 3D, 20 diagram types, runs in your browser. Free and open source.">
+<meta property="og:url" content="https://flow-explainer.laravel.cloud/3d">
+<meta property="og:image" content="https://flow-explainer.laravel.cloud/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Flow Explainer: a Mermaid diagram played step by step in 3D, on desktop and phone">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Flow Explainer 3D · Turn Mermaid diagrams into animated 3D walkthroughs">
+<meta name="twitter:description" content="Paste a GitHub markdown file with a Mermaid diagram and get an animated, step-by-step walkthrough you can send to a client. 2D and 3D, 20 diagram types, runs in your browser. Free and open source.">
+<meta name="twitter:image" content="https://flow-explainer.laravel.cloud/og-image.png">
+<meta name="twitter:image:alt" content="Flow Explainer: a Mermaid diagram played step by step in 3D, on desktop and phone">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Flow Explainer","url":"https://flow-explainer.laravel.cloud/","description":"Paste a GitHub markdown file with a Mermaid diagram and get an animated, step-by-step walkthrough you can send to a client. 2D and 3D, 20 diagram types, runs in your browser. Free and open source.","applicationCategory":"DeveloperApplication","operatingSystem":"Any (web browser)","browserRequirements":"Requires JavaScript and WebGL","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"license":"https://opensource.org/licenses/MIT","image":"https://flow-explainer.laravel.cloud/og-image.png","screenshot":"https://flow-explainer.laravel.cloud/docs/images/player-desktop.png","author":{"@type":"Organization","name":"Solution Forest Limited","url":"https://solutionforest.net/"},"sameAs":["https://github.com/solutionforest/flow-explainer"]}</script>
 <style>
 @font-face{font-family:"Inter";font-style:normal;font-weight:400 700;font-display:swap;src:url(vendor/inter-latin.woff2) format("woff2")}
 @font-face{font-family:"Raleway";font-style:normal;font-weight:700;font-display:swap;src:url(vendor/raleway-700-latin.woff2) format("woff2")}
@@ -2483,7 +2508,7 @@ addEventListener('hashchange',()=>location.reload());
   if(m){try{md=await decode(m[2]);if(m[1]==='c')document.body.classList.add('client')}catch(e){md=null}}
   if(md==null&&!m)try{md=localStorage.getItem('flowx.md')}catch(e){}
   if(md)try{load(md,!!m);return}catch(e){}
-  load($('#ex1').textContent.trim()+'\n',true);
+  const t=document.title;load($('#ex1').textContent.trim()+'\n',true);document.title=t; // keep the descriptive page title for the built-in demo
 })();
 </script>
 </body>
