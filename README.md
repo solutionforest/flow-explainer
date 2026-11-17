@@ -2,7 +2,7 @@
 
 Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client.
 
-Flow Explainer reads a [Mermaid](https://mermaid.js.org/) `flowchart` or `sequenceDiagram` and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
+Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie or mindmap) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
 
@@ -80,8 +80,12 @@ flowchart TD
   A[Mermaid block] --> B{Which type?}
   B -->|flowchart / graph| C[Each arrow = one step]
   B -->|sequenceDiagram| D[Each message = one step]
+  B -->|state / class / ER / mindmap| H[Each line between boxes = one step]
+  B -->|gantt / pie| I[Each task or slice = one step]
   C --> E{Numbered list below it?}
   D --> E
+  H --> E
+  I --> E
   E -->|Yes| F[Line N explains step N]
   E -->|No| G[Auto text: A hands over to B]
 ```
@@ -95,6 +99,20 @@ flowchart TD
 
 ### Supported Mermaid
 
+Besides flowcharts and sequence diagrams, six more Mermaid types are turned into the same step-by-step walkthrough, each with plain-language step text written for you. Each one has a ready-to-paste file in [`examples/`](examples/).
+
+![State, class, ER, gantt, pie and mindmap examples rendered by Flow Explainer](docs/images/diagram-types.png)
+
+| Type | What one step shows | Example |
+|---|---|---|
+| State | One change, e.g. "When **approve** happens, **Review** changes to **Approved**." | [`article-lifecycle.md`](examples/article-lifecycle.md) |
+| Class | One relationship, e.g. "**Ticket** is a kind of **Product**, so it gets everything Product has." | [`shop-classes.md`](examples/shop-classes.md) |
+| ER | One relationship, e.g. "Each **Customer** places **zero or more** order. Each order is linked to **exactly one** customer." | [`shop-database.md`](examples/shop-database.md) |
+| Gantt | One task, with its dates and what it waits for | [`launch-plan.md`](examples/launch-plan.md) |
+| Pie | One slice and its share of the total | [`traffic-sources.md`](examples/traffic-sources.md) |
+| Mindmap | One branch, e.g. "**Orders** includes **Payment**." | [`shop-mindmap.md`](examples/shop-mindmap.md) |
+
+
 | Feature | Supported |
 |---|---|
 | `flowchart` / `graph` (any direction; the layout always runs along the isometric diagonal) | ✅ |
@@ -104,7 +122,13 @@ flowchart TD
 | `subgraph` (shown as coloured zones with a legend) | ✅ |
 | `sequenceDiagram` with `actor`, `participant`, `->>`, `-->>` | ✅ |
 | `alt` / `else` / `opt` / `loop` / `par` blocks (shown as step tags) | ✅ |
-| state, class, ER, gantt, pie, mindmap | ❌ shows "not supported yet" |
+| `stateDiagram` / `stateDiagram-v2`: `[*]` start and end, transition labels, composite `state X { }` (zones), `<<choice>>` / `<<fork>>` / `<<join>>`, notes and descriptions (shown as box notes) | ✅ |
+| `classDiagram`: classes with members (shown as box notes), all relationship arrows (inheritance, composition, aggregation, association, dependency, realization) with labels and cardinality, `namespace` (zones), `note for` | ✅ |
+| `erDiagram`: entities with attributes (shown as box notes), crow's-foot cardinality turned into plain sentences, identifying `--` and non-identifying `..` | ✅ |
+| `gantt`: sections (zones), `done` / `active` / `crit` / `milestone`, `after` dependencies, dates and durations; steps play in start-date order | ✅ (`excludes` weekends ignored) |
+| `pie`: each slice becomes a block whose height matches its value; steps go from biggest to smallest | ✅ |
+| `mindmap`: indentation tree, node shapes, each main branch gets its own colour | ✅ (`::icon` ignored) |
+| journey, timeline, quadrant, git graph and other types | ❌ shows "not supported yet" |
 
 ## 📸 Snapshot: a README picture with an overlap check
 
@@ -185,10 +209,11 @@ index.html          2D version (SVG, no dependencies)
 3d.html             3D version (Three.js)
 vendor/             Three.js 0.187.0 (three.module.js + three.core.js, MIT)
 examples/           Sample markdown files, ready to paste
+tools/sync-parser.py  Copies the shared parser from index.html into 3d.html
 docs/images/        Images used in this README
 ```
 
-Both pages share the same markdown reader, step panel, timeline and client-link code, copied into each file so each one stands alone. A parser fix has to be made in both.
+Both pages share the same markdown reader, step panel, timeline and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) in `index.html`, then run `python3 tools/sync-parser.py` to copy it into `3d.html`.
 
 ## Known limits
 

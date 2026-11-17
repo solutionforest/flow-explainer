@@ -167,12 +167,12 @@ body.client .edit-only{display:none}
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer">
   <div class="row" style="justify-content:space-between"><h3>Paste your markdown</h3><button class="btn ghost" id="btnClose">✕</button></div>
-  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b> or <b>sequenceDiagram</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
+  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b> or <b>mindmap</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="err" id="err"></div>
   <div class="row">
     <button class="btn primary" id="btnRender">Render ▶</button>
-    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option></select>
+    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option><option value="ex4">Article lifecycle (state)</option><option value="ex5">Shop objects (class)</option><option value="ex6">Shop database (ER)</option><option value="ex7">Launch plan (gantt)</option><option value="ex8">Visitors (pie)</option><option value="ex9">Shop overview (mindmap)</option></select>
     <label class="btn">Open .md<input type="file" id="file" accept=".md,.markdown,.mmd,.txt,text/*" hidden></label>
   </div>
 </div>
@@ -277,6 +277,103 @@ flowchart LR
   Q -.-> E
 ```
 </script>
+<script type="text/plain" id="ex4"># The life of an article
+
+Every article moves through a few clear stages before readers see it.
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Review : submit
+    Review --> Draft : changes requested
+    Review --> Approved : approve
+    state Approved {
+        [*] --> Scheduled
+        Scheduled --> Live : publish date
+    }
+    Live --> Archived : after 1 year
+    Archived --> [*]
+    Draft : The writer is still working on it
+    Review : An editor reads and checks it
+```</script>
+<script type="text/plain" id="ex5"># What the shop system knows about
+
+```mermaid
+classDiagram
+    class Product {
+        +String name
+        +Money price
+        +isInStock() bool
+    }
+    class Ticket
+    class Merchandise
+    Product <|-- Ticket
+    Product <|-- Merchandise
+    Customer "1" --> "*" Order : places
+    Order *-- OrderLine
+    OrderLine --> Product : refers to
+    Order ..> PaymentGateway : charges through
+```</script>
+<script type="text/plain" id="ex6"># How the shop's data fits together
+
+```mermaid
+erDiagram
+    CUSTOMER ||--o{ ORDER : places
+    ORDER ||--|{ ORDER-LINE : contains
+    PRODUCT ||--o{ ORDER-LINE : "appears in"
+    CUSTOMER {
+        int id PK
+        string name
+        string email
+    }
+    ORDER {
+        int id PK
+        int customer_id FK
+        date placed_on
+    }
+```</script>
+<script type="text/plain" id="ex7"># Website launch plan
+
+```mermaid
+gantt
+    title Website launch plan
+    dateFormat YYYY-MM-DD
+    section Design
+    Wireframes      :done, w1, 2026-01-05, 5d
+    Visual design   :active, v1, after w1, 2w
+    section Build
+    Front end       :f1, after v1, 10d
+    Back end        :b1, 2026-01-12, 3w
+    Testing         :crit, t1, after f1 b1, 5d
+    section Launch
+    Go live         :milestone, after t1, 0d
+```</script>
+<script type="text/plain" id="ex8"># Where our visitors come from
+
+Last month's visits, by how people found the site.
+
+```mermaid
+pie title Where visitors come from
+    "Search" : 386
+    "Direct" : 150
+    "Social" : 85
+    "Email" : 15
+```</script>
+<script type="text/plain" id="ex9"># Everything the online shop covers
+
+```mermaid
+mindmap
+  root((Online shop))
+    Products
+      Catalogue
+      Stock levels
+    Orders
+      Payment
+      Delivery
+    Customers
+      Accounts
+      Support
+```</script>
 
 <script>
 "use strict";
@@ -305,7 +402,7 @@ function parseMarkdown(md){
     }else if(l.trim()&&!cur)para.push(l.trim());
     else if(l.trim()&&cur&&!/^\s*([-*+]|\d+[.)])\s/.test(l)&&!/^\s*</.test(l)){/* trailing prose ignored */}
   }
-  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram)\b/.test(md))
+  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|gantt|pie|mindmap)\b/.test(md))
     scenes.push({title:'',intro:'',code:md,ordered:[],named:[]});
   return {docTitle,scenes};
 }
@@ -328,7 +425,13 @@ function parseMermaid(code){
   if(!ls.length)throw new Error('The mermaid block is empty.');
   if(/^(flowchart|graph)\b/i.test(ls[0]))return parseFlow(ls.slice(1));
   if(/^sequenceDiagram\b/i.test(ls[0]))return parseSeq(ls.slice(1));
-  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart and sequenceDiagram.');
+  if(/^stateDiagram(-v2)?\b/i.test(ls[0]))return parseState(ls.slice(1));
+  if(/^classDiagram(-v2)?\b/i.test(ls[0]))return parseClass(ls.slice(1));
+  if(/^erDiagram\b/i.test(ls[0]))return parseER(ls.slice(1));
+  if(/^gantt\b/i.test(ls[0]))return parseGantt(ls.slice(1));
+  if(/^pie\b/i.test(ls[0]))return parsePie(ls[0],ls.slice(1));
+  if(/^mindmap\b/i.test(ls[0]))return parseMindmap(code);
+  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart, sequenceDiagram, stateDiagram, classDiagram, erDiagram, gantt, pie and mindmap.');
 }
 
 /* ---------- mermaid: flowchart ---------- */
@@ -440,6 +543,282 @@ function parseSeq(ls){
   return {type:'seq',nodes:N,links,steps,groups:[]};
 }
 
+/* ---------- mermaid: shared helpers for the other diagram types ---------- */
+const ucWords=s=>/[a-z]/.test(s)||!/[A-Z]/.test(s)?s:s.toLowerCase().replace(/[_-]+/g,' ').replace(/^\w/,c=>c.toUpperCase());
+function graphKit(){
+  const nodes=new Map(),links=[],groups=[],stack=[];
+  const node=(id,label,shape)=>{
+    if(!nodes.has(id))nodes.set(id,{id,label:label||id,shape:shape||'box',group:stack.length?stack[stack.length-1]:null});
+    return nodes.get(id);
+  };
+  const link=(a,b,o={})=>{links.push({from:a.id,to:b.id,label:o.label||'',dotted:!!o.dotted,arrow:!!o.arrow});return links.length-1};
+  const edgeStep=(li,o)=>{const l=links[li],a=nodes.get(l.from),b=nodes.get(l.to);
+    return {kind:'edge',link:li,reverse:false,from:a.id,to:b.id,nodes:[a.id,b.id],title:o.title||(a.label+' → '+b.label),chip:o.chip||'',auto:o.auto,tag:o.tag||''}};
+  const nodeStep=(n,o)=>({kind:'node',nodes:[n.id],title:o.title||n.label,auto:o.auto,tag:o.tag||''});
+  const addNote=(n,t)=>{t=cleanText(t);if(t)n.note=n.note?n.note+' '+t:t};
+  return {nodes,links,groups,stack,node,link,edgeStep,nodeStep,addNote};
+}
+
+/* ---------- mermaid: state ---------- */
+function parseState(ls){
+  const K=graphKit(),steps=[],comp=[],trs=[];
+  const B=s=>'**'+s+'**';
+  const ref=raw=>{
+    raw=raw.trim().replace(/:::[\w-]+$/,'');
+    if(raw==='[*]')return null;
+    return K.node(raw,raw);
+  };
+  const ends=new Map();
+  const special=(kind)=>{
+    const g=K.stack.length?K.stack[K.stack.length-1]:'root',key=kind+'_'+g;
+    if(!ends.has(key)){const inner=g!=='root';const n=K.node('__'+key,kind==='start'?(inner?'Start ('+K.groups[g].title+')':'Start'):(inner?'Done ('+K.groups[g].title+')':'End'),'circle');n.special=kind;n.icon=kind==='start'?'🟢':'🏁';ends.set(key,n)}
+    return ends.get(key);
+  };
+  for(let i=0;i<ls.length;i++){
+    const line=ls[i];let m;
+    if(/^(classDef|class|style|direction|accTitle|accDescr|hide|scale)\b/.test(line)||line==='--'||line==='||')continue;
+    if(m=line.match(/^note\s+(?:left|right)\s+of\s+([^:]+?)\s*:\s*(.+)$/i)){K.addNote(K.node(m[1].trim()),m[2]);continue}
+    if(m=line.match(/^note\s+(?:left|right)\s+of\s+(.+)$/i)){const n=K.node(m[1].trim()),t=[];i++;while(i<ls.length&&!/^end\s*note$/i.test(ls[i])){t.push(ls[i]);i++}K.addNote(n,t.join(' '));continue}
+    if(m=line.match(/^state\s+"([^"]+)"\s+as\s+([\w-]+)\s*(\{)?$/)){const n=K.node(m[2]);n.label=cleanText(m[1]);if(m[3]){K.groups.push({title:n.label});K.stack.push(K.groups.length-1);comp.push(m[2])}continue}
+    if(m=line.match(/^state\s+([\w-]+)\s*<<(choice|fork|join)>>$/i)){const n=K.node(m[1]);n.shape=m[2].toLowerCase()==='choice'?'hex':'pill';n.label=m[2].toLowerCase()==='choice'?'Check':(m[2].toLowerCase()==='fork'?'Split':'Join');continue}
+    if(m=line.match(/^state\s+([\w-]+)\s*\{$/)){K.groups.push({title:cleanText(m[1])});K.stack.push(K.groups.length-1);comp.push(m[1]);continue}
+    if(m=line.match(/^state\s+([\w-]+)$/)){K.node(m[1]);continue}
+    if(line==='}'){K.stack.pop();comp.pop();continue}
+    if(m=line.match(/^(\[\*\]|[\w-]+(?::::[\w-]+)?)\s*-->\s*(\[\*\]|[\w-]+(?::::[\w-]+)?)\s*(?::\s*(.*))?$/)){
+      const a=ref(m[1])||special('start'),b=ref(m[2])||special('end'),label=cleanText(m[3]||'');
+      trs.push({li:K.link(a,b,{label,arrow:true}),label,tag:K.stack.length?K.groups[K.stack[K.stack.length-1]].title:''});
+      continue;
+    }
+    if(m=line.match(/^([\w-]+)\s*:\s*(.+)$/)){K.addNote(K.node(m[1]),m[2]);continue}
+    if(m=line.match(/^([\w-]+)$/)){K.node(m[1]);continue}
+  }
+  const N=[...K.nodes.values()];if(!N.length)throw new Error('No states found in the state diagram.');
+  N.forEach(n=>{if(!n.special&&n.label===n.id)n.label=ucWords(n.label)});
+  for(const {li,label,tag} of trs){
+    const l=K.links[li],a=K.nodes.get(l.from),b=K.nodes.get(l.to);let auto;
+    if(a.special==='start')auto=tag?'Inside '+B(tag)+', it starts in '+B(b.label)+'.':'It all starts in '+B(b.label)+'.';
+    else if(b.special==='end')auto=B(a.label)+' is where it finishes'+(label?' — when '+label:'')+'.';
+    else if(a.shape==='hex')auto=label?'If '+label+', it goes to '+B(b.label)+'.':'The check sends it to '+B(b.label)+'.';
+    else auto=label?'When '+B(label)+' happens, '+B(a.label)+' changes to '+B(b.label)+'.':B(a.label)+' moves on to '+B(b.label)+'.';
+    steps.push(K.edgeStep(li,{auto,chip:label,tag,title:a.special?'Start → '+b.label:b.special?a.label+' → End':a.label+' → '+b.label}));
+  }
+  return {type:'state',nodes:N,links:K.links,steps,groups:K.groups};
+}
+
+/* ---------- mermaid: class ---------- */
+const CLASS_REL=[
+  ['<|--','is a kind of',1,0],['--|>','is a kind of',0,0],['<|..','is a way of doing',1,1],['..|>','is a way of doing',0,1],
+  ['*--','is made up of',0,0,'contains'],['--*','is part of',0,0],['o--','has',0,0],['--o','belongs to',0,0],
+  ['<-->','works with',0,0],['-->','uses',0,0],['<--','uses',1,0],['..>','depends on',0,1],['<..','depends on',1,1],['--','is linked to',0,0],['..','is loosely linked to',0,1]
+];
+function parseClass(ls){
+  const K=graphKit(),steps=[],rels=[];
+  const cls=raw=>{
+    let id=raw.trim().replace(/:::[\w-]+$/,''),label=null;let m;
+    if(m=id.match(/^([\w.-]+)\s*\["?([^"\]]*)"?\]$/)){id=m[1];label=cleanText(m[2])}
+    if(m=id.match(/^`(.+)`$/))id=m[1];
+    const base=id.replace(/~[^~]*~/g,''),n=K.node(base,base);
+    if(label)n.label=label;
+    const g=id.match(/~([^~]+)~/);if(g&&n.label===base)n.label=base+'<'+g[1]+'>';
+    n.iconFallback='🧩';
+    return n;
+  };
+  const member=(n,t)=>{t=t.trim();if(!t)return;let m;
+    if(m=t.match(/^<<(.+)>>$/)){n.kind=cleanText(m[1]);return}
+    t=t.replace(/[$*]$/,'').replace(/^[+\-#~]/,'').trim();
+    (n.members=n.members||{f:[],a:[]})[/\(/.test(t)?'a':'f'].push(t.replace(/\s+/g,' '));
+  };
+  const relRe=new RegExp('^(\\S+?)\\s*(?:"([^"]*)"\\s*)?('+CLASS_REL.map(r=>r[0].replace(/[|*.]/g,'\\$&')).join('|')+')\\s*(?:"([^"]*)"\\s*)?(\\S+?)\\s*(?::\\s*(.*))?$');
+  for(let i=0;i<ls.length;i++){
+    const line=ls[i];let m;
+    if(/^(classDef|cssClass|style|direction|accTitle|accDescr|click|callback|link)\b/.test(line))continue;
+    if(m=line.match(/^namespace\s+([\w.-]+)\s*\{$/)){K.groups.push({title:m[1]});K.stack.push(K.groups.length-1);continue}
+    if(m=line.match(/^class\s+(.+?)\s*\{\s*(.*?)\s*(\})?$/)){const n=cls(m[1]);if(m[2])member(n,m[2]);if(!m[3]){i++;while(i<ls.length&&ls[i]!=='}'){member(n,ls[i]);i++}}continue}
+    if(m=line.match(/^class\s+(.+)$/)){cls(m[1]);continue}
+    if(line==='}'){K.stack.pop();continue}
+    if(m=line.match(/^<<(.+)>>\s+([\w.-]+)$/)){cls(m[2]).kind=cleanText(m[1]);continue}
+    if(m=line.match(/^note\s+for\s+([\w.-]+)\s+"(.*)"$/)){K.addNote(cls(m[1]),m[2].replace(/\\n/g,' '));continue}
+    if(/^note\s/.test(line))continue;
+    if(m=line.match(relRe)){rels.push(m);continue}
+    if(m=line.match(/^([\w.-]+)\s*:\s*(.+)$/)){member(cls(m[1]),m[2]);continue}
+  }
+  const card=s=>{s=(s||'').trim();return ({'1':'one','0..1':'zero or one','1..*':'one or more','*':'many','n':'many','0..n':'zero or more','0..*':'zero or more','1..n':'one or more','many':'many'})[s]||s};
+  for(const m of rels){
+    const r=CLASS_REL.find(x=>x[0]===m[3]);let a=cls(m[1]),b=cls(m[5]);
+    const label=cleanText(m[6]||'');
+    const li=K.link(a,b,{label,dotted:!!r[3],arrow:/>|\|>/.test(m[3])&&!/^</.test(m[3])});
+    const [s,o]=r[2]?[b,a]:[a,b],B=x=>'**'+x.label+'**';
+    let auto=label?B(s)+' '+label+' '+B(o)+' ('+(r[4]||r[1])+').':B(s)+' '+r[1]+' '+B(o)+'.';
+    if(r[1]==='is a kind of')auto=B(s)+' is a kind of '+B(o)+', so it gets everything '+o.label+' has.'+(label?' ('+label+')':'');
+    if(r[1]==='is a way of doing')auto=B(s)+' follows the rules set by '+B(o)+'.'+(label?' ('+label+')':'');
+    const c1=card(m[2]),c2=card(m[4]),chip=(c1||c2)?(c1||'?')+' → '+(c2||'?'):label;
+    if(c1||c2)auto+=' '+(c1?'One side: '+c1+' '+a.label+'.':'')+(c2?' Other side: '+c2+' '+b.label+'.':'');
+    steps.push(K.edgeStep(li,{auto:auto.trim(),chip}));
+  }
+  const N=[...K.nodes.values()];if(!N.length)throw new Error('No classes found in the class diagram.');
+  N.forEach(n=>{
+    const p=[];if(n.kind)p.push('Type: '+n.kind+'.');
+    if(n.members){if(n.members.f.length)p.push('Holds: '+n.members.f.join(', ')+'.');if(n.members.a.length)p.push('Can do: '+n.members.a.join(', ')+'.')}
+    if(p.length)n.note=p.join(' ')+(n.note?' '+n.note:'');
+  });
+  if(!steps.length)N.forEach(n=>steps.push(K.nodeStep(n,{auto:n.note||('This is **'+n.label+'**.')})));
+  return {type:'class',nodes:N,links:K.links,steps,groups:K.groups};
+}
+
+/* ---------- mermaid: ER ---------- */
+const ER_CARD={'||':'exactly one','|o':'zero or one','o|':'zero or one','}|':'one or more','|{':'one or more','}o':'zero or more','o{':'zero or more'};
+function parseER(ls){
+  const K=graphKit(),steps=[];
+  const ent=raw=>{
+    raw=raw.trim();let m,id=raw,label=null;
+    if(m=raw.match(/^([\w-]+)\s*\[\s*"?([^"\]]*)"?\s*\]$/)){id=m[1];label=m[2]}
+    else if(m=raw.match(/^"(.+)"$/))id=m[1];
+    const n=K.node(id,label?cleanText(label):ucWords(id));n.iconFallback='📋';return n;
+  };
+  const attr=(n,t)=>{const m=t.trim().match(/^(\S+)\s+(\S+)((?:\s+(?:PK|FK|UK)\s*,?)*)\s*(?:"(.*)")?$/);if(!m)return;
+    const keys=m[3]||'',extra=/PK/.test(keys)?' (ID)':/FK/.test(keys)?' (link)':'';(n.attrs=n.attrs||[]).push(m[2].replace(/_/g,' ')+extra+(m[4]?' — '+m[4]:''))};
+  for(let i=0;i<ls.length;i++){
+    const line=ls[i];let m;
+    if(/^(classDef|class|style|direction|accTitle|accDescr)\b/.test(line))continue;
+    if(m=line.match(/^(.+?)\s*(\|o|\|\||\}o|\}\|)(--|\.\.)(o\||\|\||o\{|\|\{)\s*(.+?)\s*:\s*(.+)$/)){
+      const a=ent(m[1]),b=ent(m[5]),label=cleanText(m[6]),cl=ER_CARD[m[2]],cr=ER_CARD[m[4]];
+      const li=K.link(a,b,{label,dotted:m[3]==='..'});
+      const one=x=>x.label.toLowerCase();
+      steps.push(K.edgeStep(li,{chip:label,auto:'Each **'+a.label+'** '+label+' **'+cr+'** '+one(b)+'. Each '+one(b)+' is linked to **'+cl+'** '+one(a)+'.'}));
+      continue;
+    }
+    if(m=line.match(/^(.+?)\s*\{\s*(.*?)\s*(\})?$/)){const n=ent(m[1]);if(m[2])attr(n,m[2]);if(!m[3]){i++;while(i<ls.length&&ls[i]!=='}'){attr(n,ls[i]);i++}}continue}
+    if(m=line.match(/^("[^"]+"|[\w-]+(?:\s*\[[^\]]*\])?)$/))ent(m[1]);
+  }
+  const N=[...K.nodes.values()];if(!N.length)throw new Error('No tables found in the ER diagram.');
+  N.forEach(n=>{if(n.attrs)n.note='Stores: '+n.attrs.join(', ')+'.'});
+  if(!steps.length)N.forEach(n=>steps.push(K.nodeStep(n,{auto:n.note||('This is **'+n.label+'**.')})));
+  return {type:'er',nodes:N,links:K.links,steps,groups:[]};
+}
+
+/* ---------- mermaid: gantt ---------- */
+function parseGantt(ls){
+  const K=graphKit(),tasks=[];let title='',fmt='YYYY-MM-DD',section=null;
+  const DAY=864e5,UNIT={ms:1,s:1e3,m:6e4,h:36e5,d:DAY,w:7*DAY,M:30*DAY,y:365*DAY};
+  const parseDate=s=>{s=s.trim();let m;
+    if(/^YYYY-MM-DD/.test(fmt)&&(m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/)))return Date.UTC(+m[1],m[2]-1,+m[3],+(m[4]||0),+(m[5]||0));
+    if(/^DD[-/.]MM[-/.]YYYY/.test(fmt)&&(m=s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/)))return Date.UTC(+m[3],m[2]-1,+m[1]);
+    if(/^MM[-/.]DD[-/.]YYYY/.test(fmt)&&(m=s.match(/^(\d{1,2})[-/.](\d{1,2})[-/.](\d{4})$/)))return Date.UTC(+m[3],m[1]-1,+m[2]);
+    if(/^\d{4}-\d{2}-\d{2}/.test(s)){const t=Date.parse(s);if(!isNaN(t))return t}
+    return null};
+  const dur=s=>{const m=s.trim().match(/^(\d+(?:\.\d+)?)\s*(ms|s|m|h|d|w|M|y)$/);return m?+m[1]*UNIT[m[2]]:null};
+  for(const line of ls){
+    let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(m=line.match(/^dateFormat\s+(.+)$/)){fmt=m[1].trim();continue}
+    if(/^(axisFormat|tickInterval|excludes|includes|todayMarker|weekday|inclusiveEndDates|topAxis|displayMode|accTitle|accDescr|click)\b/.test(line))continue;
+    if(m=line.match(/^section\s+(.+)$/)){K.groups.push({title:cleanText(m[1])});section=K.groups.length-1;continue}
+    if(m=line.match(/^(.+?)\s*:\s*(.*)$/)){
+      const parts=m[2].split(',').map(s=>s.trim()).filter(Boolean),tags=[];
+      while(parts.length&&/^(done|active|crit|milestone|vert)$/.test(parts[0]))tags.push(parts.shift());
+      let id=null,start=null,end=null;
+      if(parts.length>=3)[id,start,end]=parts;
+      else if(parts.length===2){if(parseDate(parts[0])!=null||/^after\s/.test(parts[0]))[start,end]=parts;else[id,end]=parts}
+      else if(parts.length===1)end=parts[0];
+      tasks.push({label:cleanText(m[1]),id:id||('task'+(tasks.length+1)),start,end,tags,section});
+    }
+  }
+  if(!tasks.length)throw new Error('No tasks found in the gantt chart.');
+  const byId=new Map();tasks.forEach(t=>byId.set(t.id,t));
+  let prev=null;
+  tasks.forEach(t=>{
+    t.deps=[];
+    if(t.start&&/^after\s/.test(t.start)){t.deps=t.start.replace(/^after\s+/,'').split(/\s+/).map(x=>byId.get(x)).filter(Boolean);t.s=t.deps.length&&t.deps.every(d=>d.e!=null)?Math.max(...t.deps.map(d=>d.e)):null}
+    else if(t.start){t.s=parseDate(t.start)}
+    else{if(prev)t.deps=[prev];t.s=prev?prev.e:null}
+    const d=t.end?dur(t.end):null,ed=t.end?parseDate(t.end):null,un=t.end&&t.end.match(/^until\s+(\S+)/);
+    if(t.tags.includes('milestone'))t.e=t.s;
+    else if(d!=null&&t.s!=null)t.e=t.s+d;
+    else if(ed!=null)t.e=ed;
+    else if(un&&byId.get(un[1])&&byId.get(un[1]).s!=null)t.e=byId.get(un[1]).s;
+    else t.e=null;
+    t.d=d;prev=t;
+  });
+  tasks.forEach(t=>{
+    if(t.start&&!/^after\s/.test(t.start)&&t.s!=null&&!t.deps.length){
+      let best=null;tasks.forEach(o=>{if(o!==t&&o.e!=null&&o.e<=t.s&&tasks.indexOf(o)<tasks.indexOf(t)&&(!best||o.e>best.e))best=o});
+      if(best){t.deps=[best];t.soft=true}
+    }
+  });
+  const fd=ms=>{const d=new Date(ms);return d.getUTCDate()+' '+['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getUTCMonth()]+' '+d.getUTCFullYear()};
+  const fdur=ms=>{const dd=ms/DAY;if(dd>=1){const w=dd/7;return Number.isInteger(w)&&w>1?w+' weeks':(Math.round(dd*10)/10)+(dd===1?' day':' days')}const h=ms/36e5;return h>=1?Math.round(h*10)/10+' hours':Math.round(ms/6e4)+' minutes'};
+  tasks.forEach(t=>{const n=K.node(t.id,t.label,t.tags.includes('milestone')?'circle':'box');n.group=t.section;
+    if(t.tags.includes('milestone'))n.icon='🚩';else if(t.tags.includes('done'))n.icon='✅';else if(t.tags.includes('active'))n.icon='⏳';else if(t.tags.includes('crit'))n.icon='❗';
+    t.n=n});
+  const order=tasks.slice().sort((a,b)=>(a.s??Infinity)-(b.s??Infinity)||tasks.indexOf(a)-tasks.indexOf(b));
+  const steps=[],B=s=>'**'+s+'**';
+  order.forEach(t=>{
+    const lis=t.deps.map(d=>K.link(d.n,t.n,{arrow:true,dotted:!!t.soft}));
+    const ms=t.tags.includes('milestone'),when=t.s!=null?(ms?'is reached on '+B(fd(t.s)):'starts on '+B(fd(t.s))):'';
+    let auto;
+    if(t.deps.length&&!t.soft)auto=B(t.label)+(ms?' is reached':' starts')+' once '+t.deps.map(d=>B(d.label)).join(' and ')+(t.deps.length>1?' are':' is')+' finished'+(t.s!=null?' ('+fd(t.s)+')':'')+'.';
+    else auto=B(t.label)+' '+(when||(ms?'is a milestone':'begins'))+'.';
+    if(!ms&&t.s!=null&&t.e!=null)auto+=' It takes '+fdur(t.e-t.s)+' and ends on '+fd(t.e)+'.';
+    else if(!ms&&t.d!=null)auto+=' It takes '+fdur(t.d)+'.';
+    const st=t.tags.includes('done')?'Done':t.tags.includes('active')?'In progress':t.tags.includes('crit')?'Critical':'';
+    const tag=[t.section!=null?K.groups[t.section].title:'',st].filter(Boolean).join(' · ');
+    const chip=t.s!=null?fd(t.s):'';
+    if(lis.length){const last=t.deps.reduce((a,d,k)=>(d.e??-1)>(t.deps[a].e??-1)?k:a,0);const s=K.edgeStep(lis[last],{auto,tag,title:t.label});s.chip=chip;s.nodes=[...t.deps.map(d=>d.n.id),t.n.id];steps.push(s)}
+    else steps.push(K.nodeStep(t.n,{auto,tag}));
+    if(t.s!=null)t.n.note=(ms?'Date: ':'When: ')+fd(t.s)+(!ms&&t.e!=null?' → '+fd(t.e):'')+(st?' · '+st:'');
+  });
+  return {type:'gantt',nodes:[...K.nodes.values()],links:K.links,steps,groups:K.groups,diagramTitle:title};
+}
+
+/* ---------- mermaid: pie ---------- */
+function parsePie(first,ls){
+  let title=(first.match(/^pie\b(?:\s+showData)?(?:\s+title\s+(.+))?$/i)||[])[1]||'';const slices=[];
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/i)){title=m[1];continue}
+    if(m=line.match(/^"([^"]+)"\s*:\s*(-?\d+(?:\.\d+)?)$/))slices.push({label:cleanText(m[1]),v:+m[2]});
+  }
+  if(!slices.length)throw new Error('No slices found in the pie chart. Write them like  "Dogs" : 42');
+  const tot=slices.reduce((s,x)=>s+Math.max(0,x.v),0)||1,max=Math.max(...slices.map(x=>x.v),1e-9);
+  const pct=v=>{const p=v/tot*100;return (p>=10||Number.isInteger(p)?Math.round(p):Math.round(p*10)/10)+'%'};
+  const fmt=v=>Number.isInteger(v)?v.toLocaleString('en-US'):String(v);
+  const nodes=slices.map((s,i)=>({id:'slice'+(i+1),label:s.label+' · '+pct(s.v),shape:'box',group:null,ci:i,hk:.35+2.3*Math.max(0,s.v)/max,gx:i*2.7,gy:0,note:fmt(s.v)+' of '+fmt(tot)+' in total ('+pct(s.v)+').'}));
+  const rank=slices.map((s,i)=>i).sort((a,b)=>slices[b].v-slices[a].v);
+  const steps=rank.map((i,k)=>{const s=slices[i];
+    const pos=k===0?'the biggest share':k===rank.length-1&&rank.length>2?'the smallest share':'number '+(k+1)+' of '+rank.length;
+    return {kind:'node',nodes:[nodes[i].id],title:s.label,chip:pct(s.v),auto:'**'+s.label+'** is **'+pct(s.v)+'** of the total ('+fmt(s.v)+' of '+fmt(tot)+') — '+pos+'.'}});
+  return {type:'pie',nodes,links:[],steps,groups:[],fixed:true,diagramTitle:cleanText(title)};
+}
+
+/* ---------- mermaid: mindmap ---------- */
+function parseMindmap(code){
+  let raw=code.replace(/\r/g,'').split('\n');
+  if(raw.find(l=>l.trim())?.trim()==='---'){const a=raw.findIndex(l=>l.trim()==='---'),b=raw.findIndex((l,i)=>i>a&&l.trim()==='---');if(b>a)raw=raw.slice(b+1)}
+  raw=raw.map(l=>l.replace(/%%.*$/,'').replace(/\t/g,'    ')).filter(l=>l.trim());
+  const hi=raw.findIndex(l=>/^\s*mindmap\b/.test(l));raw=raw.slice(hi+1);
+  const K=graphKit(),steps=[],stack=[];let count=0;
+  const FORMS=[[/^\(\((.*)\)\)$/s,'circle'],[/^\)\)(.*)\(\($/s,'pill'],[/^\)(.*)\($/s,'pill'],[/^\{\{(.*)\}\}$/s,'box'],[/^\((.*)\)$/s,'pill'],[/^\[(.*)\]$/s,'box']];
+  for(const l of raw){
+    const t=l.trim();if(/^::icon\(/.test(t)||/^:::/.test(t))continue;
+    const ind=l.match(/^ */)[0].length;
+    let body=t.replace(/:::[\w\s-]+$/,'').trim(),label=body,shape='box';
+    const idm=body.match(/^([\w-]+)(?=[\[({)])/);const rest=idm?body.slice(idm[0].length):body;
+    for(const [re,sh] of FORMS){const m=rest.match(re);if(m){label=m[1];shape=sh;break}}
+    if(label===body&&idm)label=body;
+    const n=K.node('m'+(++count),cleanText(label)||'…',shape);
+    while(stack.length&&stack[stack.length-1].ind>=ind)stack.pop();
+    const parent=stack.length?stack[stack.length-1].n:null;
+    if(parent){
+      n.group=parent.group!=null?parent.group:(stack.length===1?(K.groups.push({title:n.label}),K.groups.length-1):null);
+      const li=K.link(parent,n,{});const top=stack.length===1;
+      steps.push(K.edgeStep(li,{title:n.label,auto:top?'One main part of **'+parent.label+'** is **'+n.label+'**.':'**'+parent.label+'** includes **'+n.label+'**.',tag:n.group!=null?K.groups[n.group].title:''}));
+    }else n.group=null;
+    stack.push({ind,n});
+  }
+  const N=[...K.nodes.values()];if(!N.length)throw new Error('The mindmap is empty.');
+  const roots=N.filter(n=>!K.links.some(l=>l.to===n.id));roots.forEach(r=>r.icon='💡');
+  return {type:'mindmap',nodes:N,links:K.links,steps,groups:K.groups,noZones:true};
+}
+
 /* ---------- layout ---------- */
 const DX=3.1,DY=2.3,T0=0.56,T1=1.08;
 function layout(nodes,links){
@@ -545,7 +924,7 @@ const ICONS=[[/\b(error|fail\w*|reject\w*|cancel\w*|invalid)\b|失敗|錯誤/i,'
   [/\b(browser|web|website|frontend|page)\b|網站/i,'🌐'],[/\b(app|mobile|phone|ios|android)\b/i,'📱'],[/\b(ai|llm|gpt|claude|model)\b/i,'🤖'],
   [/\b(report|analytics|dashboard)\b/i,'📊'],[/\b(cron|schedule\w*|timer|wait)\b/i,'⏱️'],[/\b(vendor|supplier|partner)\b/i,'🤝'],[/\b(cdn|cloud)\b/i,'☁️'],[/\b(logs?|audit)\b/i,'📜'],
   [/\b(success|done|complete\w*|finish\w*|approved)\b|完成/i,'✅'],[/\b(start|begin)\b|開始/i,'▶️'],[/\b(api|gateway|server|backend|service|laravel)\b/i,'⚙️']];
-const iconFor=n=>{if(n.shape==='hex')return '🔀';for(const [re,ic] of ICONS)if(re.test(n.label))return ic;return n.actor?'🧑':''};
+const iconFor=n=>{if(n.icon)return n.icon;if(n.shape==='hex')return '🔀';for(const [re,ic] of ICONS)if(re.test(n.label))return ic;return n.actor?'🧑':(n.iconFallback||'')};
 const mctx=document.createElement('canvas').getContext('2d');
 function wrap(text,font,maxW,maxLines){
   mctx.font=font;
@@ -595,17 +974,17 @@ const svg=$('#scene'),world=$('#world');
 
 function buildScene(raw){
   const g=parseMermaid(raw.code);
-  layout(g.nodes,g.links);
-  const find=k=>{k=k.toLowerCase();return g.nodes.find(n=>n.id.toLowerCase()===k||n.label.toLowerCase()===k)};
+  if(!g.fixed)layout(g.nodes,g.links);
+  const find=k=>{k=k.toLowerCase();return g.nodes.find(n=>n.id.toLowerCase()===k||n.label.toLowerCase()===k||n.label.split(' · ')[0].toLowerCase()===k)};
   g.steps.forEach((s,i)=>{s.text=raw.ordered[i]||s.auto;s.custom=!!raw.ordered[i]});
   raw.named.forEach(([k,v])=>{
     const parts=k.split(/\s*(?:-+>+|→|=+>)\s*/);
     if(parts.length===2){const a=find(parts[0]),b=find(parts[1]);if(a&&b)g.steps.forEach(s=>{if(s.from===a.id&&s.to===b.id){s.text=v;s.custom=true}})}
     else{const n=find(k);if(n)n.note=v}
   });
-  g.title=raw.title;g.intro=raw.intro;
+  g.title=raw.title||g.diagramTitle||'';g.intro=raw.intro;
   const ranks=[...new Set(g.nodes.map(n=>n.gx))].sort((a,b)=>a-b);
-  g.nodes.forEach(n=>{n.color=g.groups.length?(n.group==null?NEUTRAL:PALETTE[n.group%PALETTE.length]):PALETTE[ranks.indexOf(n.gx)%PALETTE.length]});
+  g.nodes.forEach(n=>{n.color=n.ci!=null?PALETTE[n.ci%PALETTE.length]:g.groups.length?(n.group==null?NEUTRAL:PALETTE[n.group%PALETTE.length]):PALETTE[ranks.indexOf(n.gx)%PALETTE.length]});
   return g;
 }
 
@@ -617,7 +996,7 @@ function render(){
   for(let y=Math.ceil(y0);y<=y1;y++){const a=P(x0,y),b=P(x1,y);h+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'"/>'}
   h+='</g>';
   g.groups.forEach((gr,gi)=>{
-    const m=g.nodes.filter(n=>n.group===gi);if(!m.length)return;
+    const m=g.nodes.filter(n=>n.group===gi);if(!m.length||g.noZones)return;
     const a=Math.min(...m.map(n=>n.gx))-.85,b=Math.max(...m.map(n=>n.gx))+.85,c=Math.min(...m.map(n=>n.gy))-.85,d=Math.max(...m.map(n=>n.gy))+.85;
     if(g.nodes.some(n=>n.group!==gi&&n.gx>a&&n.gx<b&&n.gy>c&&n.gy<d))return;
     const t=P(a,d);
@@ -630,7 +1009,7 @@ function render(){
   });
   const order=g.nodes.slice().sort((a,b)=>(a.gx+a.gy)-(b.gx+b.gy));
   order.forEach(n=>{
-    const def=SHAPE_DEF[n.shape]||SHAPE_DEF.box,p=P(n.gx,n.gy),q=def.poly.map(([x,y])=>P(x,y)),qx=q.map(v=>v[0]),qy=q.map(v=>v[1]);
+    const base=SHAPE_DEF[n.shape]||SHAPE_DEF.box,def=n.hk?{...base,H:base.H*n.hk}:base,p=P(n.gx,n.gy),q=def.poly.map(([x,y])=>P(x,y)),qx=q.map(v=>v[0]),qy=q.map(v=>v[1]);
     const w=wrap(n.label,'600 12px ui-sans-serif, system-ui, sans-serif',128,3),pw=w.w+18,ph=w.lines.length*15+9,py=-def.H-B-ph-7;
     n.d={def,p,w,pw,ph,py,lift:0,blk:{x:p[0]+Math.min(...qx),y:p[1]+Math.min(...qy)-def.H,w:Math.max(...qx)-Math.min(...qx),h:Math.max(...qy)-Math.min(...qy)+def.H}};
   });
