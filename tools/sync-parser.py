@@ -1,26 +1,29 @@
 #!/usr/bin/env python3
-"""Copy the shared markdown + Mermaid parser block from index.html into 3d.html.
+"""Copy the blocks shared by both pages from index.html into 3d.html.
 
-Both pages are standalone single files, so the parser is duplicated on purpose.
-Edit it in index.html, then run:  python3 tools/sync-parser.py
+Both pages are standalone single files, so these blocks are duplicated on purpose:
+  - the markdown + Mermaid parser
+  - the diagram styles (STYLES) and the settings / share / steps UI code
+Edit them in index.html, then run:  python3 tools/sync-parser.py   (--check to verify)
 """
 import pathlib, sys
 root = pathlib.Path(__file__).resolve().parent.parent
-BEGIN, END = "/* ---------- markdown ---------- */", "/* ---------- layout ---------- */"
-def block(s):
-    a, b = s.index(BEGIN), s.index(END)
-    return a, b
+BLOCKS = [
+    ("parser", "/* ---------- markdown ---------- */", "/* ---------- layout ---------- */"),
+    ("diagram styles", "/* ---------- diagram styles + settings", "/* ---------- end of diagram styles + settings ---------- */"),
+]
 src = (root / "index.html").read_text()
-a, b = block(src)
 dst_p = root / "3d.html"
-dst = dst_p.read_text()
-c, d = block(dst)
-out = dst[:c] + src[a:b] + dst[d:]
+dst = out = dst_p.read_text()
+for name, begin, end in BLOCKS:
+    a, b = src.index(begin), src.index(end)
+    c, d = out.index(begin), out.index(end)
+    out = out[:c] + src[a:b] + out[d:]
 if out == dst:
-    print("3d.html parser already in sync")
+    print("3d.html shared blocks already in sync")
 elif "--check" in sys.argv:
-    print("3d.html parser is out of sync; run tools/sync-parser.py")
+    print("3d.html shared blocks are out of sync; run tools/sync-parser.py")
     sys.exit(1)
 else:
     dst_p.write_text(out)
-    print("3d.html parser updated")
+    print("3d.html shared blocks updated")
