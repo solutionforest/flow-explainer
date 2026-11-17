@@ -1,5 +1,9 @@
 # Flow Explainer
 
+![Flow Explainer: paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client](docs/images/cover.png)
+
+[![MIT License](https://img.shields.io/badge/license-MIT-007c90)](LICENSE) ![No build step](https://img.shields.io/badge/build-none-007c90) ![Mermaid](https://img.shields.io/badge/input-Mermaid-fcaf17) ![Three.js 0.187](https://img.shields.io/badge/three.js-0.187-0f172a)
+
 Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client.
 
 Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
@@ -25,11 +29,11 @@ flowchart LR
 1. You paste a GitHub markdown file that contains a mermaid diagram.
 2. Pressing **Render** hands the text to the built-in reader. Nothing is uploaded.
 3. Every box becomes a block and every arrow becomes one step, played with the camera following along.
-4. **📸 Snapshot** checks for overlapping labels and saves a PNG for your README.
+4. **Snapshot** checks for overlapping labels and saves a PNG for your README.
 5. **Copy client link** packs the whole diagram into the link itself.
 6. Your client opens the link and presses **Play**: the same walkthrough, without the editing tools.
 
-The diagram above is GitHub's own Mermaid rendering. Here is the same markdown after going through Flow Explainer's **📸 Snapshot** button:
+The diagram above is GitHub's own Mermaid rendering. Here is the same markdown after going through Flow Explainer's **Snapshot** button:
 
 ![How Flow Explainer works, exported with the 2D Snapshot button](docs/images/how-it-works-2d.png)
 
@@ -38,15 +42,22 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 ## Quick start
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
-2. Press **✎ Edit**, paste your markdown (or press **Open .md**, or pick an example), then **Render ▶**.
+2. Press **Edit**, paste your markdown (or press **Open .md**, or pick an example), then **Render ▶**.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
-4. Press **🔗 Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot.
+4. Press **Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot, and in the diagram style you picked.
+5. Open **⚙ Settings** (top right) to pick a diagram style or switch between 3D and 2D.
 
-| Step through a diagram (2D) | Paste your markdown |
+![3D player on step 3 of the ticket-order example, with the All steps list on the right](docs/images/player-desktop.png)
+
+| On a phone | Paste your markdown |
 |---|---|
-| ![2D player on step 3 of a sign-in sequence diagram](docs/images/player-2d.png) | ![Edit drawer with a sequence diagram pasted in](docs/images/edit-drawer.png) |
+| <img src="docs/images/player-mobile.png" alt="Phone layout: diagram on top, step panel below, timeline at the bottom" width="300"> | ![Edit drawer with a sequence diagram pasted in](docs/images/edit-drawer.png) |
 
-The **2D / 3D** button in the corner switches views and keeps the same diagram.
+| Settings: diagram style | Copy client link |
+|---|---|
+| ![Settings dropdown with the five diagram styles and the 3D / 2D switch](docs/images/settings-diagram-style.png) | ![Client link copied, with the not uploaded / not secret notice](docs/images/client-link-notice.png) |
+
+The **2D / 3D** button in the corner of the diagram (or **⚙ Settings → View**) switches views and keeps the same diagram. The layout adapts to phones and tablets: the step panel moves under the diagram and **All steps** folds up.
 
 ## Writing the markdown
 
@@ -164,9 +175,9 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 | `requirementDiagram`: all requirement kinds, `element`, the seven relationship types (forward and `<-` reverse) | ✅ (styles ignored) |
 | Other types (e.g. radar, treemap, zenuml) | ❌ shows "not supported yet" |
 
-## 📸 Snapshot: a README picture with an overlap check
+## Snapshot: a README picture with an overlap check
 
-When you write a README you want a picture of the diagram, and you want to be sure no label is hiding another one. **📸 Snapshot** (editing view only) does both.
+When you write a README you want a picture of the diagram, and you want to be sure no label is hiding another one. **Snapshot** (editing view only) does both.
 
 ```mermaid
 sequenceDiagram
@@ -216,6 +227,22 @@ Every image in this README was made this way. Here is the 3D export of the ticke
 
 If a browser has no WebGL, the 3D page opens the 2D page automatically.
 
+## Diagram styles
+
+Open **⚙ Settings** to change how the diagram looks. The same style is used in 2D and 3D, it is saved in your browser, and a client link opens with the style you picked.
+
+![The ticket-order example in the five diagram styles: Original, Teal, Line Art, Blueprint and Glass](docs/images/diagram-styles.png)
+
+| Style | Look |
+|---|---|
+| **Original** (default) | Pastel blocks on warm paper, orange-red highlight |
+| Teal | Pale teal blocks with teal outlines, amber highlight |
+| Line Art | White blocks with bold black outlines |
+| Blueprint | Dark background, cyan wireframe blocks |
+| Glass | See-through blocks |
+
+Each style is one entry in the `STYLES` list in `index.html` (background, block colours, outline, highlight, label colours, and the 3D material). To add a style, copy an entry, change the values, and run `python3 tools/sync-parser.py` so `3d.html` gets it too. The site itself always uses the Solution Forest colours; only the diagram changes.
+
 ## Run it yourself
 
 Any static file server works. The 3D page loads Three.js as an ES module, so open it over `http://`, not `file://`.
@@ -234,7 +261,9 @@ To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or 
 
 - Your markdown is kept in your browser's local storage (`flowx.md`) so it survives a reload.
 - A client link stores the diagram compressed inside the part of the address after `#`. Browsers never send that part to a server, so the host only sees a request for the page.
-- Anyone who has a client link can read the diagram, so treat it like the document itself.
+- Anyone who has a client link can read the diagram, so treat it like the document itself. The link is compressed, not encrypted. **Copy client link** shows this reminder every time.
+- Chat apps, email and browser history keep the full link wherever you paste it.
+- The page loads no fonts, scripts or trackers from other sites. Everything it needs is in this repository.
 
 ## Project layout
 
@@ -242,12 +271,13 @@ To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or 
 index.html          2D version (SVG, no dependencies)
 3d.html             3D version (Three.js)
 vendor/             Three.js 0.187.0 (three.module.js + three.core.js, MIT)
+                    Inter and Raleway web fonts (latin subset, SIL OFL 1.1, licences next to them)
 examples/           Sample markdown files, ready to paste
-tools/sync-parser.py  Copies the shared parser from index.html into 3d.html
+tools/sync-parser.py  Copies the shared parser and diagram styles from index.html into 3d.html
 docs/images/        Images used in this README
 ```
 
-Both pages share the same markdown reader, step panel, timeline and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) in `index.html`, then run `python3 tools/sync-parser.py` to copy it into `3d.html`.
+Both pages share the same markdown reader, step panel, timeline, settings and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) and the diagram styles block (`/* ---------- diagram styles + settings` … `end of diagram styles + settings`) in `index.html`, then run `python3 tools/sync-parser.py` to copy them into `3d.html`.
 
 ## Known limits
 
@@ -262,4 +292,4 @@ Flow Explainer is made by [Solution Forest Limited](https://solutionforest.net/)
 
 ## License
 
-[MIT](LICENSE) © Solution Forest Limited. Three.js is MIT-licensed by the three.js authors.
+[MIT](LICENSE) © Solution Forest Limited. Three.js is MIT-licensed by the three.js authors. Inter and Raleway are under the SIL Open Font License 1.1.
