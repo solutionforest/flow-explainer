@@ -170,12 +170,12 @@ body.client .edit-only{display:none}
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer">
   <div class="row" style="justify-content:space-between"><h3>Paste your markdown</h3><button class="btn ghost" id="btnClose">✕</button></div>
-  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b> or <b>mindmap</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
+  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b>, <b>mindmap</b>, <b>journey</b>, <b>timeline</b>, <b>quadrantChart</b> or <b>gitGraph</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="err" id="err"></div>
   <div class="row">
     <button class="btn primary" id="btnRender">Render ▶</button>
-    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option><option value="ex4">Article lifecycle (state)</option><option value="ex5">Shop objects (class)</option><option value="ex6">Shop database (ER)</option><option value="ex7">Launch plan (gantt)</option><option value="ex8">Visitors (pie)</option><option value="ex9">Shop overview (mindmap)</option></select>
+    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option><option value="ex4">Article lifecycle (state)</option><option value="ex5">Shop objects (class)</option><option value="ex6">Shop database (ER)</option><option value="ex7">Launch plan (gantt)</option><option value="ex8">Visitors (pie)</option><option value="ex9">Shop overview (mindmap)</option><option value="ex10">Ticket buying (journey)</option><option value="ex11">Shop history (timeline)</option><option value="ex12">Feature priorities (quadrant)</option><option value="ex13">Checkout release (git graph)</option></select>
     <label class="btn">Open .md<input type="file" id="file" accept=".md,.markdown,.mmd,.txt,text/*" hidden></label>
   </div>
 </div>
@@ -377,6 +377,70 @@ mindmap
       Accounts
       Support
 ```</script>
+<script type="text/plain" id="ex10"># Buying a concert ticket online
+
+How a customer feels at each step, from finding the show to getting in. Low scores are the pain points to fix first.
+
+```mermaid
+journey
+    title Buying a concert ticket online
+    section Find
+      Search for the show: 4: Customer
+      Compare seats: 3: Customer
+    section Buy
+      Enter card details: 2: Customer, Shop
+      Get confirmation email: 5: Customer, Shop
+    section Attend
+      Show ticket at the door: 4: Customer, Staff
+```</script>
+<script type="text/plain" id="ex11"># How the online shop grew
+
+```mermaid
+timeline
+    title How the online shop grew
+    section Getting started
+      2023 : Shop opens online
+      2024 : Mobile app launches : Loyalty points added
+    section Growing
+      2025 : Second warehouse opens
+      2026 : Same-day delivery : Three new cities
+```</script>
+<script type="text/plain" id="ex12"># Which features to build next
+
+Each feature is placed by how much work it is and how much it helps customers.
+
+```mermaid
+quadrantChart
+    title Which features to build next
+    x-axis Low effort --> High effort
+    y-axis Low value --> High value
+    quadrant-1 Plan carefully
+    quadrant-2 Do first
+    quadrant-3 Maybe later
+    quadrant-4 Skip for now
+    Gift cards: [0.25, 0.8]
+    Wish list: [0.4, 0.62]
+    Live chat: [0.72, 0.75]
+    Dark mode: [0.2, 0.3]
+    Custom reports: [0.8, 0.25]
+```</script>
+<script type="text/plain" id="ex13"># How the checkout feature was built
+
+The new checkout was built on its own copy of the code, then merged back once it was ready.
+
+```mermaid
+gitGraph
+    commit id: "Start project"
+    commit id: "Add home page"
+    branch checkout
+    checkout checkout
+    commit id: "Build checkout"
+    commit id: "Fix card bug"
+    checkout main
+    commit id: "Update prices"
+    merge checkout id: "Release checkout" tag: "v1.0"
+    commit id: "Small text fix"
+```</script>
 
 <script>
 "use strict";
@@ -405,7 +469,7 @@ function parseMarkdown(md){
     }else if(l.trim()&&!cur)para.push(l.trim());
     else if(l.trim()&&cur&&!/^\s*([-*+]|\d+[.)])\s/.test(l)&&!/^\s*</.test(l)){/* trailing prose ignored */}
   }
-  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|gantt|pie|mindmap)\b/.test(md))
+  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|gantt|pie|mindmap|journey|timeline|quadrantChart|gitGraph)\b/.test(md))
     scenes.push({title:'',intro:'',code:md,ordered:[],named:[]});
   return {docTitle,scenes};
 }
@@ -434,7 +498,11 @@ function parseMermaid(code){
   if(/^gantt\b/i.test(ls[0]))return parseGantt(ls.slice(1));
   if(/^pie\b/i.test(ls[0]))return parsePie(ls[0],ls.slice(1));
   if(/^mindmap\b/i.test(ls[0]))return parseMindmap(code);
-  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart, sequenceDiagram, stateDiagram, classDiagram, erDiagram, gantt, pie and mindmap.');
+  if(/^journey\b/i.test(ls[0]))return parseJourney(ls.slice(1));
+  if(/^timeline\b/i.test(ls[0]))return parseTimeline(ls.slice(1));
+  if(/^quadrantChart\b/i.test(ls[0]))return parseQuadrant(ls.slice(1));
+  if(/^gitGraph\b/i.test(ls[0]))return parseGit(ls.slice(1));
+  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart, sequenceDiagram, stateDiagram, classDiagram, erDiagram, gantt, pie, mindmap, journey, timeline, quadrantChart and gitGraph.');
 }
 
 /* ---------- mermaid: flowchart ---------- */
@@ -820,6 +888,158 @@ function parseMindmap(code){
   const N=[...K.nodes.values()];if(!N.length)throw new Error('The mindmap is empty.');
   const roots=N.filter(n=>!K.links.some(l=>l.to===n.id));roots.forEach(r=>r.icon='💡');
   return {type:'mindmap',nodes:N,links:K.links,steps,groups:K.groups,noZones:true};
+}
+
+/* ---------- mermaid: fixed-position helpers ---------- */
+function routeFixed(nodes,links){
+  const by=new Map(nodes.map(n=>[n.id,n]));
+  links.forEach(l=>{
+    const a=by.get(l.from),b=by.get(l.to);if(!a||!b||a===b){l.pts=null;return}
+    if(Math.abs(a.gx-b.gx)<.02){const s=Math.sign(b.gy-a.gy)||1;l.pts=[[a.gx,a.gy+s*T0],[b.gx,b.gy-s*T1]];return}
+    const s=Math.sign(b.gx-a.gx)||1;
+    if(Math.abs(a.gy-b.gy)<.02){l.pts=[[a.gx+s*T0,a.gy],[b.gx-s*T1,b.gy]];return}
+    const x0=a.gx+s*T0,x1=b.gx-s*T1,xm=s>0?Math.min((x0+x1)/2,x1-.8):Math.max((x0+x1)/2,x1+.8);
+    l.pts=[[a.gx+s*T0,a.gy],[xm,a.gy],[xm,b.gy],[b.gx-s*T1,b.gy]];
+  });
+}
+const kv=(s,k)=>{const m=s.match(new RegExp('\\b'+k+'\\s*:\\s*(?:"([^"]*)"|([^\\s,]+))'));return m?(m[1]??m[2]):null};
+
+/* ---------- mermaid: journey ---------- */
+function parseJourney(ls){
+  const K=graphKit(),tasks=[];let title='',section=null;
+  const MOOD=[null,['very unhappy','😫'],['frustrating','😟'],['okay','😐'],['good','🙂'],['great','😀']];
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(/^(accTitle|accDescr)\b/.test(line))continue;
+    if(m=line.match(/^section\s+(.+)$/)){K.groups.push({title:cleanText(m[1])});section=K.groups.length-1;continue}
+    if(m=line.match(/^(.+?)\s*:\s*(\d+(?:\.\d+)?)\s*(?::\s*(.*))?$/)){
+      const sc=Math.max(1,Math.min(5,Math.round(+m[2]))),who=(m[3]||'').split(',').map(s=>cleanText(s)).filter(Boolean);
+      const n=K.node('t'+(tasks.length+1),cleanText(m[1]));n.group=section;n.hk=.45+.32*sc;n.icon=MOOD[sc][1];
+      n.note='Feeling: '+MOOD[sc][0]+' ('+sc+' out of 5).'+(who.length?' Who: '+who.join(', ')+'.':'');
+      tasks.push({n,sc,raw:String(sc),who,section});
+    }
+  }
+  if(!tasks.length)throw new Error('No steps found in the journey. Write them like  Pay for ticket: 3: Customer');
+  const B=s=>'**'+s+'**',steps=[];
+  tasks.forEach((t,i)=>{
+    const feel=MOOD[t.sc][0],whoTxt=t.who.length?' for '+t.who.map(B).join(t.who.length>2?', ':' and ').replace(/, ([^,]*)$/,' and $1'):'';
+    const auto=(i===0?'It starts with '+B(t.n.label)+'. ':'Next: '+B(t.n.label)+'. ')+'This feels '+B(feel)+whoTxt+' ('+t.raw+' out of 5).'+(t.sc<=2?' A pain point worth fixing.':'');
+    const tag=t.section!=null?K.groups[t.section].title:'',chip=MOOD[t.sc][1]+' '+t.raw+'/5';
+    if(i===0){const s=K.nodeStep(t.n,{auto,tag});s.chip=chip;steps.push(s)}
+    else steps.push(K.edgeStep(K.link(tasks[i-1].n,t.n,{arrow:true}),{auto,tag,chip,title:t.n.label}));
+  });
+  return {type:'journey',nodes:[...K.nodes.values()],links:K.links,steps,groups:K.groups,diagramTitle:title};
+}
+
+/* ---------- mermaid: timeline ---------- */
+function parseTimeline(ls){
+  const K=graphKit(),periods=[];let title='',section=null;
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(/^(accTitle|accDescr|direction)\b/.test(line))continue;
+    if(m=line.match(/^section\s+(.+)$/)){K.groups.push({title:cleanText(m[1])});section=K.groups.length-1;continue}
+    if(line.startsWith(':')){const p=periods[periods.length-1];if(p)line.split(':').map(cleanText).filter(Boolean).forEach(e=>p.ev.push(e));continue}
+    const parts=line.split(/\s*:\s+|\s+:\s*/);
+    periods.push({label:cleanText(parts[0]),ev:parts.slice(1).map(cleanText).filter(Boolean),section});
+  }
+  if(!periods.length)throw new Error('No periods found in the timeline. Write them like  2024 : Shop opens');
+  const steps=[],B=s=>'**'+s+'**';let prev=null;
+  periods.forEach((p,i)=>{
+    const n=K.node('p'+(i+1),p.label,'box');n.group=p.section;n.gx=i*DX;n.gy=0;n.icon='📅';
+    const evs=p.ev.map((e,k)=>{const en=K.node('p'+(i+1)+'e'+(k+1),e,'pill');en.group=p.section;en.gx=i*DX;en.gy=(k+1)*2.9;K.link(n,en,{dotted:true});return en});
+    const tag=p.section!=null?K.groups[p.section].title:'';
+    const auto=B(p.label)+(evs.length?': '+p.ev.map(B).join(evs.length>2?', ':' and ').replace(/, ([^,]*)$/,' and $1')+'.':'.');
+    let s;
+    if(prev)s=K.edgeStep(K.link(prev,n,{arrow:true}),{auto,tag,title:p.label});else s=K.nodeStep(n,{auto,tag});
+    s.nodes=[...(prev?[prev.id]:[]),n.id,...evs.map(e=>e.id)];
+    if(p.ev.length)n.note=p.ev.join(' · ');
+    steps.push(s);prev=n;
+  });
+  const N=[...K.nodes.values()];routeFixed(N,K.links);
+  return {type:'timeline',nodes:N,links:K.links,steps,groups:K.groups,fixed:true,diagramTitle:title};
+}
+
+/* ---------- mermaid: quadrant ---------- */
+function parseQuadrant(ls){
+  let title='',xa=['',''],ya=['',''];const q=['','','',''],pts=[];
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(m=line.match(/^([xy])-axis\s+(.+?)(?:\s*-->\s*(.+))?$/)){const v=[cleanText(m[2]),cleanText(m[3]||'')];if(m[1]==='x')xa=v;else ya=v;continue}
+    if(m=line.match(/^quadrant-([1-4])\s+(.+)$/)){q[m[1]-1]=cleanText(m[2]);continue}
+    if(/^(classDef|accTitle|accDescr)\b/.test(line))continue;
+    if(m=line.match(/^(.+?)(?::::[\w-]+)?\s*:\s*\[\s*(-?[\d.]+)\s*,\s*(-?[\d.]+)\s*\]/))pts.push({label:cleanText(m[1]),x:Math.max(0,Math.min(1,+m[2])),y:Math.max(0,Math.min(1,+m[3]))});
+  }
+  if(!pts.length)throw new Error('No points found in the quadrant chart. Write them like  Gift cards: [0.3, 0.8]');
+  const qn=p=>p.y>=.5?(p.x>=.5?0:1):(p.x<.5?2:3);
+  const groups=q.map((t,i)=>({title:t||['Top right','Top left','Bottom left','Bottom right'][i]}));
+  const S=Math.max(12,Math.sqrt(pts.length)*4.4);
+  const nodes=pts.map((p,i)=>({id:'pt'+(i+1),label:p.label,shape:'box',group:qn(p),gx:p.x*S,gy:(1-p.y)*S}));
+  for(let it=0;it<60;it++)for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const a=nodes[i],b=nodes[j],dx=b.gx-a.gx,dy=b.gy-a.gy,d=Math.hypot(dx,dy),min=3;
+    if(d<min){const k=(min-d)/2/(d||1),ux=d?dx:1,uy=d?dy:0;a.gx-=ux*k;a.gy-=uy*k;b.gx+=ux*k;b.gy+=uy*k}
+  }
+  const lvl=(v,ax,dir)=>(v>=.5?ax[1]:ax[0])||((v>=.5?'high':'low')+' '+dir+' ('+Math.round(v*100)+'%)');
+  const B=s=>'**'+s+'**';
+  const steps=pts.map((p,i)=>{const n=nodes[i],g=groups[n.group].title;
+    n.note='Across: '+Math.round(p.x*100)+'%'+(xa[0]?' ('+xa[0]+' → '+(xa[1]||'')+')':'')+'. Up: '+Math.round(p.y*100)+'%'+(ya[0]?' ('+ya[0]+' → '+(ya[1]||'')+')':'')+'.';
+    const auto=B(p.label)+' is '+B(lvl(p.x,xa,'across').toLowerCase())+' and '+B(lvl(p.y,ya,'up').toLowerCase())+', so it lands in '+B(g)+'.';
+    return {kind:'node',nodes:[n.id],title:p.label,chip:g,auto,tag:g}});
+  const order=steps.map((s,i)=>i).sort((a,b)=>nodes[a].group-nodes[b].group||pts[b].y-pts[a].y);
+  return {type:'quadrant',nodes,links:[],steps:order.map(i=>steps[i]),groups,fixed:true,diagramTitle:title||(xa[0]&&ya[0]?xa[0].replace(/^low\s+/i,'')+' vs '+ya[0].replace(/^low\s+/i,''):'')};
+}
+
+/* ---------- mermaid: git graph ---------- */
+function parseGit(ls){
+  const K=graphKit(),branches=new Map(),commits=[],steps=[],byId=new Map(),B=s=>'**'+s+'**';
+  let cur='main';
+  const br=name=>{name=name.replace(/^"|"$/g,'');if(!branches.has(name)){K.groups.push({title:name});branches.set(name,{name,lane:branches.size,g:K.groups.length-1,head:null,count:0})}return branches.get(name)};
+  br('main');
+  const add=(o)=>{
+    const b=br(cur),i=commits.length;b.count++;
+    const id=o.id||(o.kind==='merge'?'Merge '+o.from:b.name+' #'+b.count);
+    const n=K.node('c'+(i+1),cleanText(id),o.kind==='merge'?'hex':'circle');n.group=b.g;n.gx=i*DX;n.gy=b.lane*DY;
+    if(o.tag){n.icon='🏷️';n.note='Tag: '+o.tag+'.'}
+    if(o.type==='HIGHLIGHT')n.icon=n.icon||'⭐';if(o.type==='REVERSE')n.icon='↩️';if(o.kind==='pick')n.icon='🍒';
+    const c={n,b,parent:b.head,o};commits.push(c);if(o.id)byId.set(o.id,c);b.head=c;return c;
+  };
+  for(const line of ls){let m;
+    if(/^(accTitle|accDescr|%%)/.test(line))continue;
+    if(m=line.match(/^commit\b(.*)$/)){
+      const r=m[1],c=add({id:kv(r,'id')||kv(r,'msg'),tag:kv(r,'tag'),type:(kv(r,'type')||'').toUpperCase(),kind:'commit'});
+      const p=c.parent,tagTxt=c.o.tag?' It is marked as '+B(c.o.tag)+'.':'';
+      let auto;
+      if(!p)auto='The project starts on '+B(c.b.name)+' with '+B(c.n.label)+'.';
+      else if(p.b!==c.b)auto='A separate copy called '+B(c.b.name)+' splits off from '+B(p.b.name)+' at '+B(p.n.label)+', and saves its first change: '+B(c.n.label)+'.';
+      else auto=B(c.b.name)+' saves a new change: '+B(c.n.label)+'.';
+      if(c.o.type==='REVERSE')auto+=' This change undoes an earlier one.';
+      auto+=tagTxt;
+      if(p)steps.push(K.edgeStep(K.link(p.n,c.n,{arrow:true}),{auto,tag:c.b.name,chip:c.o.tag||'',title:c.n.label}));
+      else steps.push(K.nodeStep(c.n,{auto,tag:c.b.name}));
+      continue;
+    }
+    if(m=line.match(/^branch\s+("[^"]+"|\S+)/)){const nb=br(m[1]);nb.head=br(cur).head;cur=nb.name;continue}
+    if(m=line.match(/^(?:checkout|switch)\s+("[^"]+"|\S+)/)){cur=br(m[1]).name;continue}
+    if(m=line.match(/^merge\s+("[^"]+"|\S+)(.*)$/)){
+      const from=br(m[1]),r=m[2],into=br(cur),p=into.head,oh=from.head;
+      const c=add({id:kv(r,'id'),tag:kv(r,'tag'),type:(kv(r,'type')||'').toUpperCase(),kind:'merge',from:from.name});
+      const ids=[];if(p)ids.push(p.n.id);let li=null;
+      if(p)K.link(p.n,c.n,{arrow:true});
+      if(oh){li=K.link(oh.n,c.n,{arrow:true});ids.push(oh.n.id)}
+      const auto='All the work on '+B(from.name)+' is merged back into '+B(into.name)+'.'+(c.o.tag?' This version is marked as '+B(c.o.tag)+'.':'');
+      const s=li!=null?K.edgeStep(li,{auto,tag:into.name,chip:c.o.tag||'merge',title:from.name+' → '+into.name}):K.nodeStep(c.n,{auto,tag:into.name});
+      s.nodes=[...ids,c.n.id];steps.push(s);continue;
+    }
+    if(m=line.match(/^cherry-pick\b(.*)$/)){
+      const src=byId.get(kv(m[1],'id')),c=add({id:src?src.n.label+' (copy)':null,tag:kv(m[1],'tag'),kind:'pick'}),p=c.parent;
+      if(p)K.link(p.n,c.n,{arrow:true});
+      const auto=src?'One change, '+B(src.n.label)+', is copied from '+B(src.b.name)+' onto '+B(c.b.name)+' on its own.':B(c.b.name)+' copies in a single change from another branch.';
+      if(src){const s=K.edgeStep(K.link(src.n,c.n,{arrow:true,dotted:true}),{auto,tag:c.b.name,chip:'copy'});s.nodes=[...(p?[p.n.id]:[]),src.n.id,c.n.id];steps.push(s)}
+      else steps.push(K.nodeStep(c.n,{auto,tag:c.b.name}));
+    }
+  }
+  if(!commits.length)throw new Error('No commits found in the git graph.');
+  const N=[...K.nodes.values()];routeFixed(N,K.links);
+  return {type:'git',nodes:N,links:K.links,steps,groups:K.groups,fixed:true};
 }
 
 /* ---------- layout ---------- */

@@ -4,7 +4,7 @@ Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you ca
 
 Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
 
-Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie or mindmap) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
+Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant or git graph) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
 
@@ -81,11 +81,13 @@ flowchart TD
   B -->|flowchart / graph| C[Each arrow = one step]
   B -->|sequenceDiagram| D[Each message = one step]
   B -->|state / class / ER / mindmap| H[Each line between boxes = one step]
-  B -->|gantt / pie| I[Each task or slice = one step]
+  B -->|gantt / pie / journey / quadrant| I[Each task, slice or point = one step]
+  B -->|timeline / git graph| J[Each period or commit = one step]
   C --> E{Numbered list below it?}
   D --> E
   H --> E
   I --> E
+  J --> E
   E -->|Yes| F[Line N explains step N]
   E -->|No| G[Auto text: A hands over to B]
 ```
@@ -99,9 +101,11 @@ flowchart TD
 
 ### Supported Mermaid
 
-Besides flowcharts and sequence diagrams, six more Mermaid types are turned into the same step-by-step walkthrough, each with plain-language step text written for you. Each one has a ready-to-paste file in [`examples/`](examples/).
+Besides flowcharts and sequence diagrams, ten more Mermaid types are turned into the same step-by-step walkthrough, each with plain-language step text written for you. Each one has a ready-to-paste file in [`examples/`](examples/).
 
 ![State, class, ER, gantt, pie and mindmap examples rendered by Flow Explainer](docs/images/diagram-types.png)
+
+![Journey, timeline, quadrant and git graph examples rendered by Flow Explainer](docs/images/diagram-types-2.png)
 
 | Type | What one step shows | Example |
 |---|---|---|
@@ -111,6 +115,10 @@ Besides flowcharts and sequence diagrams, six more Mermaid types are turned into
 | Gantt | One task, with its dates and what it waits for | [`launch-plan.md`](examples/launch-plan.md) |
 | Pie | One slice and its share of the total | [`traffic-sources.md`](examples/traffic-sources.md) |
 | Mindmap | One branch, e.g. "**Orders** includes **Payment**." | [`shop-mindmap.md`](examples/shop-mindmap.md) |
+| Journey | One task and how it feels, e.g. "Next: **Enter card details**. This feels **frustrating** for **Customer** and **Shop** (2 out of 5). A pain point worth fixing." Block height and face follow the score. | [`customer-journey.md`](examples/customer-journey.md) |
+| Timeline | One period with everything that happened in it, e.g. "**2024**: **Mobile app launches** and **Loyalty points added**." | [`shop-timeline.md`](examples/shop-timeline.md) |
+| Quadrant | One point and where it lands, e.g. "**Gift cards** is **low effort** and **high value**, so it lands in **Do first**." | [`feature-priorities.md`](examples/feature-priorities.md) |
+| Git graph | One commit or merge, e.g. "A separate copy called **checkout** splits off from **main** at **Add home page**…" | [`release-history.md`](examples/release-history.md) |
 
 
 | Feature | Supported |
@@ -128,7 +136,11 @@ Besides flowcharts and sequence diagrams, six more Mermaid types are turned into
 | `gantt`: sections (zones), `done` / `active` / `crit` / `milestone`, `after` dependencies, dates and durations; steps play in start-date order | ✅ (`excludes` weekends ignored) |
 | `pie`: each slice becomes a block whose height matches its value; steps go from biggest to smallest | ✅ |
 | `mindmap`: indentation tree, node shapes, each main branch gets its own colour | ✅ (`::icon` ignored) |
-| journey, timeline, quadrant, git graph and other types | ❌ shows "not supported yet" |
+| `journey`: sections (zones), score 1–5 (block height and a face icon), actors; steps play in order and low scores are flagged as pain points | ✅ |
+| `timeline`: sections (zones), periods with one or more events (also on `:` continuation lines) | ✅ |
+| `quadrantChart`: axis labels, quadrant names (zones), points placed by their x/y values; steps play quadrant by quadrant | ✅ (point styling ignored; points too close together are nudged apart) |
+| `gitGraph`: `commit` (`id`, `tag`, `type`), `branch`, `checkout` / `switch`, `merge`, `cherry-pick`; each branch gets its own lane and colour | ✅ (`order:` and commit direction `TB`/`BT` ignored) |
+| xychart, sankey, block, architecture, C4, kanban, packet, requirement and other types | ❌ shows "not supported yet" |
 
 ## 📸 Snapshot: a README picture with an overlap check
 
