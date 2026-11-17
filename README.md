@@ -2,7 +2,7 @@
 
 ![Flow Explainer: paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client](docs/images/cover.png)
 
-[![MIT License](https://img.shields.io/badge/license-MIT-007c90)](LICENSE) ![No build step](https://img.shields.io/badge/build-none-007c90) ![Mermaid](https://img.shields.io/badge/input-Mermaid-fcaf17) ![Three.js 0.187](https://img.shields.io/badge/three.js-0.187-0f172a)
+[![Live demo](https://img.shields.io/badge/live-flow--explainer.laravel.cloud-007c90)](https://flow-explainer.laravel.cloud/) [![MIT License](https://img.shields.io/badge/license-MIT-007c90)](LICENSE) ![No build step](https://img.shields.io/badge/build-none-007c90) ![Mermaid](https://img.shields.io/badge/input-Mermaid-fcaf17) ![Three.js 0.187](https://img.shields.io/badge/three.js-0.187-0f172a)
 
 Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client.
 
@@ -40,6 +40,8 @@ The diagram above is GitHub's own Mermaid rendering. Here is the same markdown a
 The full source of that picture is [`examples/how-it-works.md`](examples/how-it-works.md). You can paste it straight into the editor.
 
 ## Quick start
+
+Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel.cloud/)** ([3D](https://flow-explainer.laravel.cloud/3d)), or run it yourself:
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
 2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.

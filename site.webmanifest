@@ -1,0 +1,21 @@
+{
+  "name": "Flow Explainer",
+  "short_name": "Flow Explainer",
+  "description": "Paste a GitHub markdown file with a Mermaid diagram and get an animated, step-by-step walkthrough you can send to a client. 2D and 3D, 20 diagram types, runs in your browser. Free and open source.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#007c90",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
