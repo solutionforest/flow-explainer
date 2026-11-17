@@ -8,7 +8,7 @@ Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you ca
 
 Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
 
-Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant, git graph, xychart, sankey, block, architecture, C4, kanban, packet or requirement) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
+Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant, git graph, xychart, sankey, block, architecture, C4, kanban, packet, requirement, radar, treemap or ZenUML) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
 
@@ -47,7 +47,7 @@ Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel
 2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
 4. Press **Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot, and in the diagram style you picked.
-5. Open **⚙ Settings** (top right) to pick a diagram style or switch between 3D and 2D.
+5. Open **⚙ Settings** (top right) to pick a diagram style, show or hide the emoji icons on the blocks, or switch between 3D and 2D.
 6. Click **Flow Explainer** (top left) or **About** in the footer for a short intro, the privacy notes and the GitHub link.
 
 ![3D player on step 3 of the ticket-order example, with the All steps list on the right](docs/images/player-desktop.png)
@@ -95,11 +95,11 @@ flowchart LR
 flowchart TD
   A[Mermaid block] --> B{Which type?}
   B -->|flowchart / graph| C[Each arrow = one step]
-  B -->|sequenceDiagram| D[Each message = one step]
+  B -->|sequenceDiagram / zenuml| D[Each message = one step]
   B -->|state / class / ER / mindmap| H[Each line between boxes = one step]
   B -->|gantt / pie / journey / quadrant| I[Each task, slice or point = one step]
   B -->|timeline / git graph| J[Each period or commit = one step]
-  B -->|xychart / packet / kanban| K[Each category, field or column = one step]
+  B -->|xychart / packet / kanban / radar / treemap| K[Each category, field, column, axis or section = one step]
   B -->|sankey / block / architecture / C4 / requirement| L[Each flow or link = one step]
   C --> E{Numbered list below it?}
   D --> E
@@ -129,6 +129,8 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 
 ![XY chart, sankey, block, architecture, C4, kanban, packet and requirement examples rendered by Flow Explainer](docs/images/diagram-types-3.png)
 
+![Radar, treemap and ZenUML examples rendered by Flow Explainer](docs/images/diagram-types-4.png)
+
 | Type | What one step shows | Example |
 |---|---|---|
 | State | One change, e.g. "When **approve** happens, **Review** changes to **Approved**." | [`article-lifecycle.md`](examples/article-lifecycle.md) |
@@ -149,6 +151,9 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 | Kanban | One column, e.g. "**In progress** has **2 cards**: **New checkout page** and **Faster search**. **New checkout page** is high priority." | [`project-board.md`](examples/project-board.md) |
 | Packet | One field, e.g. "Next, bits **16–31** hold **Receiver port** (16 bits, 2 bytes)." Each 32-bit row is a zone. | [`network-message.md`](examples/network-message.md) |
 | Requirement | One relationship, e.g. "**Login page** meets the requirement **Sign in**." ID, text, risk and test method become the box note. | [`login-requirements.md`](examples/login-requirements.md) |
+| Radar | One axis, comparing every curve, e.g. "On **Backend**: Platform team **5**, Web team **3**. Platform team leads here." Points sit on a circle, further out and taller for higher values; each curve is a colour. | [`team-skills.md`](examples/team-skills.md) |
+| Treemap | One top-level section, e.g. "**Build** is **63%** of the total (750). Biggest part: **Website** (320)…" Each section is a zone; block height follows the value. | [`where-the-budget-goes.md`](examples/where-the-budget-goes.md) |
+| ZenUML | One message, like a sequence diagram. `// comments` above a call become the step text; `if` / `else` / `par`… become the step tag. | [`checkout-zenuml.md`](examples/checkout-zenuml.md) |
 
 
 | Feature | Supported |
@@ -178,7 +183,10 @@ Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned
 | `kanban`: columns (zones) and cards, with `assigned`, `priority` and `ticket` metadata | ✅ |
 | `packet-beta` / `packet`: `0-15: "Field"` and `+16: "Field"`; one 32-bit row per zone | ✅ |
 | `requirementDiagram`: all requirement kinds, `element`, the seven relationship types (forward and `<-` reverse) | ✅ (styles ignored) |
-| Other types (e.g. radar, treemap, zenuml) | ❌ shows "not supported yet" |
+| `radar-beta`: `axis` (with labels), `curve` with a value list or `axis: value` pairs, `min` / `max`; one step per axis, each curve a colour | ✅ (`graticule`, `ticks` ignored) |
+| `treemap-beta`: nested sections and `"Item": value` leaves; one column per top section, block height follows the value | ✅ (`classDef` / `:::class` ignored) |
+| `zenuml`: participants with `@Actor` / `@Database` / other annotators, `group { }`, `@Starter`, sync calls `A.method()` with nested `{ }`, async `A->B: msg`, `new X()`, `return`, `if` / `else` / `while` / `for` / `loop` / `par` / `opt` / `try` / `catch`, `// comments` as the step text | ✅ (colours and stereotypes ignored) |
+| Anything else | ❌ shows "not supported yet" |
 
 ## Snapshot: a README picture with an overlap check
 
