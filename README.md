@@ -4,7 +4,7 @@ Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you ca
 
 Built by [Solution Forest Limited](https://solutionforest.net/), a Hong Kong digital agency.
 
-Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant or git graph) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
+Flow Explainer reads a [Mermaid](https://mermaid.js.org/) diagram (flowchart, sequence, state, class, ER, gantt, pie, mindmap, journey, timeline, quadrant, git graph, xychart, sankey, block, architecture, C4, kanban, packet or requirement) and plays it one arrow at a time: the camera moves to each step, a dot travels along the arrow, and a side panel explains what is happening in plain language. It comes in a flat isometric **2D** version and a rotatable **3D** version, and it can export a clean PNG for your README.
 
 ![Flow Explainer 3D playing the ticket-order example](docs/images/demo-3d.gif)
 
@@ -83,11 +83,15 @@ flowchart TD
   B -->|state / class / ER / mindmap| H[Each line between boxes = one step]
   B -->|gantt / pie / journey / quadrant| I[Each task, slice or point = one step]
   B -->|timeline / git graph| J[Each period or commit = one step]
+  B -->|xychart / packet / kanban| K[Each category, field or column = one step]
+  B -->|sankey / block / architecture / C4 / requirement| L[Each flow or link = one step]
   C --> E{Numbered list below it?}
   D --> E
   H --> E
   I --> E
   J --> E
+  K --> E
+  L --> E
   E -->|Yes| F[Line N explains step N]
   E -->|No| G[Auto text: A hands over to B]
 ```
@@ -101,11 +105,13 @@ flowchart TD
 
 ### Supported Mermaid
 
-Besides flowcharts and sequence diagrams, ten more Mermaid types are turned into the same step-by-step walkthrough, each with plain-language step text written for you. Each one has a ready-to-paste file in [`examples/`](examples/).
+Besides flowcharts and sequence diagrams, eighteen more Mermaid types are turned into the same step-by-step walkthrough, each with plain-language step text written for you. Each one has a ready-to-paste file in [`examples/`](examples/).
 
 ![State, class, ER, gantt, pie and mindmap examples rendered by Flow Explainer](docs/images/diagram-types.png)
 
 ![Journey, timeline, quadrant and git graph examples rendered by Flow Explainer](docs/images/diagram-types-2.png)
+
+![XY chart, sankey, block, architecture, C4, kanban, packet and requirement examples rendered by Flow Explainer](docs/images/diagram-types-3.png)
 
 | Type | What one step shows | Example |
 |---|---|---|
@@ -119,6 +125,14 @@ Besides flowcharts and sequence diagrams, ten more Mermaid types are turned into
 | Timeline | One period with everything that happened in it, e.g. "**2024**: **Mobile app launches** and **Loyalty points added**." | [`shop-timeline.md`](examples/shop-timeline.md) |
 | Quadrant | One point and where it lands, e.g. "**Gift cards** is **low effort** and **high value**, so it lands in **Do first**." | [`feature-priorities.md`](examples/feature-priorities.md) |
 | Git graph | One commit or merge, e.g. "A separate copy called **checkout** splits off from **main** at **Add home page**…" | [`release-history.md`](examples/release-history.md) |
+| XY chart | One category, e.g. "In **May**: **87,000**, up 43% from Apr." Bar height follows the value; the highest and lowest points are called out. | [`monthly-sales.md`](examples/monthly-sales.md) |
+| Sankey | One flow, e.g. "**Shop fees** sends **7** to **Profit** — 35% of everything leaving Shop fees." | [`where-money-goes.md`](examples/where-money-goes.md) |
+| Block | One link between blocks, or one row when there are no links. Blocks keep their `columns` grid position. | [`website-parts.md`](examples/website-parts.md) |
+| Architecture | One connection, e.g. "**Shop server** sends to **Database**." Groups become zones; database, disk, server and internet icons are kept. | [`cloud-setup.md`](examples/cloud-setup.md) |
+| C4 | One relationship, e.g. "**Online shop** takes payment through **Payment provider** (using HTTPS)." Boundaries become zones. | [`shop-c4.md`](examples/shop-c4.md) |
+| Kanban | One column, e.g. "**In progress** has **2 cards**: **New checkout page** and **Faster search**. **New checkout page** is high priority." | [`project-board.md`](examples/project-board.md) |
+| Packet | One field, e.g. "Next, bits **16–31** hold **Receiver port** (16 bits, 2 bytes)." Each 32-bit row is a zone. | [`network-message.md`](examples/network-message.md) |
+| Requirement | One relationship, e.g. "**Login page** meets the requirement **Sign in**." ID, text, risk and test method become the box note. | [`login-requirements.md`](examples/login-requirements.md) |
 
 
 | Feature | Supported |
@@ -140,7 +154,15 @@ Besides flowcharts and sequence diagrams, ten more Mermaid types are turned into
 | `timeline`: sections (zones), periods with one or more events (also on `:` continuation lines) | ✅ |
 | `quadrantChart`: axis labels, quadrant names (zones), points placed by their x/y values; steps play quadrant by quadrant | ✅ (point styling ignored; points too close together are nudged apart) |
 | `gitGraph`: `commit` (`id`, `tag`, `type`), `branch`, `checkout` / `switch`, `merge`, `cherry-pick`; each branch gets its own lane and colour | ✅ (`order:` and commit direction `TB`/`BT` ignored) |
-| xychart, sankey, block, architecture, C4, kanban, packet, requirement and other types | ❌ shows "not supported yet" |
+| `xychart-beta`: `x-axis` list or range, `y-axis` range, any number of `bar` and `line` series (each series is a row) | ✅ (`horizontal` ignored) |
+| `sankey-beta`: `from,to,value` lines (quoted names allowed); block height follows how much passes through | ✅ |
+| `block-beta`: `columns`, spans `a:2`, `space`, nested `block … end` (zones), shapes, block arrows, links with labels | ✅ (styles ignored) |
+| `architecture-beta`: `group` (zones, nested), `service` with icons, `junction`, edges `a:R --> L:b` | ✅ (edge sides ignored; layout is automatic) |
+| C4 (`C4Context`, `C4Container`, `C4Component`, `C4Dynamic`, `C4Deployment`): people, systems, containers, components, `Db`/`Queue`/`_Ext` variants, boundaries and deployment nodes (zones), `Rel` / `BiRel` / `Rel_Back` / `RelIndex` | ✅ (`Update…Style` and layout hints ignored) |
+| `kanban`: columns (zones) and cards, with `assigned`, `priority` and `ticket` metadata | ✅ |
+| `packet-beta` / `packet`: `0-15: "Field"` and `+16: "Field"`; one 32-bit row per zone | ✅ |
+| `requirementDiagram`: all requirement kinds, `element`, the seven relationship types (forward and `<-` reverse) | ✅ (styles ignored) |
+| Other types (e.g. radar, treemap, zenuml) | ❌ shows "not supported yet" |
 
 ## 📸 Snapshot: a README picture with an overlap check
 

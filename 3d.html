@@ -153,12 +153,12 @@ body.client .edit-only{display:none}
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer">
   <div class="row" style="justify-content:space-between"><h3>Paste your markdown</h3><button class="btn ghost" id="btnClose">✕</button></div>
-  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b>, <b>mindmap</b>, <b>journey</b>, <b>timeline</b>, <b>quadrantChart</b> or <b>gitGraph</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
+  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b>, <b>mindmap</b>, <b>journey</b>, <b>timeline</b>, <b>quadrantChart</b>, <b>gitGraph</b>, <b>xychart</b>, <b>sankey</b>, <b>block</b>, <b>architecture</b>, <b>C4</b>, <b>kanban</b>, <b>packet</b> or <b>requirementDiagram</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="err" id="err"></div>
   <div class="row">
     <button class="btn primary" id="btnRender">Render ▶</button>
-    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option><option value="ex4">Article lifecycle (state)</option><option value="ex5">Shop objects (class)</option><option value="ex6">Shop database (ER)</option><option value="ex7">Launch plan (gantt)</option><option value="ex8">Visitors (pie)</option><option value="ex9">Shop overview (mindmap)</option><option value="ex10">Ticket buying (journey)</option><option value="ex11">Shop history (timeline)</option><option value="ex12">Feature priorities (quadrant)</option><option value="ex13">Checkout release (git graph)</option></select>
+    <select class="btn" id="exSel"><option value="">Load example…</option><option value="ex1">Order flow (flowchart)</option><option value="ex2">Login (sequence)</option><option value="ex3">System map (groups)</option><option value="ex4">Article lifecycle (state)</option><option value="ex5">Shop objects (class)</option><option value="ex6">Shop database (ER)</option><option value="ex7">Launch plan (gantt)</option><option value="ex8">Visitors (pie)</option><option value="ex9">Shop overview (mindmap)</option><option value="ex10">Ticket buying (journey)</option><option value="ex11">Shop history (timeline)</option><option value="ex12">Feature priorities (quadrant)</option><option value="ex13">Checkout release (git graph)</option><option value="ex14">Monthly sales (xychart)</option><option value="ex15">Where money goes (sankey)</option><option value="ex16">Website parts (block)</option><option value="ex17">Cloud setup (architecture)</option><option value="ex18">Shop big picture (C4)</option><option value="ex19">Project board (kanban)</option><option value="ex20">Network message (packet)</option><option value="ex21">Sign-in rules (requirement)</option></select>
     <label class="btn">Open .md<input type="file" id="file" accept=".md,.markdown,.mmd,.txt,text/*" hidden></label>
   </div>
 </div>
@@ -425,6 +425,144 @@ gitGraph
     merge checkout id: "Release checkout" tag: "v1.0"
     commit id: "Small text fix"
 ```</script>
+<script type="text/plain" id="ex14"># Online shop sales this year
+
+Monthly sales, in Hong Kong dollars.
+
+```mermaid
+xychart-beta
+    title "Monthly sales"
+    x-axis [Jan, Feb, Mar, Apr, May, Jun]
+    y-axis "Sales (HK$)" 0 --> 120000
+    bar [42000, 51000, 68000, 61000, 87000, 104000]
+```</script>
+<script type="text/plain" id="ex15"># Where each order's money goes
+
+How HK$100 of ticket sales is split up.
+
+```mermaid
+sankey-beta
+Ticket sales,Event organiser,80
+Ticket sales,Shop fees,20
+Shop fees,Card payments,4
+Shop fees,Hosting,3
+Shop fees,Support team,6
+Shop fees,Profit,7
+```</script>
+<script type="text/plain" id="ex16"># The parts of the website
+
+```mermaid
+block-beta
+    columns 3
+    browser["Visitor's browser"]:3
+    space:3
+    block:shop["Online shop"]:2
+        columns 2
+        pages["Web pages"] cart["Shopping cart"]
+    end
+    cms["Content editor"]
+    db[("Database")]:3
+    browser --> pages
+    pages --> cart
+    cart --> db
+    cms --> db
+```</script>
+<script type="text/plain" id="ex17"># How the shop runs in the cloud
+
+```mermaid
+architecture-beta
+    group web(cloud)[Website]
+    service visitor(internet)[Visitors]
+    service cdn(server)[Fast delivery network] in web
+    service app(server)[Shop server] in web
+    service db(database)[Database] in web
+    service files(disk)[Photo storage] in web
+    visitor:R --> L:cdn
+    cdn:R --> L:app
+    app:R --> L:db
+    app:B --> T:files
+```</script>
+<script type="text/plain" id="ex18"># Who uses the online shop
+
+```mermaid
+C4Context
+    title Online shop: the big picture
+    Person(customer, "Customer", "Buys tickets on the website")
+    Person(staff, "Shop staff", "Adds events and answers questions")
+    System_Boundary(ours, "Our system") {
+        System(shop, "Online shop", "Sells tickets and sends them out")
+        SystemDb(db, "Order database", "Keeps every order")
+    }
+    System_Ext(pay, "Payment provider", "Takes card payments")
+    System_Ext(mail, "Email service", "Delivers emails")
+    Rel(customer, shop, "Buys tickets on")
+    Rel(staff, shop, "Manages events in")
+    Rel(shop, db, "Saves orders to")
+    Rel(shop, pay, "Takes payment through", "HTTPS")
+    Rel(shop, mail, "Sends tickets by", "SMTP")
+```</script>
+<script type="text/plain" id="ex19"># Where the website project stands
+
+```mermaid
+kanban
+  todo[To do]
+    t1[Write About page text]
+    t2[Choose photos for events]@{ assigned: 'May', priority: 'High' }
+  doing[In progress]
+    d1[New checkout page]@{ assigned: 'Ken', priority: 'Very High', ticket: WEB-42 }
+    d2[Faster search]@{ assigned: 'Jo' }
+  review[Waiting for client]
+    r1[Homepage design]
+  done[Done]
+    x1[Set up hosting]
+    x2[Connect payments]
+```</script>
+<script type="text/plain" id="ex20"># What's inside a UDP message
+
+Every message sent over the network starts with a small header.
+
+```mermaid
+packet-beta
+    title UDP message
+    0-15: "Sender port"
+    16-31: "Receiver port"
+    32-47: "Length"
+    48-63: "Checksum"
+    64-95: "Data"
+```</script>
+<script type="text/plain" id="ex21"># What the sign-in feature must do
+
+```mermaid
+requirementDiagram
+    requirement sign_in {
+        id: 1
+        text: Customers can sign in with email and a code
+        risk: high
+        verifymethod: test
+    }
+    functionalRequirement code_expiry {
+        id: 1.1
+        text: A sign-in code stops working after 10 minutes
+        risk: medium
+        verifymethod: test
+    }
+    performanceRequirement fast_email {
+        id: 1.2
+        text: The code email arrives within 30 seconds
+        risk: low
+        verifymethod: demonstration
+    }
+    element login_page {
+        type: web page
+    }
+    element login_tests {
+        type: automated tests
+    }
+    sign_in - contains -> code_expiry
+    sign_in - contains -> fast_email
+    login_page - satisfies -> sign_in
+    login_tests - verifies -> code_expiry
+```</script>
 
 <script type="module">
 import * as THREE from './vendor/three.module.js';
@@ -454,7 +592,7 @@ function parseMarkdown(md){
     }else if(l.trim()&&!cur)para.push(l.trim());
     else if(l.trim()&&cur&&!/^\s*([-*+]|\d+[.)])\s/.test(l)&&!/^\s*</.test(l)){/* trailing prose ignored */}
   }
-  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|gantt|pie|mindmap|journey|timeline|quadrantChart|gitGraph)\b/.test(md))
+  if(!scenes.length&&/^\s*(%%.*\n\s*)*(flowchart|graph|sequenceDiagram|stateDiagram|classDiagram|erDiagram|gantt|pie|mindmap|journey|timeline|quadrantChart|gitGraph|xychart(-beta)?|sankey(-beta)?|block(-beta)?|architecture(-beta)?|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment|kanban|packet(-beta)?|requirementDiagram)\b/.test(md))
     scenes.push({title:'',intro:'',code:md,ordered:[],named:[]});
   return {docTitle,scenes};
 }
@@ -487,7 +625,15 @@ function parseMermaid(code){
   if(/^timeline\b/i.test(ls[0]))return parseTimeline(ls.slice(1));
   if(/^quadrantChart\b/i.test(ls[0]))return parseQuadrant(ls.slice(1));
   if(/^gitGraph\b/i.test(ls[0]))return parseGit(ls.slice(1));
-  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart, sequenceDiagram, stateDiagram, classDiagram, erDiagram, gantt, pie, mindmap, journey, timeline, quadrantChart and gitGraph.');
+  if(/^xychart(-beta)?\b/i.test(ls[0]))return parseXY(ls.slice(1));
+  if(/^sankey(-beta)?\b/i.test(ls[0]))return parseSankey(ls.slice(1));
+  if(/^block(-beta)?\s*$/i.test(ls[0]))return parseBlock(ls.slice(1));
+  if(/^architecture(-beta)?\b/i.test(ls[0]))return parseArch(ls.slice(1));
+  if(/^C4(Context|Container|Component|Dynamic|Deployment)\b/.test(ls[0]))return parseC4(ls[0],ls.slice(1));
+  if(/^kanban\b/i.test(ls[0]))return parseKanban(code);
+  if(/^packet(-beta)?\b/i.test(ls[0]))return parsePacket(ls.slice(1));
+  if(/^requirementDiagram\b/i.test(ls[0]))return parseReq(ls.slice(1));
+  throw new Error('“'+ls[0].split(/\s/)[0]+'” diagrams are not supported yet. This version reads flowchart, sequenceDiagram, stateDiagram, classDiagram, erDiagram, gantt, pie, mindmap, journey, timeline, quadrantChart, gitGraph, xychart, sankey, block, architecture, C4, kanban, packet and requirementDiagram.');
 }
 
 /* ---------- mermaid: flowchart ---------- */
@@ -1025,6 +1171,278 @@ function parseGit(ls){
   if(!commits.length)throw new Error('No commits found in the git graph.');
   const N=[...K.nodes.values()];routeFixed(N,K.links);
   return {type:'git',nodes:N,links:K.links,steps,groups:K.groups,fixed:true};
+}
+
+/* ---------- mermaid: helpers for the chart-like types ---------- */
+const fmtNum=v=>Number.isInteger(v)?v.toLocaleString('en-US'):v.toLocaleString('en-US',{maximumFractionDigits:2});
+const humanId=s=>{s=cleanText(s);return /\s/.test(s)||!/[_-]/.test(s)?s:s.replace(/[_-]+/g,' ').replace(/^./,c=>c.toUpperCase())};
+const andList=(a,B)=>{a=a.map(B);return a.length<2?a.join(''):a.slice(0,-1).join(', ')+' and '+a[a.length-1]};
+const lcFirst=s=>/^[A-Z][a-z]/.test(s)?s[0].toLowerCase()+s.slice(1):s;
+function splitArgs(s){const out=[];let cur='',q=false;for(const ch of s){if(ch==='"'){q=!q;continue}if(ch===','&&!q){out.push(cur.trim());cur='';continue}cur+=ch}if(cur.trim()||out.length)out.push(cur.trim());return out}
+function splitCsv(l){const out=[];let cur='',q=false;for(let i=0;i<l.length;i++){const ch=l[i];if(q){if(ch==='"'&&l[i+1]==='"'){cur+='"';i++}else if(ch==='"')q=false;else cur+=ch}else if(ch==='"')q=true;else if(ch===','){out.push(cur);cur=''}else cur+=ch}out.push(cur);return out.map(s=>s.trim())}
+
+/* ---------- mermaid: xy chart ---------- */
+function parseXY(ls){
+  let title='',cats=null,range=null,yTitle='',xTitle='',ymin=null,ymax=null;const series=[];
+  const list=s=>splitArgs(s).map(cleanText).filter(x=>x!=='');
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(m=line.match(/^x-axis\s*(?:("[^"]*"|[^\s\[]+)\s*)?(?:\[(.*)\]|(-?[\d.]+)\s*-->\s*(-?[\d.]+))?\s*$/)){xTitle=cleanText(m[1]||'');if(m[2]!=null)cats=list(m[2]);else if(m[3]!=null)range=[+m[3],+m[4]];continue}
+    if(m=line.match(/^y-axis\s*(?:("[^"]*"|[^\s\d-][^\s]*)\s*)?(?:(-?[\d.]+)\s*-->\s*(-?[\d.]+))?\s*$/)){yTitle=cleanText(m[1]||'');if(m[2]!=null){ymin=+m[2];ymax=+m[3]}continue}
+    if(m=line.match(/^(bar|line)\s*(?:("[^"]*"|[^\s\[]+)\s*)?\[(.*)\]\s*$/))series.push({kind:m[1],name:cleanText(m[2]||''),v:list(m[3]).map(Number).filter(x=>!isNaN(x))});
+  }
+  if(!series.length||!series.some(s=>s.v.length))throw new Error('No data found in the xy chart. Write it like  bar [5000, 6000, 7500]');
+  const n=Math.max(...series.map(s=>s.v.length));
+  if(!cats||cats.length<n){const c=cats||[];cats=Array.from({length:n},(_,i)=>c[i]??(range?fmtNum(Math.round((range[0]+(range[1]-range[0])*(n>1?i/(n-1):0))*100)/100):String(i+1)))}
+  const all=series.flatMap(s=>s.v),lo=ymin!=null?ymin:Math.min(0,...all),hi=Math.max(ymax!=null?ymax:-Infinity,...all),span=hi-lo||1;
+  const counts={bar:0,line:0};
+  series.forEach(s=>{counts[s.kind]++;s.name=s.name||(series.length===1?(yTitle||'Value'):(s.kind==='bar'?'Bars':'Line')+(series.filter(x=>x.kind===s.kind).length>1?' '+counts[s.kind]:''))});
+  const multi=series.length>1,groups=multi?series.map(s=>({title:s.name})):[],nodes=[],links=[];
+  series.forEach((s,si)=>s.v.forEach((v,i)=>{
+    const nd={id:'s'+si+'p'+i,label:cats[i]+' · '+fmtNum(v),shape:s.kind==='line'?'circle':'box',group:multi?si:null,ci:si,gx:i*2.7,gy:si*2.9,hk:.3+2.3*Math.max(0,v-lo)/span,
+      note:(multi?s.name+': ':'')+fmtNum(v)+(yTitle&&!multi?' ('+yTitle+')':'')+'.'};
+    if(s.kind==='line')nd.icon='📈';nodes.push(nd);
+    if(s.kind==='line'&&i>0)links.push({from:'s'+si+'p'+(i-1),to:nd.id,label:'',dotted:false,arrow:true});
+  }));
+  routeFixed(nodes,links);
+  const B=s=>'**'+s+'**',main=series[0];
+  const steps=cats.slice(0,n).map((c,i)=>{
+    const ids=series.filter(s=>i<s.v.length).map(s=>'s'+series.indexOf(s)+'p'+i);
+    let auto;
+    if(!multi){const v=main.v[i],p=i?main.v[i-1]:null,mx=Math.max(...main.v),mn=Math.min(...main.v);
+      auto=(i===0?'It starts at '+B(fmtNum(v))+' in '+B(c):'In '+B(c)+': '+B(fmtNum(v)))+(p!=null&&p?(v===p?', the same as '+cats[i-1]:(v>p?', up ':', down ')+Math.abs(Math.round((v-p)/Math.abs(p)*100))+'% from '+cats[i-1]):'')+'.'+(v===mx&&main.v.length>2?' This is the highest point.':v===mn&&main.v.length>2?' This is the lowest point.':'');}
+    else auto=B(c)+': '+series.filter(s=>i<s.v.length).map(s=>s.name+' '+B(fmtNum(s.v[i]))).join(', ')+'.';
+    const li=links.findIndex(l=>l.to===ids.find(id=>nodes.find(x=>x.id===id).shape==='circle'));
+    const s=li>=0?{kind:'edge',link:li,reverse:false,from:links[li].from,to:links[li].to,nodes:ids,title:c,chip:multi?'':fmtNum(main.v[i]),auto}:{kind:'node',nodes:ids,title:c,chip:multi?'':fmtNum(main.v[i]),auto};
+    if(li>=0&&!ids.includes(links[li].from))s.nodes=[links[li].from,...ids];
+    return s;
+  });
+  return {type:'xy',nodes,links,steps,groups,fixed:true,diagramTitle:title||(yTitle&&xTitle?yTitle+' by '+lcFirst(xTitle):yTitle)};
+}
+
+/* ---------- mermaid: sankey ---------- */
+function parseSankey(ls){
+  const K=graphKit(),flows=[];
+  for(const line of ls){const f=splitCsv(line);if(f.length<3)continue;const v=+f[2];if(!f[0]||!f[1]||isNaN(v))continue;flows.push({a:cleanText(f[0]),b:cleanText(f[1]),v})}
+  if(!flows.length)throw new Error('No flows found in the sankey diagram. Write each line as  From,To,Amount');
+  const id=s=>'k_'+s,inn=new Map(),out=new Map(),add=(m,k,v)=>m.set(k,(m.get(k)||0)+v);
+  flows.forEach(f=>{f.li=K.link(K.node(id(f.a),f.a),K.node(id(f.b),f.b),{label:fmtNum(f.v),arrow:true});add(out,f.a,f.v);add(inn,f.b,f.v)});
+  const N=[...K.nodes.values()],thr=s=>Math.max(inn.get(s)||0,out.get(s)||0),mx=Math.max(...N.map(n=>thr(n.label)))||1;
+  N.forEach(n=>{const i=inn.get(n.label)||0,o=out.get(n.label)||0;n.hk=.45+1.6*thr(n.label)/mx;
+    n.note=[i?'Comes in: '+fmtNum(i)+'.':'',o?'Goes out: '+fmtNum(o)+'.':'',i&&o&&Math.abs(i-o)>1e-9?(i>o?'Keeps ':'Adds ')+fmtNum(Math.abs(i-o))+'.':''].filter(Boolean).join(' ');
+    if(!i)n.icon='🚰';else if(!o)n.icon='🎯'});
+  const B=s=>'**'+s+'**';
+  const steps=flows.map(f=>{const share=Math.round(f.v/(out.get(f.a)||1)*100);
+    return K.edgeStep(f.li,{chip:fmtNum(f.v),auto:B(f.a)+' sends '+B(fmtNum(f.v))+' to '+B(f.b)+(share<100?' — '+share+'% of everything leaving '+f.a+'.':' — all of it.')})});
+  return {type:'sankey',nodes:N,links:K.links,steps,groups:[]};
+}
+
+/* ---------- mermaid: block ---------- */
+function parseBlock(ls){
+  const nodes=new Map(),links=[],groups=[],root={cols:0,items:[],g:null},stack=[root],byBlock=new Map();
+  const OPEN=[['(((',')))','circle'],['((','))','circle'],['([','])','pill'],['[(',')]','cyl'],['[[',']]','box'],['{{','}}','hex'],['<[',']>','pill'],['[/','/]','box'],['[\\','\\]','box'],['[/','\\]','box'],['[\\','/]','box'],['[',']','box'],['(',')','pill'],['{','}','hex'],['>',']','box']];
+  const tokens=line=>{const out=[];let i=0;
+    while(i<line.length){
+      while(line[i]===' ')i++;if(i>=line.length)break;
+      const idm=line.slice(i).match(/^[^\s\[\](){}<>:"]+/);if(!idm){i++;continue}
+      let id=idm[0],label=null,shape='box',arrow=false;i+=id.length;
+      for(const [o,c,sh] of OPEN){if(!line.startsWith(o,i))continue;let j=i+o.length,q=false;
+        for(;j<line.length;j++){if(line[j]==='"')q=!q;else if(!q&&line.startsWith(c,j))break}
+        label=cleanText(line.slice(i+o.length,j));shape=sh;arrow=o==='<[';i=j+c.length;break}
+      if(arrow){const dm=line.slice(i).match(/^\(([\w,\s]+)\)/);if(dm)i+=dm[0].length;label=(label||'').replace(/&nbsp;/g,' ').trim()||({right:'→',left:'←',up:'↑',down:'↓'}[(dm?dm[1]:'').split(',')[0].trim()]||'→')}
+      let span=1;const sm=line.slice(i).match(/^:(\d+)/);if(sm){span=+sm[1];i+=sm[0].length}
+      out.push({id,label,shape,span,arrow});
+    }return out};
+  for(const line of ls){let m;
+    if(/^(classDef|class|style|accTitle|accDescr)\b/.test(line))continue;
+    const top=stack[stack.length-1];
+    if(m=line.match(/^columns\s+(\d+|auto)$/)){top.cols=m[1]==='auto'?0:+m[1];continue}
+    if(m=line.match(/^block(?::([^\s:\[]+))?(?:\["?([^"\]]*)"?\])?(?::(\d+))?$/)){
+      groups.push({title:cleanText(m[2]||'')||humanId(m[1]||'Group '+(groups.length+1))});
+      const c={cols:0,items:[],g:groups.length-1,span:+(m[3]||1)};if(m[1])byBlock.set(m[1],c);top.items.push(c);stack.push(c);continue}
+    if(line==='end'){if(stack.length>1)stack.pop();continue}
+    if(m=line.match(/^([^\s"]+)\s*(?:--\s*"([^"]*)"\s*(-->|---)|(-->|---|==>|-\.->|-\.-))\s*([^\s"]+)$/)){links.push({a:m[1],b:m[5],label:cleanText(m[2]||''),arrow:/>$/.test(m[3]||m[4]),dotted:/\./.test(m[4]||'')});continue}
+    for(const t of tokens(line)){
+      if(t.id==='space'){top.items.push({space:true,span:t.span});continue}
+      if(!nodes.has(t.id))nodes.set(t.id,{id:t.id,label:t.label||t.id,shape:t.shape,group:top.g});
+      const n=nodes.get(t.id);if(t.label){n.label=t.label;n.shape=t.shape}if(t.arrow)n.icon={'↓':'⬇️','↑':'⬆️','←':'⬅️'}[n.label]||'➡️';
+      top.items.push({n,span:t.span});
+    }
+  }
+  const leaves0=it=>it.items?it.items.flatMap(leaves0):it.n?[it.n]:[];
+  links.forEach(l=>{for(const e of ['a','b'])if(!nodes.has(l[e])&&byBlock.has(l[e])){const ls=leaves0(byBlock.get(l[e]));if(ls.length){l[e+'Name']=groups[byBlock.get(l[e]).g].title;l[e]=ls[Math.floor((ls.length-1)/2)].id}}});
+  links.forEach(l=>{for(const k of [l.a,l.b])if(!nodes.has(k)){nodes.set(k,{id:k,label:k,shape:'box',group:null});root.items.push({n:nodes.get(k),span:1})}});
+  if(!nodes.size)throw new Error('No blocks found in the block diagram.');
+  const size=c=>{c.items.forEach(it=>{if(it.items)Object.assign(it,size(it));else{it.w=it.span;it.h=1}});
+    const cols=c.cols||c.items.reduce((s,it)=>s+it.span,0)||1;c.ncol=cols;
+    c.cw=Math.max(1,...c.items.map(it=>it.w/Math.min(it.span,cols)));
+    let col=0,y=0,rh=0;c.rows=[[]];
+    c.items.forEach(it=>{const sp=Math.min(it.span,cols);if(col+sp>cols){y+=rh;rh=0;col=0;c.rows.push([])}it.x=col*c.cw;it.y=y;it.ww=sp*c.cw;col+=sp;rh=Math.max(rh,it.h);c.rows[c.rows.length-1].push(it)});
+    return {w:cols*c.cw,h:y+rh}};
+  size(root);
+  const place=(c,ox,oy)=>c.items.forEach(it=>{if(it.items)place(it,ox+it.x+(it.ww-it.w)/2,oy+it.y);else if(it.n){it.n.gx=(ox+it.x+it.ww/2)*DX;it.n.gy=(oy+it.y+.5)*DY*1.15}});
+  place(root,0,0);
+  const N=[...nodes.values()],L=links.map(l=>({from:l.a,to:l.b,label:l.label,dotted:l.dotted,arrow:l.arrow,an:l.aName,bn:l.bName}));routeFixed(N,L);
+  const B=s=>'**'+s+'**',by=id=>nodes.get(id);let steps;
+  if(L.length)steps=L.map((l,i)=>{const a={...by(l.from)},b={...by(l.to)};if(l.an)a.label=l.an;if(l.bn)b.label=l.bn;
+    return {kind:'edge',link:i,reverse:false,from:a.id,to:b.id,nodes:[a.id,b.id],title:a.label+' → '+b.label,chip:l.label,tag:a.group!=null?groups[a.group].title:'',
+      auto:l.label?B(a.label)+' → '+B(b.label)+': '+l.label+'.':l.arrow?B(a.label)+' hands over to '+B(b.label)+'.':B(a.label)+' is connected to '+B(b.label)+'.'}});
+  else{steps=[];const leaves=it=>it.items?it.items.flatMap(leaves):it.n?[it.n]:[];
+    root.rows.forEach((row,ri)=>{const ns=row.flatMap(leaves);if(!ns.length)return;
+      const inner=row.filter(it=>it.items&&leaves(it).length).map(it=>B(groups[it.g].title)+' holds '+andList(leaves(it).map(n=>n.label),B));
+      steps.push({kind:'node',nodes:ns.map(n=>n.id),title:root.rows.length>1?'Row '+(ri+1):'Blocks',auto:(root.rows.length>1?'Row '+(ri+1)+' has ':'This has ')+andList(row.map(it=>it.items?groups[it.g].title:it.n?it.n.label:null).filter(Boolean),B)+'.'+(inner.length?' '+inner.join('. ')+'.':'')})});}
+  return {type:'block',nodes:N,links:L,steps,groups,fixed:true};
+}
+
+/* ---------- mermaid: architecture ---------- */
+const ARCH_ICON={cloud:'☁️',database:'🗄️',disk:'💾',internet:'🌐',server:'🖥️'};
+function parseArch(ls){
+  const K=graphKit(),gid=new Map(),edges=[];
+  const icon=(n,ic)=>{if(!ic)return;if(ic==='database'||ic==='disk')n.shape='cyl';if(ic==='internet')n.shape='circle';
+    n.icon=ARCH_ICON[ic]||(/(db|sql|dynamo|rds|mongo|redis)/i.test(ic)?'🗄️':/(s3|storage|bucket|blob)/i.test(ic)?'💾':/(lambda|function)/i.test(ic)?'⚡':/(queue|sqs|kafka|pubsub)/i.test(ic)?'📨':'🧩')};
+  for(const line of ls){let m;
+    if(m=line.match(/^group\s+([\w-]+)\s*(?:\(([^)]*)\))?\s*(?:\[([^\]]*)\])?(?:\s+in\s+([\w-]+))?$/)){K.groups.push({title:cleanText(m[3]||'')||humanId(m[1]),icon:m[2]||''});gid.set(m[1],K.groups.length-1);continue}
+    if(m=line.match(/^(service|junction)\s+([\w-]+)\s*(?:\(([^)]*)\))?\s*(?:\[([^\]]*)\])?(?:\s+in\s+([\w-]+))?$/)){
+      const n=K.node(m[2],m[1]==='junction'?'Meeting point':cleanText(m[4]||'')||humanId(m[2]),m[1]==='junction'?'circle':'box');
+      n.group=m[5]&&gid.has(m[5])?gid.get(m[5]):null;if(m[1]==='junction'){n.icon='➕';n.junction=true}else icon(n,m[3]);continue}
+    if(m=line.match(/^([\w-]+)(?:\{group\})?\s*:\s*([LRTB])\s*(<)?-(?:\[([^\]]*)\]-|-)(>)?\s*([LRTB])\s*:\s*([\w-]+)(?:\{group\})?$/))edges.push({a:m[1],b:m[7],label:cleanText(m[4]||''),back:!!m[3],fwd:!!m[5]});
+  }
+  if(!K.nodes.size)throw new Error('No services found in the architecture diagram. Write them like  service db(database)[Database]');
+  const B=s=>'**'+s+'**',steps=[];
+  for(const e of edges){
+    let a=K.nodes.get(e.a)||K.node(e.a,humanId(e.a)),b=K.nodes.get(e.b)||K.node(e.b,humanId(e.b));
+    if(e.back&&!e.fwd)[a,b]=[b,a];
+    const li=K.link(a,b,{label:e.label,arrow:e.back||e.fwd});
+    const auto=b.junction?B(a.label)+' joins the meeting point.':a.junction?'The meeting point continues to '+B(b.label)+'.':
+      (e.back&&e.fwd?B(a.label)+' and '+B(b.label)+' talk to each other':e.back||e.fwd?B(a.label)+' sends to '+B(b.label):B(a.label)+' is connected to '+B(b.label))+(e.label?': '+e.label:'')+'.';
+    steps.push(K.edgeStep(li,{auto,chip:e.label,tag:a.group!=null&&a.group===b.group?K.groups[a.group].title:''}));
+  }
+  const N=[...K.nodes.values()];
+  if(!steps.length)N.forEach(n=>steps.push(K.nodeStep(n,{auto:B(n.label)+(n.group!=null?' runs in '+B(K.groups[n.group].title):'')+'.',tag:n.group!=null?K.groups[n.group].title:''})));
+  return {type:'architecture',nodes:N,links:K.links,steps,groups:K.groups};
+}
+
+/* ---------- mermaid: C4 ---------- */
+function parseC4(first,ls){
+  const K=graphKit(),rels=[];let title='',pending=null;
+  const level=(first.match(/^C4(\w+)/)||[])[1]||'Context';
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(line==='{'){if(pending!=null){K.stack.push(pending);pending=null}continue}
+    if(line==='}'){K.stack.pop();continue}
+    if(!(m=line.match(/^(\w+)\s*\((.*)\)\s*(\{)?\s*(\})?$/)))continue;
+    const fn=m[1],a=splitArgs(m[2]).filter(x=>!/^\$/.test(x)).map(x=>x.replace(/^"|"$/g,'')),open=!!m[3]&&!m[4];pending=null;
+    if(/^(Update|Add|Show|Hide|Set)/.test(fn))continue;
+    if(/Boundary$/.test(fn)||(/^(Deployment_Node|Node)(_L|_R)?$/.test(fn)&&(open||m[3]))){
+      K.groups.push({title:cleanText(a[1]||a[0])+(a[2]&&!/Boundary$/.test(fn)?' ('+cleanText(a[2])+')':'')});
+      if(open)K.stack.push(K.groups.length-1);else if(!m[3])pending=K.groups.length-1;continue}
+    let e=fn.match(/^(Person|System|Container|Component|Node)(Db|Queue)?(_Ext)?(?:_[LR])?$/);
+    if(e){const [,base,sub,ext]=e,tech2=base==='Container'||base==='Component'||base==='Node';
+      const id=a[0],label=cleanText(a[1]||a[0]),tech=tech2?cleanText(a[2]||''):'',desc=cleanText(tech2?a[3]||'':a[2]||'');
+      const n=K.node(id,label);n.label=label;n.shape=sub==='Db'?'cyl':sub==='Queue'||base==='Person'?'pill':'box';
+      n.icon=base==='Person'?'🧑':sub==='Queue'?'📨':ext?'🌐':base==='Node'?'🖥️':'';if(!n.icon)delete n.icon;n.iconFallback=base==='Component'?'🧩':'📦';
+      n.note=[desc&&/[.!?]$/.test(desc)?desc:desc?desc+'.':'',tech?'Built with: '+tech+'.':'',ext?'Outside our own system.':''].filter(Boolean).join(' ');
+      continue}
+    if(e=fn.match(/^(Bi)?Rel(Index)?(?:_(?:U|Up|D|Down|L|Left|R|Right|Back|Neighbor))?$/)){
+      const r=e[2]?a.slice(1):a;if(r.length<2)continue;
+      let [from,to]=r;if(/_Back$/.test(fn))[from,to]=[to,from];
+      rels.push({from,to,label:cleanText(r[2]||''),tech:cleanText(r[3]||''),bi:!!e[1]});
+    }
+  }
+  if(!K.nodes.size)throw new Error('No people or systems found in the C4 diagram. Write them like  Person(customer, "Customer")');
+  const B=s=>'**'+s+'**',steps=[];
+  for(const r of rels){
+    const a=K.nodes.get(r.from)||K.node(r.from,humanId(r.from)),b=K.nodes.get(r.to)||K.node(r.to,humanId(r.to));
+    const li=K.link(a,b,{label:r.label,arrow:true});
+    const verb=r.label?lcFirst(r.label):(r.bi?'works together with':'talks to');
+    const auto=B(a.label)+' '+verb+' '+B(b.label)+(r.tech?' (using '+r.tech+')':'')+'.'+(r.bi&&r.label?' This goes both ways.':'');
+    steps.push(K.edgeStep(li,{auto,chip:r.tech||'',tag:a.group!=null?K.groups[a.group].title:''}));
+  }
+  const N=[...K.nodes.values()];
+  if(!steps.length)N.forEach(n=>steps.push(K.nodeStep(n,{auto:B(n.label)+(n.note?': '+n.note:'.')})));
+  return {type:'c4',nodes:N,links:K.links,steps,groups:K.groups,diagramTitle:title||({Context:'System context',Container:'Containers',Component:'Components',Dynamic:'How the parts talk',Deployment:'Where it runs'}[level]||'')};
+}
+
+/* ---------- mermaid: kanban ---------- */
+function parseKanban(code){
+  let raw=code.replace(/\r/g,'').split('\n');
+  if(raw.find(l=>l.trim())?.trim()==='---'){const a=raw.findIndex(l=>l.trim()==='---'),b=raw.findIndex((l,i)=>i>a&&l.trim()==='---');if(b>a)raw=raw.slice(b+1)}
+  raw=raw.map(l=>l.replace(/%%.*$/,'').replace(/\t/g,'    ')).filter(l=>l.trim());
+  raw=raw.slice(raw.findIndex(l=>/^\s*kanban\b/.test(l))+1);
+  if(!raw.length)throw new Error('The kanban board is empty.');
+  const base=Math.min(...raw.map(l=>l.match(/^ */)[0].length)),cols=[];
+  const item=t=>{let meta={};const mm=t.match(/@\{(.*)\}\s*$/);if(mm){t=t.slice(0,mm.index).trim();for(const x of mm[1].matchAll(/([\w-]+)\s*:\s*(?:'([^']*)'|"([^"]*)"|([^,}]+))/g))meta[x[1].toLowerCase()]=(x[2]??x[3]??x[4]).trim()}
+    const b=t.match(/^([^\[\s]*)\[(.*)\]$/);return {text:cleanText(b?b[2]:t),meta}};
+  for(const l of raw){const ind=l.match(/^ */)[0].length,t=l.trim();
+    if(ind<=base||!cols.length)cols.push({...item(t),cards:[]});else cols[cols.length-1].cards.push(item(t));}
+  const K=graphKit(),steps=[],B=s=>'**'+s+'**',PRI={'very high':'🔴',high:'🟠',low:'🟢','very low':'⚪'};let prev=null;
+  cols.forEach((c,i)=>{
+    K.groups.push({title:c.text});const g=K.groups.length-1;
+    const h=K.node('col'+(i+1),c.text,'box');h.group=g;h.gx=i*DX;h.gy=0;h.icon='📋';h.note=c.cards.length+' card'+(c.cards.length===1?'':'s')+'.';
+    const cs=c.cards.map((d,k)=>{const n=K.node('col'+(i+1)+'c'+(k+1),d.text.length>46?d.text.slice(0,44).replace(/\s+\S*$/,'')+'…':d.text,'pill');n.group=g;n.gx=i*DX;n.gy=(k+1)*2.9;
+      const pr=d.meta.priority;if(pr&&PRI[pr.toLowerCase()])n.icon=PRI[pr.toLowerCase()];
+      n.note=[d.text.length>46?d.text+'.':'',d.meta.assigned?'Assigned to '+d.meta.assigned+'.':'',pr?'Priority: '+pr+'.':'',d.meta.ticket?'Ticket: '+d.meta.ticket+'.':''].filter(Boolean).join(' ');
+      K.link(h,n,{dotted:true});return {n,d}});
+    const who=cs.filter(x=>x.d.meta.assigned).map(x=>x.d.meta.assigned),urgent=cs.filter(x=>/high/i.test(x.d.meta.priority||''));
+    const auto=(cs.length?B(c.text)+' has '+B(cs.length+' card'+(cs.length===1?'':'s'))+': '+andList(cs.map(x=>x.n.label),B)+'.':B(c.text)+' is empty right now.')
+      +(urgent.length?' '+andList(urgent.map(x=>x.n.label),B)+(urgent.length>1?' are':' is')+' high priority.':'')+(who.length?' Assigned to '+[...new Set(who)].join(', ')+'.':'');
+    let s;if(prev)s=K.edgeStep(K.link(prev,h,{arrow:true}),{auto,title:c.text,chip:cs.length+''});else{s=K.nodeStep(h,{auto});s.chip=cs.length+''}
+    s.nodes=[...(prev?[prev.id]:[]),h.id,...cs.map(x=>x.n.id)];steps.push(s);prev=h;
+  });
+  const N=[...K.nodes.values()];routeFixed(N,K.links);
+  return {type:'kanban',nodes:N,links:K.links,steps,groups:K.groups,fixed:true};
+}
+
+/* ---------- mermaid: packet ---------- */
+function parsePacket(ls){
+  let title='',next=0;const f=[];
+  for(const line of ls){let m;
+    if(m=line.match(/^title\s+(.+)$/)){title=cleanText(m[1]);continue}
+    if(m=line.match(/^(\d+)(?:\s*-\s*(\d+))?\s*:\s*(.+)$/)){const a=+m[1],b=m[2]!=null?+m[2]:a;f.push({a,b,label:cleanText(m[3])});next=b+1;continue}
+    if(m=line.match(/^\+(\d+)\s*:\s*(.+)$/)){const a=next,b=next+Math.max(1,+m[1])-1;f.push({a,b,label:cleanText(m[2])});next=b+1}
+  }
+  if(!f.length)throw new Error('No fields found in the packet diagram. Write them like  0-15: "Source Port"');
+  const W=32,groups=[],rowIx=new Map(),count=new Map(),mx=Math.max(...f.map(x=>x.b-x.a+1));
+  const nodes=f.map((x,i)=>{const r=Math.floor(x.a/W);if(!rowIx.has(r)){groups.push({title:'Bits '+r*W+'–'+(r*W+W-1)});rowIx.set(r,groups.length-1)}
+    const k=count.get(r)||0;count.set(r,k+1);const bits=x.b-x.a+1;
+    return {id:'f'+(i+1),label:x.label,shape:bits===1?'circle':'box',group:rowIx.get(r),gx:k*DX,gy:rowIx.get(r)*2.9,hk:bits===1?1:.5+1.5*Math.log2(bits)/Math.log2(Math.max(2,mx)),
+      note:(bits===1?'Bit '+x.a:'Bits '+x.a+'–'+x.b)+' ('+bits+' bit'+(bits===1?'':'s')+(bits%8===0?', '+bits/8+' byte'+(bits===8?'':'s'):'')+').'}});
+  const B=s=>'**'+s+'**';
+  const steps=f.map((x,i)=>{const bits=x.b-x.a+1,n=nodes[i];
+    const auto=bits===1?'Bit '+B(String(x.a))+' is '+B(x.label)+', a single on/off flag.':
+      (i===0?'The message starts with ':'Next, bits ')+(i===0?B(x.label)+' in bits '+B(x.a+'–'+x.b):B(x.a+'–'+x.b)+' hold '+B(x.label))+' ('+bits+' bits'+(bits%8===0?', '+bits/8+' byte'+(bits===8?'':'s'):'')+').';
+    return {kind:'node',nodes:[n.id],title:x.label,chip:bits+' bit'+(bits===1?'':'s'),auto,tag:groups[n.group].title}});
+  return {type:'packet',nodes,links:[],steps,groups,fixed:true,diagramTitle:title};
+}
+
+/* ---------- mermaid: requirement ---------- */
+const REQ_KIND={requirement:'Requirement',functionalrequirement:'Functional requirement',interfacerequirement:'Interface requirement',performancerequirement:'Performance requirement',physicalrequirement:'Physical requirement',designconstraint:'Design constraint'};
+const REQ_VERB={satisfies:(a,b)=>a+' meets the requirement '+b,verifies:(a,b)=>a+' checks that '+b+' is met',contains:(a,b)=>a+' includes '+b,copies:(a,b)=>a+' is a copy of '+b,
+  derives:(a,b)=>b+' is worked out from '+a,refines:(a,b)=>a+' adds detail to '+b,traces:(a,b)=>a+' traces back to '+b};
+function parseReq(ls){
+  const K=graphKit(),rels=[],B=s=>'**'+s+'**';let cur=null;
+  const name=s=>s.trim().replace(/:::[\w-]+$/,'').replace(/^"|"$/g,'');
+  for(const line of ls){let m;
+    if(cur){if(line==='}'){const f=cur.f,n=cur.n;
+        if(cur.el)n.note=[f.type?'Type: '+f.type+'.':'',f.docref?'Document: '+f.docref+'.':''].filter(Boolean).join(' ');
+        else{n.note=[(f.id?'ID '+f.id+' · ':'')+cur.kind+'.',f.text?'“'+f.text.replace(/\.$/,'')+'.”':'',f.risk?'Risk: '+f.risk+'.':'',f.verifymethod?'Checked by: '+f.verifymethod+'.':''].filter(Boolean).join(' ');
+          if(/high/i.test(f.risk||''))n.icon='❗'}
+        cur=null;continue}
+      if(m=line.match(/^(\w+)\s*:\s*(.+)$/))cur.f[m[1].toLowerCase()]=cleanText(m[2]);continue}
+    if(/^(classDef|class|style|direction|accTitle|accDescr)\b/.test(line))continue;
+    if(m=line.match(/^(requirement|functionalRequirement|interfaceRequirement|performanceRequirement|physicalRequirement|designConstraint|element)\s+(.+?)\s*\{$/i)){
+      const id=name(m[2]),el=/^element$/i.test(m[1]),n=K.node(id,humanId(id),el?'pill':'box');
+      if(el)n.iconFallback='🧩';else n.icon='📋';cur={n,el,kind:REQ_KIND[m[1].toLowerCase()],f:{}};continue}
+    if(m=line.match(/^(.+?)\s*-\s*(\w+)\s*->\s*(.+)$/)){rels.push({a:name(m[1]),v:m[2].toLowerCase(),b:name(m[3])});continue}
+    if(m=line.match(/^(.+?)\s*<-\s*(\w+)\s*-\s*(.+)$/))rels.push({a:name(m[3]),v:m[2].toLowerCase(),b:name(m[1])});
+  }
+  if(!K.nodes.size)throw new Error('No requirements found. Write them like  requirement login { text: Users can sign in }');
+  const steps=rels.map(r=>{const a=K.nodes.get(r.a)||K.node(r.a,humanId(r.a)),b=K.nodes.get(r.b)||K.node(r.b,humanId(r.b));
+    const li=K.link(a,b,{label:r.v,arrow:true}),f=REQ_VERB[r.v];
+    return K.edgeStep(li,{chip:r.v,auto:(f?f(B(a.label),B(b.label)):B(a.label)+' '+r.v+' '+B(b.label))+'.'})});
+  const N=[...K.nodes.values()];
+  if(!steps.length)N.forEach(n=>steps.push(K.nodeStep(n,{auto:B(n.label)+(n.note?': '+n.note:'.')})));
+  return {type:'requirement',nodes:N,links:K.links,steps,groups:[]};
 }
 
 /* ---------- layout ---------- */
