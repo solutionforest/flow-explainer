@@ -16,7 +16,7 @@ export function loadCore(page = 'index.html') {
   if (a < 0 || b < 0) throw new Error('core markers not found in ' + page);
   const code = html.slice(a, b);
   const ctx = vm.createContext({ console, location: { hash: '', pathname: '/', search: '', origin: 'http://x' } });
-  const names = ['parseMarkdown', 'parseMermaid', 'layout', 'cleanText', 'codeLines', 'STYLES', 'esc', 'mdInline', 'fmtNum'];
+  const names = ['embedCode', 'embedOpts', 'parseMarkdown', 'parseMermaid', 'layout', 'cleanText', 'codeLines', 'STYLES', 'esc', 'mdInline', 'fmtNum'];
   vm.runInContext(code + '\n;globalThis.__core={' + names.join(',') + '};', ctx, { filename: page });
   const core = /** @type {any} */ (ctx).__core;
   // values from the VM realm have other Array/Object prototypes: hand back plain copies
