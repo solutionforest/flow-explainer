@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
 """Copy the blocks shared by both pages from index.html into 3d.html.
 
-Both pages are standalone single files, so these blocks are duplicated on purpose:
-  - the markdown + Mermaid parser
+Both pages are standalone single files, so this block is duplicated on purpose:
+  - helpers, the markdown + Mermaid parsers and the layout
   - the diagram styles (STYLES) and the settings / share / steps UI code
 Edit them in index.html, then run:  python3 tools/sync-parser.py   (--check to verify)
 """
 import pathlib, sys
 root = pathlib.Path(__file__).resolve().parent.parent
 BLOCKS = [
-    ("parser", "/* ---------- markdown ---------- */", "/* ---------- layout ---------- */"),
-    ("diagram styles", "/* ---------- diagram styles + settings", "/* ---------- end of diagram styles + settings ---------- */"),
+    # helpers, markdown + Mermaid parsers, layout, diagram styles + settings / share / steps UI
+    ("core", "/* ---------- shared core:", "/* ---------- end of diagram styles + settings ---------- */"),
 ]
 src = (root / "index.html").read_text()
 dst_p = root / "3d.html"

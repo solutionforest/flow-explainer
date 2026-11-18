@@ -22,7 +22,9 @@ jobs:
         run: npm run check:sync
       - name: ESLint
         run: npm run lint
-      - name: Type check
+      - name: Type check (page scripts; server, tools and tests in strict mode)
         run: npm run typecheck
-      - name: Strict type check (no new errors vs baseline)
+      - name: Strict type check (shared core 0 errors; rest no new errors vs baseline)
         run: npm run typecheck:strict
+      - name: Unit tests (parsers, layout, styles, server)
+        run: npm test

@@ -245,7 +245,7 @@ If a browser has no WebGL, the 3D page opens the 2D page automatically.
 
 Open **⚙ Settings** to change how the diagram looks. The same style is used in 2D and 3D, it is saved in your browser, and a client link opens with the style you picked.
 
-![The ticket-order example in the five diagram styles: Original, Teal, Line Art, Blueprint and Glass](docs/images/diagram-styles.png)
+![The ticket-order example in the six diagram styles: Original, Teal, Line Art, Blueprint, Glass and Circuit](docs/images/diagram-styles.png)
 
 | Style | Look |
 |---|---|
@@ -254,6 +254,7 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 | Line Art | White blocks with bold black outlines |
 | Blueprint | Dark background, cyan wireframe blocks |
 | Glass | See-through blocks |
+| Circuit | Dark board with flat chip-shaped blocks (inset top, pins), thin steel-blue lines and plain capital labels |
 
 Each style is one entry in the `STYLES` list in `index.html` (background, block colours, outline, highlight, label colours, and the 3D material). To add a style, copy an entry, change the values, and run `python3 tools/sync-parser.py` so `3d.html` gets it too. The site itself always uses the Solution Forest colours; only the diagram changes.
 
@@ -314,26 +315,34 @@ Both pages share the same markdown reader, step panel, timeline, settings and cl
 
 ## Code checks
 
-The pages have no build step, but the code inside them is checked the way a typed project would be. `npm run check` runs four steps, and GitHub Actions runs the same on every push and pull request ([`check.yml`](.github/workflows/check.yml)):
+The pages have no build step, but the code inside them is checked the way a typed project would be. `npm run check` runs five steps, and GitHub Actions runs the same on every push and pull request ([`check.yml`](.github/workflows/check.yml)):
 
 | Step | Command | What it does | Must be |
 |---|---|---|---|
-| Shared code in sync | `npm run check:sync` | The parser and diagram-style blocks in `3d.html` match `index.html` | in sync |
-| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on the page scripts, `server.js` and `tools/` | 0 problems |
-| Type check | `npm run typecheck` | TypeScript reads the page scripts as JavaScript (`checkJs`) and reports wrong property names, wrong argument types and similar mistakes | 0 errors |
-| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode, the closest match to PHPStan level 10: no implicit `any`, null checks, strict function types | no **new** errors |
+| Shared code in sync | `npm run check:sync` | The shared core in `3d.html` matches `index.html` | in sync |
+| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on the page scripts, `server.js`, `tools/` and `tests/` | 0 problems |
+| Type check | `npm run typecheck` | TypeScript reads the page scripts as JavaScript (`checkJs`), and checks `server.js`, `tools/` and `tests/` in **strict** mode | 0 errors |
+| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode on the page scripts, the closest match to PHPStan level 10 (no implicit `any`, null checks, strict function types) | **shared core: 0 errors**; rest: no new errors |
+| Unit tests | `npm test` | Node's built-in test runner: every example parses into a valid graph, each diagram type has behaviour tests, a snapshot of the parsed output catches any change, the diagram styles are complete, and `server.js` serves pages, assets and `/embed` correctly and refuses private files | all pass |
 
-How the strict level works, like a PHPStan baseline:
-- The known strict-mode errors are listed in [`tsc-baseline.json`](tsc-baseline.json), counted per file and message, not per line.
-- Any error that is not in the baseline fails the check.
-- After you fix some, run `npm run typecheck:baseline` so the baseline shrinks. Never grow it to hide a real problem.
+**What "shared core" means.** Both pages are single files, so the code they share is one block, copied from `index.html` into `3d.html` by `python3 tools/sync-parser.py`. It covers:
+- the helpers, the markdown reader and all 23 Mermaid parsers;
+- the layout;
+- the diagram styles and the settings / share / steps UI.
 
-Most of the remaining errors are function parameters without type information. Adding JSDoc types (`/** @param {string} label */`) as code is touched brings the baseline down.
+This block is fully typed with JSDoc (`FxNode`, `FxLink`, `Step`, `Graph`, `DiagramStyle`…) and must stay at zero strict-mode errors. That rule can't be baselined.
+
+**The rest** (2D/3D rendering, events, snapshot) uses a PHPStan-style baseline:
+- [`tsc-baseline.json`](tsc-baseline.json) lists the known strict-mode errors, counted per file and message, not per line. Any error not in the list fails.
+- After you fix some, run `npm run typecheck:baseline` so the list shrinks; never grow it to hide a real problem.
+- It went from 1,995 to 809 when the core was typed.
+
+**Tests** load the shared core straight out of `index.html` into a Node VM ([`tests/load-core.mjs`](tests/load-core.mjs)), so the pages stay standalone and the logic is still testable. If you change the parser output on purpose, run `npm run test:update` and review the diff of `tests/parser.snapshot.json`.
 
 The page code lives inside the HTML files, so [`tools/extract-scripts.mjs`](tools/extract-scripts.mjs) first copies each script into `.check/*.js`. It keeps the same line numbers, so every reported line matches `index.html` or `3d.html`.
 
 ```bash
-npm install        # dev tools only: eslint, typescript, @types/three
+npm install        # dev tools only: eslint, typescript, @types/three, @types/node
 npm run check
 ```
 
