@@ -276,16 +276,21 @@ To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or 
 
 ### Embed in another site
 
-Use the compact player at `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload. In the app, **Copy client link** → **Copy embed link**, then iframe it:
+Use the compact player at `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload.
+
+In the app, press **Copy client link**. The box that opens has an **Embed on a website** section, like YouTube's embed code:
+- **Size:** pick *Responsive* (full width, 16:10) or a fixed size: 960 × 600, 800 × 500 or 640 × 480.
+- **Copy embed code** copies the ready-to-paste `<iframe>` HTML. **Copy embed link** copies only the URL.
+
+The responsive code looks like this:
 
 ```html
-<iframe
-  src="https://flow-explainer.laravel.cloud/embed#c=…"
-  title="Flow Explainer"
-  style="width:100%;height:640px;border:0;border-radius:12px"
-  allow="fullscreen"
-></iframe>
+<div style="position:relative;width:100%;aspect-ratio:16/10">
+  <iframe src="https://flow-explainer.laravel.cloud/embed#c=…" title="How an online ticket order is handled" loading="lazy" allow="fullscreen; clipboard-write" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px"></iframe>
+</div>
 ```
+
+The code keeps your diagram style and icon setting, and uses the 3D player if you copied it from the 3D view.
 
 The host must allow framing (this Cloud app uses `X-Frame-Options` / frame = `all`). Diagram data still lives only in the URL hash.
 

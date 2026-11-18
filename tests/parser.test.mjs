@@ -137,3 +137,15 @@ test('layout spacing: 2D by default', () => {
   const g = build('flowchart LR\n A --> B');
   assert.equal(Math.round((g.nodes[1].gx - g.nodes[0].gx) * 10) / 10, 3.1);
 });
+
+test('embed code: responsive and fixed-size iframe snippets', () => {
+  const url = 'https://flow-explainer.laravel.cloud/embed#c=zAB-c&s=circuit';
+  const r = core.embedCode(url, 'r', 'Ticket "order"');
+  assert.match(r, /^<div style="position:relative;width:100%;aspect-ratio:16\/10">/);
+  assert.match(r, /src="https:\/\/flow-explainer\.laravel\.cloud\/embed#c=zAB-c&amp;s=circuit"/);
+  assert.match(r, /title="Ticket &quot;order&quot;"/);
+  assert.match(r, /allowfullscreen/);
+  const f = core.embedCode(url, '640x480');
+  assert.match(f, /^<iframe .* width="640" height="480" /);
+  assert.match(f, /title="Flow Explainer"/);
+});
