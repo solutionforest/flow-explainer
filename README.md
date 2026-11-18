@@ -41,7 +41,12 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 
 ## Quick start
 
-Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel.cloud/)** ([3D](https://flow-explainer.laravel.cloud/3d)). Backup mirror on **[GitHub Pages](https://solutionforest.github.io/flow-explainer/)** (same app; embed uses `?embed=1` there). Or run it yourself:
+| | 2D | 3D |
+|---|---|---|
+| **Live** (Laravel Cloud) | [flow-explainer.laravel.cloud](https://flow-explainer.laravel.cloud/) | [/3d](https://flow-explainer.laravel.cloud/3d) |
+| **Backup** (GitHub Pages) | [solutionforest.github.io/flow-explainer](https://solutionforest.github.io/flow-explainer/) | [/3d.html](https://solutionforest.github.io/flow-explainer/3d.html) |
+
+Or [run it yourself](#run-it-yourself).
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
 2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
@@ -272,29 +277,53 @@ python3 -m http.server 8000
 # 3D: http://localhost:8000/3d.html
 ```
 
-To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or any web server. Both `/3d.html` and an extensionless `/3d` path work. This repo’s Pages backup is published from `main` by `.github/workflows/pages.yml` (public files only — no `server.js`).
+For local routes that match production (`/`, `/3d`, `/embed`, `/embed/3d`), run `npm start` (`server.js`).
+
+### Hosted demos
+
+| Host | URL | Notes |
+|---|---|---|
+| **Laravel Cloud** (primary) | https://flow-explainer.laravel.cloud/ | `server.js` on Flex; pretty `/3d` and `/embed` paths; framing allowed for iframes |
+| **GitHub Pages** (backup) | https://solutionforest.github.io/flow-explainer/ | Published from `main` by [`.github/workflows/pages.yml`](.github/workflows/pages.yml) (public files only — no `server.js`) |
+
+You can also upload the folder to Cloudflare Pages, Netlify, S3 or any static host. Both `/3d.html` and an extensionless `/3d` path usually work; `/embed` needs a rewrite server (Cloud) or `?embed=1` (static).
 
 ### Embed in another site
 
-On Laravel Cloud, use `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload. On static hosts (including the GitHub Pages backup), use `index.html?embed=1` / `3d.html?embed=1` instead — Share → Copy embed link picks the right form automatically.
+| Host | Player URL | Script tag |
+|---|---|---|
+| Laravel Cloud | `/embed` or `/embed/3d` + `#c=…` | `https://flow-explainer.laravel.cloud/embed.js` |
+| GitHub Pages | `index.html?embed=1` / `3d.html?embed=1` + `#c=…` | `https://solutionforest.github.io/flow-explainer/embed.js` |
 
-In the app, press **Copy client link**. The box that opens has an **Embed on a website** section, like YouTube's embed code:
-- **Size:** pick *Responsive* (full width, 16:10) or a fixed size: 960 × 600, 800 × 500 or 640 × 480.
-- **Show step text:** untick to hide the step list and show only the diagram and the stepper (adds `&t=0`).
-- **Allow 2D / 3D switch:** untick to lock the embed to the view you copied it from: only 2D or only 3D (adds `&v=0`).
-- **Copy embed code** copies the ready-to-paste `<iframe>` HTML. **Copy embed link** copies only the URL.
+In the app, press **Copy client link**. The **Embed on a website** box can copy either **iframe HTML** or a **script tag** (standalone `embed.js` for other sites):
+- **Format:** iframe HTML, or script tag (loads `embed.js`, which injects the iframe for you).
+- **Size:** *Responsive* (full width, 16:10) or a fixed size: 960 × 600, 800 × 500 or 640 × 480.
+- **Show step text:** off by default (diagram + controls only, `&t=0` / `data-text="0"`). Tick to show the narration panel.
+- **Allow 2D / 3D switch:** untick to lock the embed to the view you copied from (`&v=0` / `data-switch="0"`).
+- **Copy embed code** copies the snippet. **Copy embed link** copies only the player URL.
 
-The responsive code looks like this:
+Script tag (GitHub Pages — good default for third-party sites):
+
+```html
+<script async
+  src="https://solutionforest.github.io/flow-explainer/embed.js"
+  data-c="…"
+  data-view="2d"
+  data-text="0"
+  data-title="How an online ticket order is handled"></script>
+```
+
+`data-c` is the same payload as a client link’s `#c=`. Optional: `data-view="3d"`, `data-text="1"`, `data-switch="0"`, `data-s="teal"`, `data-i="0"`, `data-size="640x480"`, `data-host="https://flow-explainer.laravel.cloud"` (force Cloud player while loading the script from Pages).
+
+iframe (Cloud) equivalent:
 
 ```html
 <div style="position:relative;width:100%;aspect-ratio:16/10">
-  <iframe src="https://flow-explainer.laravel.cloud/embed#c=…" title="How an online ticket order is handled" loading="lazy" allow="fullscreen; clipboard-write" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px"></iframe>
+  <iframe src="https://flow-explainer.laravel.cloud/embed#c=…&t=0" title="How an online ticket order is handled" loading="lazy" allow="fullscreen; clipboard-write" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px"></iframe>
 </div>
 ```
 
-The code keeps your diagram style and icon setting, and uses the 3D player if you copied it from the 3D view.
-
-The host must allow framing (this Cloud app uses `X-Frame-Options` / frame = `all`). Diagram data still lives only in the URL hash.
+The host must allow framing (Cloud uses frame = `all`). Diagram data still lives only in the URL hash / `data-c`.
 
 ## Privacy
 
@@ -315,6 +344,8 @@ examples/           Sample markdown files, ready to paste
 tools/sync-parser.py  Copies the shared parser and diagram styles from index.html into 3d.html
 tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
 server.js           Tiny static server used on Laravel Cloud (npm start)
+embed.js            Standalone script-tag embed loader (GitHub Pages + Cloud)
+.github/workflows/pages.yml  GitHub Pages backup (public files only)
 docs/images/        Images used in this README
 ```
 

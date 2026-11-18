@@ -155,3 +155,37 @@ test('embed options: text panel and view switch flags', () => {
   assert.equal(core.embedOpts({ text: false, switchView: true }), '&t=0');
   assert.equal(core.embedOpts({ text: false, switchView: false }), '&t=0&v=0');
 });
+
+test('embed script: standalone tag for third-party sites', () => {
+  const t = core.embedScript('zAB-c', {
+    text: false,
+    switchView: true,
+    view: '2d',
+    scriptSrc: 'https://solutionforest.github.io/flow-explainer/embed.js',
+    size: 'r',
+    title: 'Ticket "order"',
+    style: 'circuit',
+    icons: true,
+  });
+  assert.match(t, /^<script async src="https:\/\/solutionforest\.github\.io\/flow-explainer\/embed\.js"/);
+  assert.match(t, /data-c="zAB-c"/);
+  assert.match(t, /data-view="2d"/);
+  assert.match(t, /data-text="0"/);
+  assert.match(t, /data-s="circuit"/);
+  assert.match(t, /data-title="Ticket &quot;order&quot;"/);
+  assert.doesNotMatch(t, /data-i=/);
+  assert.doesNotMatch(t, /data-switch=/);
+  const locked = core.embedScript('x', {
+    text: true,
+    switchView: false,
+    view: '3d',
+    scriptSrc: 'https://flow-explainer.laravel.cloud/embed.js',
+    size: '640x480',
+    icons: false,
+  });
+  assert.match(locked, /data-view="3d"/);
+  assert.match(locked, /data-text="1"/);
+  assert.match(locked, /data-switch="0"/);
+  assert.match(locked, /data-size="640x480"/);
+  assert.match(locked, /data-i="0"/);
+});

@@ -10,7 +10,7 @@
     "start": "node server.js",
     "check": "npm run check:sync && npm run lint && npm run typecheck && npm run typecheck:strict && npm test",
     "check:sync": "node tools/check-sync.mjs",
-    "lint": "node tools/extract-scripts.mjs && eslint .check server.js tools tests eslint.config.mjs",
+    "lint": "node tools/extract-scripts.mjs && eslint .check server.js embed.js tools tests eslint.config.mjs",
     "typecheck": "node tools/extract-scripts.mjs && tsc -p tsconfig.basic.json && tsc -p tsconfig.node.json",
     "typecheck:strict": "node tools/typecheck-strict.mjs",
     "typecheck:baseline": "node tools/typecheck-strict.mjs --update-baseline",

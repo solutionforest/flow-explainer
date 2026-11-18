@@ -39,4 +39,14 @@ export default [
     languageOptions: { ecmaVersion: 2023, globals: { ...globals.node } },
   },
   { files: ['server.js'], languageOptions: { sourceType: 'commonjs' } },
+  // Tiny third-party embed loader: ES5-ish on purpose (var, no modules) so any host can include it.
+  {
+    files: ['embed.js'],
+    languageOptions: { ecmaVersion: 2020, sourceType: 'script', globals: { ...globals.browser } },
+    rules: {
+      'no-var': 'off',
+      'prefer-const': 'off',
+      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none' }],
+    },
+  },
 ];
