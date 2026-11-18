@@ -280,6 +280,8 @@ Use the compact player at `/embed` (2D) or `/embed/3d` (3D) with the same `#c=�
 
 In the app, press **Copy client link**. The box that opens has an **Embed on a website** section, like YouTube's embed code:
 - **Size:** pick *Responsive* (full width, 16:10) or a fixed size: 960 × 600, 800 × 500 or 640 × 480.
+- **Show step text:** untick to hide the step list and show only the diagram and the stepper (adds `&t=0`).
+- **Allow 2D / 3D switch:** untick to lock the embed to the view you copied it from: only 2D or only 3D (adds `&v=0`).
 - **Copy embed code** copies the ready-to-paste `<iframe>` HTML. **Copy embed link** copies only the URL.
 
 The responsive code looks like this:

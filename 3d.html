@@ -219,6 +219,12 @@ body.embed .panel h2{font-size:18px}
 .sh-eh select.btn{min-height:28px;font-size:12px}
 .sh-embed textarea{width:100%;resize:none;border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:8px 10px;font:11.5px/1.5 var(--mono);color:var(--ink-2);white-space:pre-wrap;word-break:break-all}
 .sh-embed .row .btn{flex:1}
+.sh-opts{display:flex;flex-wrap:wrap;gap:6px 16px}
+.sh-opts .ck{font-size:12.5px}
+/* embed options: &t=0 hides the step text panel, &v=0 locks the view (no 2D/3D switch) */
+body.embed.no-text main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+body.embed.no-text .panel{display:none}
+body.embed.lock-view #btnMode{display:none}
 
 /* about dialog */
 button.brand{border:0;background:none;padding:0;color:inherit;cursor:pointer;border-radius:6px}
@@ -399,6 +405,7 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
   <div class="sh-foot">Opens view-only: no Edit or Snapshot.</div>
   <div class="sh-embed">
     <div class="sh-eh"><b>Embed on a website</b><select class="btn" id="embedSize" aria-label="Embed size"><option value="r">Responsive</option><option value="960x600">960 × 600</option><option value="800x500">800 × 500</option><option value="640x480">640 × 480</option></select></div>
+    <div class="sh-opts"><label class="ck"><input type="checkbox" id="embedText" checked> Show step text</label><label class="ck"><input type="checkbox" id="embedSwitch" checked> Allow 2D / 3D switch</label></div>
     <textarea id="embedCode" readonly rows="4" spellcheck="false" aria-label="Embed code"></textarea>
     <div class="row"><button class="btn primary" id="embedCopy" type="button">Copy embed code</button><button class="btn ghost" id="shareEmbed" type="button" title="Copy only the compact /embed URL">Copy embed link</button></div>
   </div>
@@ -2300,7 +2307,16 @@ function embedCode(url,size,title){
   if(m)return '<iframe '+attrs+' width="'+m[1]+'" height="'+m[2]+'" style="border:0;border-radius:12px;max-width:100%"></iframe>';
   return '<div style="position:relative;width:100%;aspect-ratio:16/10">\n  <iframe '+attrs+' style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px"></iframe>\n</div>';
 }
-const embedLink=async()=>pageUrl('/embed'+(is3dView()?'/3d':''))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
+/**
+ * Embed-only options carried in the link: &t=0 hides the step text panel, &v=0 locks the view.
+ * @param {{text:boolean,switchView:boolean}} o
+ */
+const embedOpts=o=>(o.text?'':'&t=0')+(o.switchView?'':'&v=0');
+/** @param {string} k @returns {string|null} value of k in the URL hash (#c=…&k=v) */
+const hashParam=k=>{const m=location.hash.match(new RegExp('[#&]'+k+'=([^&]*)'));return m?m[1]:null};
+/** In the embed player, apply &t=0 / &v=0 from the link. */
+function applyEmbedOpts(){if(!isEmbed())return;document.body.classList.toggle('no-text',hashParam('t')==='0');document.body.classList.toggle('lock-view',hashParam('v')==='0')}
+const embedLink=async(/** @type {{text:boolean,switchView:boolean}} */o={text:true,switchView:true})=>pageUrl('/embed'+(is3dView()?'/3d':''))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts()+embedOpts(o);
 /** @param {'2d'|'3d'} dim */
 function viewHref(dim){
   const h=location.hash||'';
@@ -2328,6 +2344,7 @@ function stepsHtml(g,i){
     +'<div class="prog"><i style="width:'+(n?Math.round(i/n*100):0)+'%"></i></div><ol class="stepper">'+rows+'</ol></details>';
 }
 function wireUi(){
+  applyEmbedOpts();
   buildSettings();
   $('#btnSet').onclick=(/** @type {MouseEvent} */e)=>{e.stopPropagation();openPop($('#settings').classList.contains('open')?null:'set')};
   $('#setClose').onclick=$('#shareClose').onclick=$('#popScrim').onclick=()=>openPop(null);
@@ -2344,11 +2361,12 @@ function wireUi(){
   $('#shareCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#shareUrl').value);toast('Client link copied')}catch(e){$('#shareUrl').select()}};
   /** Fill the embed box from the current diagram, view and size. */
   const fillEmbed=async()=>{const doc=/** @type {{doc?:{docTitle?:string}|null}} */(/** @type {unknown} */(S)).doc;
-    $('#embedCode').value=embedCode(await embedLink(),$('#embedSize').value,(doc&&doc.docTitle)||'Flow Explainer')};
-  $('#embedSize').onchange=fillEmbed;
+    $('#embedCode').value=embedCode(await embedLink(curOpts()),$('#embedSize').value,(doc&&doc.docTitle)||'Flow Explainer')};
+  const curOpts=()=>({text:$('#embedText').checked,switchView:$('#embedSwitch').checked});
+  $('#embedSize').onchange=$('#embedText').onchange=$('#embedSwitch').onchange=fillEmbed;
   $('#embedCopy').onclick=async()=>{try{await navigator.clipboard.writeText($('#embedCode').value);toast('Embed code copied')}catch(e){$('#embedCode').select()}};
   $('#shareEmbed').onclick=async()=>{
-    const url=await embedLink();
+    const url=await embedLink(curOpts());
     try{await navigator.clipboard.writeText(url);toast('Embed link copied')}catch(e){prompt('Copy this embed link',url)}
   };
   $('#panel').addEventListener('keydown',(/** @type {KeyboardEvent} */e)=>{const t=tgt(e),li=/** @type {HTMLElement|null} */(t.closest&&t.closest('.stepper li'));if(li&&(e.key==='Enter'||e.key===' ')){e.preventDefault();e.stopPropagation();go(+(li.dataset.s||0))}});

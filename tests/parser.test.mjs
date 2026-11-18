@@ -149,3 +149,9 @@ test('embed code: responsive and fixed-size iframe snippets', () => {
   assert.match(f, /^<iframe .* width="640" height="480" /);
   assert.match(f, /title="Flow Explainer"/);
 });
+
+test('embed options: text panel and view switch flags', () => {
+  assert.equal(core.embedOpts({ text: true, switchView: true }), '');
+  assert.equal(core.embedOpts({ text: false, switchView: true }), '&t=0');
+  assert.equal(core.embedOpts({ text: false, switchView: false }), '&t=0&v=0');
+});
