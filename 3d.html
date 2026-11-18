@@ -2279,6 +2279,8 @@ function openPop(name){
 const popOpen=()=>!!document.querySelector('.pop.open');
 const isEmbed=()=>/(?:^|\/)embed(?:\/|$)/.test(location.pathname)||/(?:^|[?&])embed(?:=1)?(?:&|$)/.test(location.search);
 const is3dView=()=>document.body.dataset.view==='3d';
+/** GitHub Pages / opening *.html / file:// — no Node rewrite for `/embed` or asset paths under `/3d/`. */
+const isStaticHost=()=>/\.github\.io$/i.test(location.hostname)||/\.html$/.test(location.pathname)||location.protocol==='file:';
 function appBase(){
   let p=location.pathname;
   p=p.replace(/\/(?:index|3d)\.html$/,'');
@@ -2291,8 +2293,10 @@ const rootUrl=()=>location.origin+appBase();
 const tidyUrl=u=>u.replace(/([^:]\/)\/+/g,'$1');
 /** Page URL without a trailing slash: `/3d/` would break relative asset URLs and is a 404 on static hosts. @param {string} sub */
 const pageUrl=sub=>sub?tidyUrl(rootUrl()+sub):tidyUrl(rootUrl()+'/');
+/** @param {'2d'|'3d'} dim @param {boolean} [embed] */
+const staticPage=(dim,embed)=>tidyUrl(rootUrl()+'/'+(dim==='3d'?'3d.html':'index.html'))+(embed?'?embed=1':'');
 const linkOpts=()=>(DSK!=='original'?'&s='+DSK:'')+(ICONS_ON?'':'&i=0');
-const clientLink=async()=>pageUrl(is3dView()?'/3d':'')+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
+const clientLink=async()=>(isStaticHost()?staticPage(is3dView()?'3d':'2d'):pageUrl(is3dView()?'/3d':''))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
 /**
  * iframe HTML for pasting into a website, like YouTube's "Embed" code.
  * @param {string} url  the /embed link (with #c=…)
@@ -2316,12 +2320,12 @@ const embedOpts=o=>(o.text?'':'&t=0')+(o.switchView?'':'&v=0');
 const hashParam=k=>{const m=location.hash.match(new RegExp('[#&]'+k+'=([^&]*)'));return m?m[1]:null};
 /** In the embed player, apply &t=0 / &v=0 from the link. */
 function applyEmbedOpts(){if(!isEmbed())return;document.body.classList.toggle('no-text',hashParam('t')==='0');document.body.classList.toggle('lock-view',hashParam('v')==='0')}
-const embedLink=async(/** @type {{text:boolean,switchView:boolean}} */o={text:true,switchView:true})=>pageUrl('/embed'+(is3dView()?'/3d':''))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts()+embedOpts(o);
+const embedLink=async(/** @type {{text:boolean,switchView:boolean}} */o={text:true,switchView:true})=>(isStaticHost()?staticPage(is3dView()?'3d':'2d',true):pageUrl('/embed'+(is3dView()?'/3d':'')))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts()+embedOpts(o);
 /** @param {'2d'|'3d'} dim */
 function viewHref(dim){
   const h=location.hash||'';
+  if(isStaticHost()) return staticPage(dim,isEmbed())+h;
   if(isEmbed()) return pageUrl('/embed'+(dim==='3d'?'/3d':''))+h;
-  if(/\.html$/.test(location.pathname)) return tidyUrl(rootUrl()+'/'+(dim==='3d'?'3d.html':'index.html'))+(/(?:^|[?&])embed/.test(location.search)?'?embed=1':'')+h;
   return pageUrl(dim==='3d'?'/3d':'')+h;
 }
 /** UI state kept on S by this block. */

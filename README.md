@@ -2,7 +2,7 @@
 
 ![Flow Explainer: paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client](docs/images/cover.png)
 
-[![Live demo](https://img.shields.io/badge/live-flow--explainer.laravel.cloud-007c90)](https://flow-explainer.laravel.cloud/) [![MIT License](https://img.shields.io/badge/license-MIT-007c90)](LICENSE) ![No build step](https://img.shields.io/badge/build-none-007c90) ![Mermaid](https://img.shields.io/badge/input-Mermaid-fcaf17) ![Three.js 0.187](https://img.shields.io/badge/three.js-0.187-0f172a)
+[![Live demo](https://img.shields.io/badge/live-flow--explainer.laravel.cloud-007c90)](https://flow-explainer.laravel.cloud/) [![Pages backup](https://img.shields.io/badge/backup-GitHub%20Pages-0f172a)](https://solutionforest.github.io/flow-explainer/) [![MIT License](https://img.shields.io/badge/license-MIT-007c90)](LICENSE) ![No build step](https://img.shields.io/badge/build-none-007c90) ![Mermaid](https://img.shields.io/badge/input-Mermaid-fcaf17) ![Three.js 0.187](https://img.shields.io/badge/three.js-0.187-0f172a)
 
 Paste a GitHub markdown diagram, get an animated step-by-step walkthrough you can send to a client.
 
@@ -41,7 +41,7 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 
 ## Quick start
 
-Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel.cloud/)** ([3D](https://flow-explainer.laravel.cloud/3d)), or run it yourself:
+Try it online at **[flow-explainer.laravel.cloud](https://flow-explainer.laravel.cloud/)** ([3D](https://flow-explainer.laravel.cloud/3d)). Backup mirror on **[GitHub Pages](https://solutionforest.github.io/flow-explainer/)** (same app; embed uses `?embed=1` there). Or run it yourself:
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
 2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
@@ -272,11 +272,11 @@ python3 -m http.server 8000
 # 3D: http://localhost:8000/3d.html
 ```
 
-To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or any web server. Both `/3d.html` and an extensionless `/3d` path work.
+To host it, upload the folder to GitHub Pages, Cloudflare Pages, Netlify, S3 or any web server. Both `/3d.html` and an extensionless `/3d` path work. This repo’s Pages backup is published from `main` by `.github/workflows/pages.yml` (public files only — no `server.js`).
 
 ### Embed in another site
 
-Use the compact player at `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload.
+On Laravel Cloud, use `/embed` (2D) or `/embed/3d` (3D) with the same `#c=…` client-link payload. On static hosts (including the GitHub Pages backup), use `index.html?embed=1` / `3d.html?embed=1` instead — Share → Copy embed link picks the right form automatically.
 
 In the app, press **Copy client link**. The box that opens has an **Embed on a website** section, like YouTube's embed code:
 - **Size:** pick *Responsive* (full width, 16:10) or a fixed size: 960 × 600, 800 × 500 or 640 × 480.
