@@ -145,6 +145,9 @@ footer{border-top:1px solid var(--line);background:var(--card);display:flex;alig
 .drawer code{font-family:var(--mono);font-size:.92em}
 .drawer textarea{flex:1;resize:none;border:1px solid var(--line-2);border-radius:10px;padding:12px;font-family:var(--mono);font-size:12.5px;line-height:1.5;background:var(--paper);min-height:0;white-space:pre;overflow:auto}
 .drawer textarea:focus{outline:2px solid var(--brand-100);border-color:var(--brand)}
+.drawer .url-row{display:flex;gap:6px;align-items:center}
+.drawer .url-row input{flex:1;min-width:0;border:1px solid var(--line-2);border-radius:8px;padding:8px 10px;font:12.5px var(--mono);background:var(--paper);color:var(--ink)}
+.drawer .url-row input:focus{outline:2px solid var(--brand-100);border-color:var(--brand)}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .err{display:none;border:1px solid #f0b3a3;background:#fdf0ec;color:#8f2412;border-radius:8px;padding:8px 10px;font-size:13px}
 .err.show{display:block}
@@ -431,7 +434,11 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 <div class="scrim" id="scrim"></div>
 <div class="drawer" id="drawer">
   <div class="row" style="justify-content:space-between"><h3 id="drawerTitle">Paste your markdown</h3><button class="btn ghost icon" id="btnClose" aria-label="Close">✕</button></div>
-  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b>, <b>mindmap</b>, <b>journey</b>, <b>timeline</b>, <b>quadrantChart</b>, <b>gitGraph</b>, <b>xychart</b>, <b>sankey</b>, <b>block</b>, <b>architecture</b>, <b>C4</b>, <b>kanban</b>, <b>packet</b>, <b>requirementDiagram</b>, <b>radar</b>, <b>treemap</b> or <b>zenuml</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box.</p>
+  <p>Paste a GitHub markdown file that contains a <code>```mermaid</code> block (<b>flowchart</b>, <b>sequenceDiagram</b>, <b>stateDiagram</b>, <b>classDiagram</b>, <b>erDiagram</b>, <b>gantt</b>, <b>pie</b>, <b>mindmap</b>, <b>journey</b>, <b>timeline</b>, <b>quadrantChart</b>, <b>gitGraph</b>, <b>xychart</b>, <b>sankey</b>, <b>block</b>, <b>architecture</b>, <b>C4</b>, <b>kanban</b>, <b>packet</b>, <b>requirementDiagram</b>, <b>radar</b>, <b>treemap</b> or <b>zenuml</b>). Optional: a numbered list under the diagram becomes the explanation for each step, and <code>- **Box name**: text</code> adds a note to a box. Or load a <b>public</b> URL (GitHub blob links are rewritten to raw).</p>
+  <div class="url-row">
+    <input id="mdUrl" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://…/file.md or github.com/…/blob/…/file.md" aria-label="Markdown URL">
+    <button class="btn" id="btnUrl" type="button" title="Fetch markdown from this public URL">Load URL</button>
+  </div>
   <textarea id="src" spellcheck="false"></textarea>
   <div class="err" id="err"></div>
   <div class="row">
@@ -2314,6 +2321,39 @@ const staticPage=(dim,embed)=>tidyUrl(rootUrl()+'/'+(dim==='3d'?'3d.html':'index
 const linkOpts=()=>(DSK!=='original'?'&s='+DSK:'')+(ICONS_ON?'':'&i=0');
 const clientLink=async()=>(isStaticHost()?staticPage(is3dView()?'3d':'2d'):pageUrl(is3dView()?'/3d':''))+'#c='+await encode(/** @type {any} */(S).md)+linkOpts();
 /**
+ * Turn a pasted GitHub blob URL into a raw URL browsers can fetch.
+ * @param {string} raw
+ * @returns {string}
+ */
+function normalizeMdUrl(raw){
+  let u;
+  try{u=new URL(String(raw||'').trim())}catch(e){throw new Error('That does not look like a URL.',{cause:e})}
+  if(u.protocol!=='http:'&&u.protocol!=='https:')throw new Error('Only http(s) URLs are allowed.');
+  if(/^(www\.)?github\.com$/i.test(u.hostname)){
+    const m=u.pathname.match(/^\/([^/]+)\/([^/]+)\/blob\/([^/]+)\/(.+)$/);
+    if(m)return 'https://raw.githubusercontent.com/'+m[1]+'/'+m[2]+'/'+m[3]+'/'+m[4]+u.search;
+  }
+  return u.href;
+}
+/**
+ * Fetch markdown text from a public URL (browser CORS applies).
+ * @param {string} raw
+ * @returns {Promise<string>}
+ */
+async function fetchMarkdown(raw){
+  const href=normalizeMdUrl(raw);
+  let res;
+  try{res=await fetch(href,{mode:'cors',credentials:'omit',redirect:'follow'})}
+  catch(e){throw new Error('Could not fetch that URL (network or CORS). Use a public raw URL, paste the file, or share a #c= client link.',{cause:e})}
+  if(!res.ok)throw new Error('Fetch failed ('+res.status+' '+res.statusText+'). Check the URL is public.');
+  const text=await res.text();
+  if(text.length>1500000)throw new Error('File is too large (max about 1.5 MB).');
+  if(!text.trim())throw new Error('That URL returned an empty file.');
+  return text;
+}
+/** Shareable hash that reloads markdown from a URL on open. @param {string} url */
+const urlLink=url=>(isStaticHost()?staticPage(is3dView()?'3d':'2d'):pageUrl(is3dView()?'/3d':''))+'#u='+encodeURIComponent(normalizeMdUrl(url))+linkOpts();
+/**
  * iframe HTML for pasting into a website, like YouTube's "Embed" code.
  * @param {string} url  the /embed link (with #c=…)
  * @param {string} size 'r' for responsive (full width, 16:10), or 'WxH' in pixels
@@ -2785,6 +2825,18 @@ $('#btnEdit').onclick=()=>drawer(true);$('#btnClose').onclick=$('#scrim').onclic
 $('#btnRender').onclick=tryRender;
 $('#exSel').onchange=e=>{if(e.target.value){$('#src').value=$('#'+e.target.value).textContent.trim()+'\n';e.target.value='';tryRender()}};
 $('#file').onchange=async e=>{const f=e.target.files[0];if(f){$('#src').value=await f.text();tryRender()}e.target.value=''};
+async function loadFromUrlField(){
+  const raw=$('#mdUrl').value.trim();if(!raw){showErr('Paste a public markdown URL first.');return}
+  const btn=$('#btnUrl');btn.disabled=true;showErr('');
+  try{
+    const md=await fetchMarkdown(raw);$('#src').value=md;
+    try{history.replaceState(null,'',urlLink(raw))}catch(e){}
+    tryRender();
+  }catch(e){showErr(e instanceof Error?e.message:String(e))}
+  finally{btn.disabled=false}
+}
+$('#btnUrl').onclick=()=>{loadFromUrlField()};
+$('#mdUrl').addEventListener('keydown',(/** @type {KeyboardEvent} */e)=>{if(e.key==='Enter'){e.preventDefault();loadFromUrlField()}});
 $('#sceneSel').onchange=e=>openScene(+e.target.value);
 $('#btnPlay').onclick=()=>S.playing?stopPlay():play();
 $('#btnFit').onclick=()=>flyTo({...S.home});$('#btnMode').onclick=()=>{location.href=viewHref('3d')};
@@ -2924,10 +2976,17 @@ addEventListener('hashchange',()=>location.reload());
 
 (async function init(){
   if(isEmbed())document.body.classList.add('embed','client');
-  let md=null;const m=location.hash.match(/^#([cd])=([^&]+)/);initStyle();wireUi();
-  if(m){try{md=await decode(m[2]);if(m[1]==='c')document.body.classList.add('client')}catch(e){md=null}}
+  let md=null,fromHash=false,urlErr='';const m=location.hash.match(/^#([cdu])=([^&]+)/);initStyle();wireUi();
+  if(m){
+    fromHash=true;
+    try{
+      if(m[1]==='u'){md=await fetchMarkdown(decodeURIComponent(m[2]));$('#mdUrl').value=decodeURIComponent(m[2])}
+      else{md=await decode(m[2]);if(m[1]==='c')document.body.classList.add('client')}
+    }catch(e){md=null;urlErr=e instanceof Error?e.message:String(e)}
+  }
   if(md==null&&!m&&!isEmbed())try{md=localStorage.getItem('flowx.md')}catch(e){}
-  if(md)try{load(md,!!m||isEmbed());return}catch(e){}
+  if(md)try{load(md,fromHash||isEmbed());return}catch(e){if(fromHash&&m&&m[1]==='u'){drawer(true);showErr(e instanceof Error?e.message:String(e));return}}
+  if(urlErr){drawer(true);showErr(urlErr);toast(urlErr)}
   const t=document.title;load($('#ex1').textContent.trim()+'\n',true);document.title=t; // keep the descriptive page title for the built-in demo
 })();
 </script>
