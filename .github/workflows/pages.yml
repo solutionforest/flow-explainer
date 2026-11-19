@@ -27,7 +27,7 @@ jobs:
         run: |
           mkdir -p _site
           cp index.html 3d.html embed.js diagram-styles.json diagram-styles.schema.json og-image.png favicon.svg favicon.ico apple-touch-icon.png site.webmanifest robots.txt sitemap.xml _site/
-          cp -R vendor docs examples _site/
+          cp -R vendor docs examples diagram-styles _site/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

@@ -108,11 +108,22 @@ test('diagram styles define every field the renderers read', () => {
   assert.ok(core.STYLES.original && core.STYLES.circuit);
 });
 
-test('diagram-styles.json is the source of truth for STYLES', () => {
-  const doc = JSON.parse(readFileSync(join(root, 'diagram-styles.json'), 'utf8'));
-  assert.equal(doc.format, 'flow-explainer.diagram-styles');
-  assert.equal(doc.version, 1);
-  assert.deepEqual(core.STYLES, doc.styles);
+test('diagram-styles/ folder assembles to STYLES and the published bundle', () => {
+  const pack = JSON.parse(readFileSync(join(root, 'diagram-styles', 'pack.json'), 'utf8'));
+  assert.equal(pack.format, 'flow-explainer.diagram-styles');
+  assert.ok(pack.order.includes('original'));
+  /** @type {Record<string, unknown>} */
+  const fromFiles = {};
+  for (const key of pack.order) {
+    const raw = JSON.parse(readFileSync(join(root, 'diagram-styles', key + '.json'), 'utf8'));
+    const { $schema, ...style } = raw;
+    void $schema;
+    fromFiles[key] = style;
+  }
+  assert.deepEqual(core.STYLES, fromFiles);
+  const bundle = JSON.parse(readFileSync(join(root, 'diagram-styles.json'), 'utf8'));
+  assert.equal(bundle.format, 'flow-explainer.diagram-styles');
+  assert.deepEqual(bundle.styles, fromFiles);
   const schema = JSON.parse(readFileSync(join(root, 'diagram-styles.schema.json'), 'utf8'));
   assert.equal(schema.$defs.diagramStyle.required.includes('mat'), true);
 });

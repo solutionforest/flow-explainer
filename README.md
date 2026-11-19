@@ -261,12 +261,12 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 | Glass | See-through blocks |
 | Circuit | Dark board with flat chip-shaped blocks (inset top, pins), thin steel-blue lines and plain capital labels |
 
-Styles are defined in **[`diagram-styles.json`](diagram-styles.json)** (schema: [`diagram-styles.schema.json`](diagram-styles.schema.json), format id `flow-explainer.diagram-styles`). That JSON is the source of truth; the pages embed a copy so they stay standalone (no runtime fetch). To add or edit a style:
+Styles live in the **[`diagram-styles/`](diagram-styles/)** folder — **one JSON file per style** (`original.json`, `teal.json`, …) plus [`pack.json`](diagram-styles/pack.json) for order. Schema: [`diagram-styles.schema.json`](diagram-styles.schema.json) (format id `flow-explainer.diagram-styles`). Root [`diagram-styles.json`](diagram-styles.json) is a **generated** bundle for publishing; do not edit it by hand. Pages embed the pack so they stay standalone (no runtime fetch). To add or edit a style:
 
-1. Edit `diagram-styles.json` (keep `original` — it must stay pixel-identical to the old look).
-2. Run `npm run styles:sync` (writes into `index.html`, then copies the shared core to `3d.html`).
+1. Add or edit `diagram-styles/<id>.json` and list `<id>` in `pack.json` `order` (keep `original` — it must stay pixel-identical to the old look).
+2. Run `npm run styles:sync` (rebuilds the bundle, writes into `index.html`, syncs `3d.html`).
 
-Client links still use `&s=<key>` (e.g. `&s=teal`). Loading arbitrary custom JSON in the browser is not supported yet — this ships the standard file first. The site chrome always uses Solution Forest colours; only the diagram changes.
+Client links still use `&s=<id>` (e.g. `&s=teal`). Loading arbitrary custom JSON in the browser is not supported yet — this ships the file format first. The site chrome always uses Solution Forest colours; only the diagram changes.
 
 **Icons:** the emoji on the blocks (🧑 💳 🗄️ …) are **shown by default**. **⚙ Settings → Icons → Hide** turns them off for a cleaner look. The choice is saved in your browser, and a client link made while they are hidden adds `&i=0` so the client sees the same.
 
@@ -351,8 +351,10 @@ tools/sync-parser.py  Copies the shared parser and diagram styles from index.htm
 tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
 server.js           Tiny static server used on Laravel Cloud (npm start)
 embed.js            Standalone script-tag embed loader (GitHub Pages + Cloud)
-diagram-styles.json Canonical diagram style pack (+ diagram-styles.schema.json)
-tools/sync-styles.mjs  Embeds diagram-styles.json into index.html (npm run styles:sync)
+diagram-styles/     One JSON file per style + pack.json (source of truth)
+diagram-styles.json Generated style bundle (do not edit; published on Pages)
+diagram-styles.schema.json  JSON Schema for the pack / each style
+tools/sync-styles.mjs  Assembles folder → bundle + embeds into index.html (npm run styles:sync)
 .github/workflows/pages.yml  GitHub Pages backup (public files only)
 docs/images/        Images used in this README
 ```

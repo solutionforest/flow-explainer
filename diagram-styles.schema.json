@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://solutionforest.github.io/flow-explainer/diagram-styles.schema.json",
   "title": "Flow Explainer diagram styles",
-  "description": "Canonical palette + material pack for Flow Explainer walkthroughs. Keys are stable ids used in Settings and in client links as &s=<key>.",
+  "description": "Assembled pack of diagram palettes. Authoring source is diagram-styles/ (one file per style + pack.json); diagram-styles.json is the generated bundle. Keys are stable ids used in Settings and in client links as &s=<key>.",
   "type": "object",
   "additionalProperties": false,
   "required": ["format", "version", "styles"],
