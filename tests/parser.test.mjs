@@ -156,6 +156,19 @@ test('embed options: text panel and view switch flags', () => {
   assert.equal(core.embedOpts({ text: false, switchView: false }), '&t=0&v=0');
 });
 
+test('normalizeMdUrl: GitHub blob → raw, rejects bad schemes', () => {
+  assert.equal(
+    core.normalizeMdUrl('https://github.com/solutionforest/flow-explainer/blob/main/examples/ticket-order.md'),
+    'https://raw.githubusercontent.com/solutionforest/flow-explainer/main/examples/ticket-order.md',
+  );
+  assert.equal(
+    core.normalizeMdUrl('https://raw.githubusercontent.com/a/b/main/x.md'),
+    'https://raw.githubusercontent.com/a/b/main/x.md',
+  );
+  assert.throws(() => core.normalizeMdUrl('not a url'), /does not look like a URL/);
+  assert.throws(() => core.normalizeMdUrl('file:///tmp/x.md'), /http\(s\)/);
+});
+
 test('embed script: standalone tag for third-party sites', () => {
   const t = core.embedScript('zAB-c', {
     text: false,

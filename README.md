@@ -49,7 +49,7 @@ The full source of that picture is [`examples/how-it-works.md`](examples/how-it-
 Or [run it yourself](#run-it-yourself).
 
 1. Open `index.html` (2D) or `3d.html` (3D) from any static file server — see [Run it yourself](#run-it-yourself).
-2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, and the **Examples** menu in the top bar loads a sample.
+2. Press **New** (or **Edit** to change the current one), paste your markdown, then **Render ▶**. **Use template** fills in a starter file, **Open .md** loads one from your computer, **Load URL** fetches a public `.md` (GitHub blob links are rewritten to raw), and the **Examples** menu in the top bar loads a sample. You can also open `#u=<url-encoded-url>` directly.
 3. Press **▶ Play**, or step with **Next / Back**, the ← → keys, or the numbered timeline at the bottom.
 4. Press **Copy client link** and send it. The link opens in view-only mode, without Edit or Snapshot, and in the diagram style you picked.
 5. Open **⚙ Settings** (top right) to pick a diagram style, show or hide the emoji icons on the blocks, or switch between 3D and 2D.
@@ -313,7 +313,7 @@ Script tag (GitHub Pages — good default for third-party sites):
   data-title="How an online ticket order is handled"></script>
 ```
 
-`data-c` is the same payload as a client link’s `#c=`. Optional: `data-view="3d"`, `data-text="1"`, `data-switch="0"`, `data-s="teal"`, `data-i="0"`, `data-size="640x480"`, `data-host="https://flow-explainer.laravel.cloud"` (force Cloud player while loading the script from Pages).
+`data-c` is the same payload as a client link’s `#c=`. Or use `data-u="https://…/file.md"` to have the player fetch public markdown (`#u=`). Optional: `data-view="3d"`, `data-text="1"`, `data-switch="0"`, `data-s="teal"`, `data-i="0"`, `data-size="640x480"`, `data-host="https://flow-explainer.laravel.cloud"` (force Cloud player while loading the script from Pages).
 
 iframe (Cloud) equivalent:
 
@@ -329,9 +329,10 @@ The host must allow framing (Cloud uses frame = `all`). Diagram data still lives
 
 - Your markdown is kept in your browser's local storage (`flowx.md`) so it survives a reload.
 - A client link stores the diagram compressed inside the part of the address after `#`. Browsers never send that part to a server, so the host only sees a request for the page.
+- **Load from URL** (`#u=…` or Edit → Load URL) makes your browser `fetch` that public file. Flow Explainer’s server still does not see the markdown, but the remote host sees the request. CORS must allow the fetch (raw GitHub URLs usually do; many other hosts do not).
 - Anyone who has a client link can read the diagram, so treat it like the document itself. The link is compressed, not encrypted. **Copy client link** shows this reminder every time.
 - Chat apps, email and browser history keep the full link wherever you paste it.
-- The page loads no fonts, scripts or trackers from other sites. Everything it needs is in this repository.
+- The page loads no fonts, scripts or trackers from other sites (except when you choose to fetch a markdown URL). Everything else it needs is in this repository.
 
 ## Project layout
 

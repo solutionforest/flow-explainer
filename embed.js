@@ -1,6 +1,7 @@
 /*! Flow Explainer embed loader
  * https://github.com/solutionforest/flow-explainer
  * Drop on any site: <script async src="…/embed.js" data-c="…" data-text="0"></script>
+ * Or load markdown from a public URL: data-u="https://…/file.md" (instead of data-c).
  * Builds an iframe to the player. data-c is the same payload as a client link’s #c=.
  */
 (function () {
@@ -9,8 +10,9 @@
   if (!s || !s.getAttribute) return;
   var d = s.dataset || {};
   var c = d.c || d.payload || '';
-  if (!c) {
-    if (typeof console !== 'undefined') console.warn('[flow-explainer] data-c is required');
+  var u = d.u || d.url || '';
+  if (!c && !u) {
+    if (typeof console !== 'undefined') console.warn('[flow-explainer] data-c or data-u is required');
     return;
   }
   var view = String(d.view || '2d').toLowerCase() === '3d' ? '3d' : '2d';
@@ -47,7 +49,7 @@
     return;
   }
 
-  var hash = '#c=' + c;
+  var hash = u ? '#u=' + encodeURIComponent(u) : '#c=' + c;
   if (d.s) hash += '&s=' + encodeURIComponent(d.s);
   if (d.i === '0') hash += '&i=0';
   // Default: hide step text (diagram + controls only). Pass data-text="1" to show it.
