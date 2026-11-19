@@ -1,0 +1,13 @@
+{
+  "$schema": "../diagram-styles.schema.json",
+  "format": "flow-explainer.diagram-styles",
+  "version": 1,
+  "order": [
+    "original",
+    "teal",
+    "line",
+    "blueprint",
+    "glass",
+    "circuit"
+  ]
+}

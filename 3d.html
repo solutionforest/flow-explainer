@@ -2195,50 +2195,15 @@ function layout(nodes,links){
 }
 
 /* ---------- diagram styles + settings (same block in index.html and 3d.html) ---------- */
-// One entry per diagram style. Add a style by copying an entry; both pages read the same fields.
+// Source of truth: diagram-styles/*.json (+ pack.json, diagram-styles.schema.json). Edit a style file, then:
+//   npm run styles:sync
 // 2D uses bg/bg2, blocks, neutral, ink, edge, accent, shadow, gridOp, sw, opacity; 3D also uses mat, rough, outline, ground, grid3.
 // Optional: chips (flat chip look: inset top square + pins), flat (block height factor), labMono / labUpper (plain monospace capital labels).
 /** @typedef {{name:string,desc:string,dark?:boolean,bg:string,bg2:string,blocks:string[],neutral:string,ink:string,edge:string,edge3d:string|null,accent:string,accentFg:string,plate:string,plateFg:string,plateBd:string,on:string,onFg:string,muted:string,zone:string,zoneBd:string,chip:string,labShadow:string,shadow:string,gridOp:number,grid3:number,ground:number,mat:string,rough:number,opacity:number,outline:number,sw:number,chips?:boolean,flat?:number,labMono?:boolean,labUpper?:boolean}} DiagramStyle */
+/* ---- begin generated STYLES (from diagram-styles/; run: node tools/sync-styles.mjs) ---- */
 /** @type {Record<string,DiagramStyle>} */
-const STYLES={
-  original:{name:'Original',desc:'Pastel blocks on warm paper',
-    bg:'#f5f0e6',bg2:'#fbf7ee',blocks:['#a9c8f5','#b6e3b1','#cdbdf6','#f7da8c','#f5b9c5','#f8c59b','#a9e0dc'],neutral:'#e6e0d2',
-    ink:'#1f2430',edge:'#1f2430',edge3d:null,accent:'#ee5a3a',accentFg:'#fff',
-    plate:'#fffdf8',plateFg:'#1f2430',plateBd:'#1f2430',on:'#1f2430',onFg:'#f5f0e6',muted:'#6b6f7b',
-    zone:'rgba(31,36,48,.035)',zoneBd:'rgba(31,36,48,.45)',chip:'rgba(245,240,230,.75)',labShadow:'rgba(31,36,48,.2)',shadow:'rgba(31,36,48,.10)',
-    gridOp:.07,grid3:.075,ground:.2,mat:'standard',rough:.6,opacity:1,outline:0,sw:1},
-  teal:{name:'Teal',desc:'Teal outlines, amber highlight',
-    bg:'#f3f8f9',bg2:'#ffffff',blocks:['#e6f4f6','#c4e6eb','#9fd5dd','#fff1cc','#d7eef1','#b8e2e8','#e3f2ee'],neutral:'#eef2f5',
-    ink:'#475569',edge:'#007c90',edge3d:'#007c90',accent:'#fcaf17',accentFg:'#1f1300',
-    plate:'#ffffff',plateFg:'#0f172a',plateBd:'#cbd5e1',on:'#007c90',onFg:'#ffffff',muted:'#64748b',
-    zone:'rgba(0,124,144,.04)',zoneBd:'rgba(0,124,144,.45)',chip:'rgba(255,255,255,.85)',labShadow:'rgba(15,23,42,.08)',shadow:'rgba(15,23,42,.07)',
-    gridOp:.06,grid3:.06,ground:.1,mat:'standard',rough:.7,opacity:1,outline:0,sw:1},
-  line:{name:'Line Art',desc:'White blocks, bold outlines',
-    bg:'#ffffff',bg2:'#ffffff',blocks:['#ffffff'],neutral:'#ffffff',
-    ink:'#0f172a',edge:'#0f172a',edge3d:'#0f172a',accent:'#007c90',accentFg:'#fff',
-    plate:'#ffffff',plateFg:'#0f172a',plateBd:'#0f172a',on:'#0f172a',onFg:'#ffffff',muted:'#475569',
-    zone:'rgba(15,23,42,.02)',zoneBd:'rgba(15,23,42,.5)',chip:'rgba(255,255,255,.9)',labShadow:'rgba(15,23,42,.15)',shadow:'rgba(15,23,42,.06)',
-    gridOp:.06,grid3:.06,ground:.06,mat:'toon',rough:1,opacity:1,outline:.05,sw:1.5},
-  blueprint:{name:'Blueprint',desc:'Dark background, wireframe',dark:true,
-    bg:'#071a2e',bg2:'#0b2540',blocks:['#0e3a52'],neutral:'#0e3a52',
-    ink:'#5eead4',edge:'#5eead4',edge3d:'#5eead4',accent:'#fcaf17',accentFg:'#1f1300',
-    plate:'rgba(7,26,46,.92)',plateFg:'#ccfbf1',plateBd:'rgba(94,234,212,.55)',on:'#fcaf17',onFg:'#1f1300',muted:'#7dd3c8',
-    zone:'rgba(94,234,212,.05)',zoneBd:'rgba(94,234,212,.4)',chip:'rgba(7,26,46,.75)',labShadow:'rgba(0,0,0,.3)',shadow:'rgba(0,0,0,.25)',
-    gridOp:.12,grid3:.12,ground:0,mat:'basic',rough:1,opacity:.45,outline:0,sw:1},
-  glass:{name:'Glass',desc:'See-through blocks',
-    bg:'#eef6f8',bg2:'#fbfeff',blocks:['#7fc9d3','#9fd5dd','#c4e6eb','#fcd27a','#b8e2e8','#a8dbe3','#d4eef2'],neutral:'#d7ecf0',
-    ink:'#0f4c5c',edge:'#5b9aa6',edge3d:'#ffffff',accent:'#fcaf17',accentFg:'#1f1300',
-    plate:'rgba(255,255,255,.85)',plateFg:'#0f172a',plateBd:'rgba(15,76,92,.3)',on:'#007c90',onFg:'#ffffff',muted:'#3b6f7b',
-    zone:'rgba(0,124,144,.05)',zoneBd:'rgba(0,124,144,.35)',chip:'rgba(255,255,255,.75)',labShadow:'rgba(15,23,42,.08)',shadow:'rgba(15,76,92,.10)',
-    gridOp:.07,grid3:.07,ground:.1,mat:'glass',rough:.15,opacity:.6,outline:0,sw:1},
-  circuit:{name:'Circuit',desc:'Dark board, flat chips, thin blue lines',dark:true,
-    bg:'#080c17',bg2:'#0e1527',blocks:['#1a2438','#1b2a42','#172236'],neutral:'#1a2438',
-    ink:'#4d6a90',edge:'#7393bd',edge3d:'#86a6d0',accent:'#bfe1ff',accentFg:'#0a0e1a',
-    plate:'transparent',plateFg:'#c9d6e8',plateBd:'transparent',on:'rgba(191,225,255,.12)',onFg:'#ffffff',muted:'#8094ae',
-    zone:'rgba(115,147,189,.05)',zoneBd:'rgba(115,147,189,.35)',chip:'rgba(8,12,23,.7)',labShadow:'transparent',shadow:'rgba(0,0,0,.35)',
-    gridOp:.11,grid3:.11,ground:0,mat:'basic',rough:1,opacity:1,outline:0,sw:.8,
-    chips:true,flat:.42,labMono:true,labUpper:true}
-};
+const STYLES=/** @type {Record<string,DiagramStyle>} */(JSON.parse("{\"original\":{\"name\":\"Original\",\"desc\":\"Pastel blocks on warm paper\",\"bg\":\"#f5f0e6\",\"bg2\":\"#fbf7ee\",\"blocks\":[\"#a9c8f5\",\"#b6e3b1\",\"#cdbdf6\",\"#f7da8c\",\"#f5b9c5\",\"#f8c59b\",\"#a9e0dc\"],\"neutral\":\"#e6e0d2\",\"ink\":\"#1f2430\",\"edge\":\"#1f2430\",\"edge3d\":null,\"accent\":\"#ee5a3a\",\"accentFg\":\"#fff\",\"plate\":\"#fffdf8\",\"plateFg\":\"#1f2430\",\"plateBd\":\"#1f2430\",\"on\":\"#1f2430\",\"onFg\":\"#f5f0e6\",\"muted\":\"#6b6f7b\",\"zone\":\"rgba(31,36,48,.035)\",\"zoneBd\":\"rgba(31,36,48,.45)\",\"chip\":\"rgba(245,240,230,.75)\",\"labShadow\":\"rgba(31,36,48,.2)\",\"shadow\":\"rgba(31,36,48,.10)\",\"gridOp\":0.07,\"grid3\":0.075,\"ground\":0.2,\"mat\":\"standard\",\"rough\":0.6,\"opacity\":1,\"outline\":0,\"sw\":1},\"teal\":{\"name\":\"Teal\",\"desc\":\"Teal outlines, amber highlight\",\"bg\":\"#f3f8f9\",\"bg2\":\"#ffffff\",\"blocks\":[\"#e6f4f6\",\"#c4e6eb\",\"#9fd5dd\",\"#fff1cc\",\"#d7eef1\",\"#b8e2e8\",\"#e3f2ee\"],\"neutral\":\"#eef2f5\",\"ink\":\"#475569\",\"edge\":\"#007c90\",\"edge3d\":\"#007c90\",\"accent\":\"#fcaf17\",\"accentFg\":\"#1f1300\",\"plate\":\"#ffffff\",\"plateFg\":\"#0f172a\",\"plateBd\":\"#cbd5e1\",\"on\":\"#007c90\",\"onFg\":\"#ffffff\",\"muted\":\"#64748b\",\"zone\":\"rgba(0,124,144,.04)\",\"zoneBd\":\"rgba(0,124,144,.45)\",\"chip\":\"rgba(255,255,255,.85)\",\"labShadow\":\"rgba(15,23,42,.08)\",\"shadow\":\"rgba(15,23,42,.07)\",\"gridOp\":0.06,\"grid3\":0.06,\"ground\":0.1,\"mat\":\"standard\",\"rough\":0.7,\"opacity\":1,\"outline\":0,\"sw\":1},\"line\":{\"name\":\"Line Art\",\"desc\":\"White blocks, bold outlines\",\"bg\":\"#ffffff\",\"bg2\":\"#ffffff\",\"blocks\":[\"#ffffff\"],\"neutral\":\"#ffffff\",\"ink\":\"#0f172a\",\"edge\":\"#0f172a\",\"edge3d\":\"#0f172a\",\"accent\":\"#007c90\",\"accentFg\":\"#fff\",\"plate\":\"#ffffff\",\"plateFg\":\"#0f172a\",\"plateBd\":\"#0f172a\",\"on\":\"#0f172a\",\"onFg\":\"#ffffff\",\"muted\":\"#475569\",\"zone\":\"rgba(15,23,42,.02)\",\"zoneBd\":\"rgba(15,23,42,.5)\",\"chip\":\"rgba(255,255,255,.9)\",\"labShadow\":\"rgba(15,23,42,.15)\",\"shadow\":\"rgba(15,23,42,.06)\",\"gridOp\":0.06,\"grid3\":0.06,\"ground\":0.06,\"mat\":\"toon\",\"rough\":1,\"opacity\":1,\"outline\":0.05,\"sw\":1.5},\"blueprint\":{\"name\":\"Blueprint\",\"desc\":\"Dark background, wireframe\",\"dark\":true,\"bg\":\"#071a2e\",\"bg2\":\"#0b2540\",\"blocks\":[\"#0e3a52\"],\"neutral\":\"#0e3a52\",\"ink\":\"#5eead4\",\"edge\":\"#5eead4\",\"edge3d\":\"#5eead4\",\"accent\":\"#fcaf17\",\"accentFg\":\"#1f1300\",\"plate\":\"rgba(7,26,46,.92)\",\"plateFg\":\"#ccfbf1\",\"plateBd\":\"rgba(94,234,212,.55)\",\"on\":\"#fcaf17\",\"onFg\":\"#1f1300\",\"muted\":\"#7dd3c8\",\"zone\":\"rgba(94,234,212,.05)\",\"zoneBd\":\"rgba(94,234,212,.4)\",\"chip\":\"rgba(7,26,46,.75)\",\"labShadow\":\"rgba(0,0,0,.3)\",\"shadow\":\"rgba(0,0,0,.25)\",\"gridOp\":0.12,\"grid3\":0.12,\"ground\":0,\"mat\":\"basic\",\"rough\":1,\"opacity\":0.45,\"outline\":0,\"sw\":1},\"glass\":{\"name\":\"Glass\",\"desc\":\"See-through blocks\",\"bg\":\"#eef6f8\",\"bg2\":\"#fbfeff\",\"blocks\":[\"#7fc9d3\",\"#9fd5dd\",\"#c4e6eb\",\"#fcd27a\",\"#b8e2e8\",\"#a8dbe3\",\"#d4eef2\"],\"neutral\":\"#d7ecf0\",\"ink\":\"#0f4c5c\",\"edge\":\"#5b9aa6\",\"edge3d\":\"#ffffff\",\"accent\":\"#fcaf17\",\"accentFg\":\"#1f1300\",\"plate\":\"rgba(255,255,255,.85)\",\"plateFg\":\"#0f172a\",\"plateBd\":\"rgba(15,76,92,.3)\",\"on\":\"#007c90\",\"onFg\":\"#ffffff\",\"muted\":\"#3b6f7b\",\"zone\":\"rgba(0,124,144,.05)\",\"zoneBd\":\"rgba(0,124,144,.35)\",\"chip\":\"rgba(255,255,255,.75)\",\"labShadow\":\"rgba(15,23,42,.08)\",\"shadow\":\"rgba(15,76,92,.10)\",\"gridOp\":0.07,\"grid3\":0.07,\"ground\":0.1,\"mat\":\"glass\",\"rough\":0.15,\"opacity\":0.6,\"outline\":0,\"sw\":1},\"circuit\":{\"name\":\"Circuit\",\"desc\":\"Dark board, flat chips, thin blue lines\",\"dark\":true,\"bg\":\"#080c17\",\"bg2\":\"#0e1527\",\"blocks\":[\"#1a2438\",\"#1b2a42\",\"#172236\"],\"neutral\":\"#1a2438\",\"ink\":\"#4d6a90\",\"edge\":\"#7393bd\",\"edge3d\":\"#86a6d0\",\"accent\":\"#bfe1ff\",\"accentFg\":\"#0a0e1a\",\"plate\":\"transparent\",\"plateFg\":\"#c9d6e8\",\"plateBd\":\"transparent\",\"on\":\"rgba(191,225,255,.12)\",\"onFg\":\"#ffffff\",\"muted\":\"#8094ae\",\"zone\":\"rgba(115,147,189,.05)\",\"zoneBd\":\"rgba(115,147,189,.35)\",\"chip\":\"rgba(8,12,23,.7)\",\"labShadow\":\"transparent\",\"shadow\":\"rgba(0,0,0,.35)\",\"gridOp\":0.11,\"grid3\":0.11,\"ground\":0,\"mat\":\"basic\",\"rough\":1,\"opacity\":1,\"outline\":0,\"sw\":0.8,\"chips\":true,\"flat\":0.42,\"labMono\":true,\"labUpper\":true}}"));
+/* ---- end generated STYLES ---- */
 let DS=STYLES.original,DSK='original';
 const UI_ICON={check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'};
 const hashStyle=()=>{const m=location.hash.match(/[#&]s=([\w-]+)/);return m&&STYLES[m[1]]?m[1]:null};
