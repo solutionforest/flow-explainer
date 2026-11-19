@@ -108,6 +108,15 @@ test('diagram styles define every field the renderers read', () => {
   assert.ok(core.STYLES.original && core.STYLES.circuit);
 });
 
+test('diagram-styles.json is the source of truth for STYLES', () => {
+  const doc = JSON.parse(readFileSync(join(root, 'diagram-styles.json'), 'utf8'));
+  assert.equal(doc.format, 'flow-explainer.diagram-styles');
+  assert.equal(doc.version, 1);
+  assert.deepEqual(core.STYLES, doc.styles);
+  const schema = JSON.parse(readFileSync(join(root, 'diagram-styles.schema.json'), 'utf8'));
+  assert.equal(schema.$defs.diagramStyle.required.includes('mat'), true);
+});
+
 // Snapshot of every example's parsed result: catches any change in parser output.
 test('parser output matches the snapshot', () => {
   /** @type {Record<string, unknown>} */

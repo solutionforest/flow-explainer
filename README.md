@@ -261,7 +261,12 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 | Glass | See-through blocks |
 | Circuit | Dark board with flat chip-shaped blocks (inset top, pins), thin steel-blue lines and plain capital labels |
 
-Each style is one entry in the `STYLES` list in `index.html` (background, block colours, outline, highlight, label colours, and the 3D material). To add a style, copy an entry, change the values, and run `python3 tools/sync-parser.py` so `3d.html` gets it too. The site itself always uses the Solution Forest colours; only the diagram changes.
+Styles are defined in **[`diagram-styles.json`](diagram-styles.json)** (schema: [`diagram-styles.schema.json`](diagram-styles.schema.json), format id `flow-explainer.diagram-styles`). That JSON is the source of truth; the pages embed a copy so they stay standalone (no runtime fetch). To add or edit a style:
+
+1. Edit `diagram-styles.json` (keep `original` — it must stay pixel-identical to the old look).
+2. Run `npm run styles:sync` (writes into `index.html`, then copies the shared core to `3d.html`).
+
+Client links still use `&s=<key>` (e.g. `&s=teal`). Loading arbitrary custom JSON in the browser is not supported yet — this ships the standard file first. The site chrome always uses Solution Forest colours; only the diagram changes.
 
 **Icons:** the emoji on the blocks (🧑 💳 🗄️ …) are **shown by default**. **⚙ Settings → Icons → Hide** turns them off for a cleaner look. The choice is saved in your browser, and a client link made while they are hidden adds `&i=0` so the client sees the same.
 
@@ -346,6 +351,8 @@ tools/sync-parser.py  Copies the shared parser and diagram styles from index.htm
 tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
 server.js           Tiny static server used on Laravel Cloud (npm start)
 embed.js            Standalone script-tag embed loader (GitHub Pages + Cloud)
+diagram-styles.json Canonical diagram style pack (+ diagram-styles.schema.json)
+tools/sync-styles.mjs  Embeds diagram-styles.json into index.html (npm run styles:sync)
 .github/workflows/pages.yml  GitHub Pages backup (public files only)
 docs/images/        Images used in this README
 ```

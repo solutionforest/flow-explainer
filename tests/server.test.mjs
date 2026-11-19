@@ -18,6 +18,8 @@ test('assets load from the /3d/ and /embed/ sub-paths', () => {
   assert.equal(rel('/3d/favicon.svg'), 'favicon.svg');
   assert.equal(rel('/robots.txt'), 'robots.txt');
   assert.equal(rel('/embed.js'), 'embed.js');
+  assert.equal(rel('/diagram-styles.json'), 'diagram-styles.json');
+  assert.equal(rel('/diagram-styles.schema.json'), 'diagram-styles.schema.json');
 });
 
 test('private files and path tricks are refused', () => {
