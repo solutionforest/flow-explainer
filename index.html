@@ -1,4 +1,10 @@
 <!doctype html>
+<!--
+  Flow Explainer
+  Made by Solution Forest Limited · Hong Kong
+  https://solutionforest.net/
+  https://github.com/solutionforest/flow-explainer  (MIT)
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -350,6 +356,30 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 </head>
 <body data-view="2d">
 <script>(function(){const p=location.pathname,q=location.search;if(/(?:^|\/)embed(?:\/|$)/.test(p)||/(?:^|[?&])embed(?:=1)?(?:&|$)/.test(q))document.body.classList.add('embed','client')})()</script>
+<script>
+/* Solution Forest console easter egg */
+;(function(){
+  try{
+    console.log('%c'+
+'        .\n'+
+'       /|\\\n'+
+'      / | \\\n'+
+'     /  |  \\\n'+
+'    .---+---.\n'+
+'   /|\\  |  /|\\\n'+
+'  / | \\ | / | \\\n'+
+' /  |  \\|/  |  \\\n'+
+'.---+---+---+---.',
+      'color:#007c90;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.2');
+    console.log('%cFlow Explainer%c · made by %cSolution Forest',
+      'color:#0f172a;font:700 13px Inter,ui-sans-serif,system-ui,sans-serif',
+      'color:#64748b;font:12px Inter,ui-sans-serif,system-ui,sans-serif',
+      'color:#007c90;font:700 12px Inter,ui-sans-serif,system-ui,sans-serif');
+    console.log('%cHong Kong · https://solutionforest.net/ · MIT',
+      'color:#64748b;font:11px ui-monospace,Menlo,Consolas,monospace');
+  }catch(_){}
+})();
+</script>
 <div class="app">
   <header>
     <button class="brand" id="btnAbout" title="About Flow Explainer">Flow Explainer</button>
