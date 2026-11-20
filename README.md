@@ -261,7 +261,7 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 | Glass | See-through blocks |
 | Circuit | Dark board with flat chip-shaped blocks (inset top, pins), thin steel-blue lines and plain capital labels |
 
-Styles live in the **[`diagram-styles/`](diagram-styles/)** folder — **one JSON file per style** (`original.json`, `teal.json`, …) plus [`pack.json`](diagram-styles/pack.json) for order. Schema: [`diagram-styles.schema.json`](diagram-styles.schema.json) (format id `flow-explainer.diagram-styles`). Root [`diagram-styles.json`](diagram-styles.json) is a **generated** bundle for publishing; do not edit it by hand. Pages embed the pack so they stay standalone (no runtime fetch). To add or edit a style:
+Styles live in the **[`diagram-styles/`](diagram-styles/)** folder — **one JSON file per style** (`original.json`, `teal.json`, …) plus [`pack.json`](diagram-styles/pack.json) for order. Schema: [`diagram-styles.schema.json`](diagram-styles.schema.json) (format id `flow-explainer.diagram-styles`). Root [`diagram-styles.json`](diagram-styles.json) is a **generated** bundle for publishing; do not edit it by hand. `core.mjs` embeds the pack so the player needs no runtime fetch. To add or edit a style:
 
 1. Add or edit `diagram-styles/<id>.json` and list `<id>` in `pack.json` `order` (keep `original` — it must stay pixel-identical to the old look).
 2. Run `npm run styles:sync` (rebuilds the bundle, writes into `index.html`, syncs `3d.html`).
@@ -342,24 +342,24 @@ The host must allow framing (Cloud uses frame = `all`). Diagram data still lives
 ## Project layout
 
 ```
-index.html          2D version (SVG, no dependencies)
-3d.html             3D version (Three.js)
-vendor/             Three.js 0.187.0 (three.module.js + three.core.js, MIT)
+index.html          2D version (SVG); imports core.mjs
+3d.html             3D version (Three.js); imports core.mjs
+core.mjs             Shared ES module: parsers, layout, styles, settings UI
+vendor/             Three.js 0.187.0 (three.module.js + three.core.mjs, MIT)
                     Inter and Raleway web fonts (latin subset, SIL OFL 1.1, licences next to them)
 examples/           Sample markdown files, ready to paste
-tools/sync-parser.py  Copies the shared parser and diagram styles from index.html into 3d.html
 tools/*.mjs         Code checks (extract scripts, strict type check with baseline, sync check)
 server.js           Tiny static server used on Laravel Cloud (npm start)
 embed.js            Standalone script-tag embed loader (GitHub Pages + Cloud)
 diagram-styles/     One JSON file per style + pack.json (source of truth)
 diagram-styles.json Generated style bundle (do not edit; published on Pages)
 diagram-styles.schema.json  JSON Schema for the pack / each style
-tools/sync-styles.mjs  Assembles folder → bundle + embeds into index.html (npm run styles:sync)
+tools/sync-styles.mjs  Assembles folder → bundle + embeds into core.mjs (npm run styles:sync)
 .github/workflows/pages.yml  GitHub Pages backup (public files only)
 docs/images/        Images used in this README
 ```
 
-Both pages share the same markdown reader, step panel, timeline, settings and client-link code, copied into each file so each one stands alone. Edit the parser (everything between `/* ---------- markdown` and `/* ---------- layout`) and the diagram styles block (`/* ---------- diagram styles + settings` … `end of diagram styles + settings`) in `index.html`, then run `python3 tools/sync-parser.py` to copy them into `3d.html`.
+Shared logic lives in [`core.mjs`](core.mjs). Both pages import it and call `bindPage(…)` so settings / share UI can reach page-only player APIs (`S`, `restyle`, `go`, …). Edit parsers, layout and diagram-style UI in `core.mjs` only.
 
 ## Code checks
 
@@ -367,27 +367,27 @@ The pages have no build step, but the code inside them is checked the way a type
 
 | Step | Command | What it does | Must be |
 |---|---|---|---|
-| Shared code in sync | `npm run check:sync` | The shared core in `3d.html` matches `index.html` | in sync |
-| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on the page scripts, `server.js`, `tools/` and `tests/` | 0 problems |
-| Type check | `npm run typecheck` | TypeScript reads the page scripts as JavaScript (`checkJs`), and checks `server.js`, `tools/` and `tests/` in **strict** mode | 0 errors |
-| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode on the page scripts, the closest match to PHPStan level 10 (no implicit `any`, null checks, strict function types) | **shared core: 0 errors**; rest: no new errors |
+| Styles in sync | `npm run check:sync` | `diagram-styles/` matches `diagram-styles.json` and the `STYLES` embed in `core.mjs` | in sync |
+| Lint | `npm run lint` | ESLint (recommended rules plus stricter ones: no unused or undefined names, `const` where possible, `===`, no `eval`) on `core.mjs`, the page scripts, `server.js`, `tools/` and `tests/` | 0 problems |
+| Type check | `npm run typecheck` | TypeScript reads `core.mjs` and the page scripts as JavaScript (`checkJs`), and checks `server.js`, `tools/` and `tests/` in **strict** mode | 0 errors |
+| Strict type check | `npm run typecheck:strict` | TypeScript `strict` mode, the closest match to PHPStan level 10 (no implicit `any`, null checks, strict function types) | **core.mjs: 0 errors**; rest: no new errors |
 | Unit tests | `npm test` | Node's built-in test runner: every example parses into a valid graph, each diagram type has behaviour tests, a snapshot of the parsed output catches any change, the diagram styles are complete, and `server.js` serves pages, assets and `/embed` correctly and refuses private files | all pass |
 
-**What "shared core" means.** Both pages are single files, so the code they share is one block, copied from `index.html` into `3d.html` by `python3 tools/sync-parser.py`. It covers:
+**What "shared core" means.** [`core.mjs`](core.mjs) is the ES module both pages import. It covers:
 - the helpers, the markdown reader and all 23 Mermaid parsers;
 - the layout;
 - the diagram styles and the settings / share / steps UI.
 
-This block is fully typed with JSDoc (`FxNode`, `FxLink`, `Step`, `Graph`, `DiagramStyle`…) and must stay at zero strict-mode errors. That rule can't be baselined.
+It is fully typed with JSDoc (`FxNode`, `FxLink`, `Step`, `Graph`, `DiagramStyle`…) and must stay at zero strict-mode errors. That rule can't be baselined.
 
 **The rest** (2D/3D rendering, events, snapshot) uses a PHPStan-style baseline:
 - [`tsc-baseline.json`](tsc-baseline.json) lists the known strict-mode errors, counted per file and message, not per line. Any error not in the list fails.
 - After you fix some, run `npm run typecheck:baseline` so the list shrinks; never grow it to hide a real problem.
 - It went from 1,995 to 809 when the core was typed.
 
-**Tests** load the shared core straight out of `index.html` into a Node VM ([`tests/load-core.mjs`](tests/load-core.mjs)), so the pages stay standalone and the logic is still testable. If you change the parser output on purpose, run `npm run test:update` and review the diff of `tests/parser.snapshot.json`.
+**Tests** import [`core.mjs`](core.mjs) via [`tests/load-core.mjs`](tests/load-core.mjs). If you change the parser output on purpose, run `npm run test:update` and review the diff of `tests/parser.snapshot.json`.
 
-The page code lives inside the HTML files, so [`tools/extract-scripts.mjs`](tools/extract-scripts.mjs) first copies each script into `.check/*.js`. It keeps the same line numbers, so every reported line matches `index.html` or `3d.html`.
+Page-only code still lives inside the HTML files, so [`tools/extract-scripts.mjs`](tools/extract-scripts.mjs) copies each script into `.check/*.js`. It keeps the same line numbers, so every reported line matches `index.html` or `3d.html`.
 
 ```bash
 npm install        # dev tools only: eslint, typescript, @types/three, @types/node

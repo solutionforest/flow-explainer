@@ -23,6 +23,6 @@ test('assets load from the /3d/ and /embed/ sub-paths', () => {
 });
 
 test('private files and path tricks are refused', () => {
-  for (const u of ['/package.json', '/.git/config', '/.cloud/config.json', '/node_modules/x.js', '/server.js', '/tools/sync-parser.py', '/tsconfig.json', '/../etc/passwd', '/%2e%2e/%2e%2e/etc/passwd', '/%E0%A4%A', '/nope', '/a%00b'])
+  for (const u of ['/package.json', '/.git/config', '/.cloud/config.json', '/node_modules/x.js', '/server.js', '/tools/sync-styles.mjs', '/tsconfig.json', '/../etc/passwd', '/%2e%2e/%2e%2e/etc/passwd', '/%E0%A4%A', '/nope', '/a%00b'])
     assert.equal(resolveFile(u), null, u);
 });

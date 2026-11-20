@@ -4,7 +4,7 @@ import { readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadCore, examples, root } from './load-core.mjs';
 
-const core = loadCore();
+const core = await loadCore();
 const files = readdirSync(join(root, 'examples')).filter(f => f.endsWith('.md')).map(f => ({ name: 'examples/' + f, md: readFileSync(join(root, 'examples', f), 'utf8') }));
 const all = [...examples(), ...files];
 
@@ -142,9 +142,12 @@ test('parser output matches the snapshot', () => {
   assert.deepEqual(snap, JSON.parse(readFileSync(file, 'utf8')));
 });
 
-test('3d.html has the same core as index.html', () => {
-  const a = loadCore('index.html'), b = loadCore('3d.html');
-  for (const ex of all.slice(0, 5)) assert.deepEqual(JSON.stringify(b.parseMarkdown(ex.md)), JSON.stringify(a.parseMarkdown(ex.md)));
+test('both pages import the shared core module', () => {
+  for (const page of ['index.html', '3d.html']) {
+    const html = readFileSync(join(root, page), 'utf8');
+    assert.match(html, /from ['"]\.\/core\.mjs['"]/);
+    assert.doesNotMatch(html, /\/\* ---------- shared core:/);
+  }
 });
 
 test('zenuml: a participant declared by name only does not crash (regression)', () => {

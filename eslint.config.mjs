@@ -31,9 +31,17 @@ export default [
       'no-cond-assign': 'off',
     },
   },
-  // index.html is a classic script on purpose (its functions are reachable from the console for testing)
-  { files: ['.check/index.js'], rules: { 'no-implicit-globals': 'off' } },
-  { files: ['.check/3d.js'], languageOptions: { sourceType: 'module' } },
+  { files: ['.check/index.js', '.check/3d.js', 'core.mjs'], languageOptions: { sourceType: 'module' } },
+  {
+    files: ['core.mjs'],
+    languageOptions: { ecmaVersion: 2023, sourceType: 'module', globals: { ...globals.browser } },
+    rules: {
+      'no-unused-vars': ['error', { args: 'none', caughtErrors: 'none' }],
+      'no-undef': 'error',
+      'no-cond-assign': 'off',
+      'no-empty': ['error', { allowEmptyCatch: true }],
+    },
+  },
   {
     files: ['server.js', 'tools/**/*.mjs', 'tests/**/*.mjs', 'eslint.config.mjs'],
     languageOptions: { ecmaVersion: 2023, globals: { ...globals.node } },

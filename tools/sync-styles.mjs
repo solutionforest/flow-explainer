@@ -3,12 +3,10 @@
  * diagram-styles/ is the source of truth (one JSON file per style + pack.json).
  * This:
  *   1. Assembles diagram-styles.json (published bundle for Pages / tools)
- *   2. Embeds `styles` into index.html as `const STYLES=JSON.parse(...)`
- * so the pages stay standalone (no fetch / no build step at runtime).
+ *   2. Embeds `styles` into core.mjs as `const STYLES=JSON.parse(...)`
  *
- *   node tools/sync-styles.mjs          # write bundle + index.html
+ *   node tools/sync-styles.mjs          # write bundle + core.mjs
  *   node tools/sync-styles.mjs --check  # exit 1 if either is out of date
- * Then run: python3 tools/sync-parser.py
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -18,7 +16,7 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dir = join(root, 'diagram-styles');
 const packPath = join(dir, 'pack.json');
 const bundlePath = join(root, 'diagram-styles.json');
-const htmlPath = join(root, 'index.html');
+const corePath = join(root, 'core.mjs');
 const BEGIN = '/* ---- begin generated STYLES (from diagram-styles/; run: node tools/sync-styles.mjs) ---- */';
 const END = '/* ---- end generated STYLES ---- */';
 const check = process.argv.includes('--check');
@@ -78,28 +76,18 @@ const payload = JSON.stringify(styles);
 const block = [
   BEGIN,
   '/** @type {Record<string,DiagramStyle>} */',
-  'const STYLES=/** @type {Record<string,DiagramStyle>} */(JSON.parse(' + JSON.stringify(payload) + '));',
+  'export const STYLES=/** @type {Record<string,DiagramStyle>} */(JSON.parse(' + JSON.stringify(payload) + '));',
   END,
 ].join('\n');
 
-const html = readFileSync(htmlPath, 'utf8');
-const a = html.indexOf(BEGIN);
-const b = html.indexOf(END);
-// Allow either old or new marker comment during migration
-let ai = a;
-let bi = b;
-let endMark = END;
-if (ai < 0 || bi < 0) {
-  const oldBegin = '/* ---- begin generated STYLES (from diagram-styles.json; run: node tools/sync-styles.mjs) ---- */';
-  ai = html.indexOf(oldBegin);
-  bi = html.indexOf(END);
-  endMark = END;
-}
+const core = readFileSync(corePath, 'utf8');
+const ai = core.indexOf(BEGIN);
+const bi = core.indexOf(END);
 if (ai < 0 || bi < 0 || bi < ai) {
-  console.error('index.html is missing generated STYLES markers; expected:\n' + BEGIN + '\n...\n' + END);
+  console.error('core.mjs is missing generated STYLES markers; expected:\n' + BEGIN + '\n...\n' + END);
   process.exit(1);
 }
-const nextHtml = html.slice(0, ai) + block + html.slice(bi + endMark.length);
+const nextCore = core.slice(0, ai) + block + core.slice(bi + END.length);
 
 let ok = true;
 const curBundle = (() => {
@@ -116,12 +104,12 @@ if (curBundle !== bundleText) {
   } else writeFileSync(bundlePath, bundleText), console.log('diagram-styles.json rebuilt from diagram-styles/');
 } else if (!check) console.log('diagram-styles.json already matches diagram-styles/');
 
-if (nextHtml !== html) {
+if (nextCore !== core) {
   if (check) {
-    console.error('index.html STYLES are out of sync with diagram-styles/; run: npm run styles:sync');
+    console.error('core.mjs STYLES are out of sync with diagram-styles/; run: npm run styles:sync');
     ok = false;
-  } else writeFileSync(htmlPath, nextHtml), console.log('index.html STYLES updated from diagram-styles/');
-} else if (!check) console.log('index.html STYLES already match diagram-styles/');
+  } else writeFileSync(corePath, nextCore), console.log('core.mjs STYLES updated from diagram-styles/');
+} else if (!check) console.log('core.mjs STYLES already match diagram-styles/');
 
-if (check && ok) console.log('diagram-styles/ → bundle + index.html in sync');
+if (check && ok) console.log('diagram-styles/ → bundle + core.mjs in sync');
 process.exit(ok ? 0 : 1);

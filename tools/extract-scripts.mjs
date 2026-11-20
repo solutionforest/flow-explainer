@@ -27,6 +27,8 @@ for (const [page, name] of [['index.html', 'index.js'], ['3d.html', '3d.js']]) {
   }
   let js = keep.join('\n');
   if (module) js = js.replace("'./vendor/three.module.js'", "'three'");
+  // Page scripts import ./core.mjs; from .check/ that path is ../core.mjs
+  js = js.replace(/from ['"]\.\/core\.mjs['"]/g, "from '../core.mjs'");
   writeFileSync(join(out, name), js);
   console.log(`${page} -> .check/${name}${module ? ' (module)' : ''}`);
 }

@@ -11,5 +11,5 @@
     "types": ["three"],
     "skipLibCheck": true
   },
-  "include": [".check/*.js"]
+  "include": ["core.mjs", ".check/*.js"]
 }
