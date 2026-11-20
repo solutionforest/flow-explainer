@@ -98,6 +98,18 @@ test('zenuml: nested calls, replies and conditions', () => {
   assert.equal(g.steps[3].to, 'U');
 });
 
+test('parseStyleJson: single style and pack, rejects bad input', () => {
+  const teal = readFileSync(join(root, 'diagram-styles', 'teal.json'), 'utf8');
+  const s = core.raw.parseStyleJson(teal);
+  assert.equal(s.name, 'Teal');
+  assert.ok(Array.isArray(s.blocks) && s.blocks.length > 0);
+  const pack = readFileSync(join(root, 'diagram-styles.json'), 'utf8');
+  const fromPack = core.raw.parseStyleJson(pack);
+  assert.equal(fromPack.name, 'Original'); // first key in pack.order
+  assert.throws(() => core.raw.parseStyleJson('{'), /not valid JSON/);
+  assert.throws(() => core.raw.parseStyleJson('{"name":"X"}'), /missing/);
+});
+
 test('diagram styles define every field the renderers read', () => {
   const need = ['name', 'desc', 'bg', 'bg2', 'blocks', 'neutral', 'ink', 'edge', 'accent', 'accentFg', 'plate', 'plateFg', 'plateBd', 'on', 'onFg', 'muted', 'zone', 'zoneBd', 'chip', 'labShadow', 'shadow', 'gridOp', 'grid3', 'ground', 'mat', 'rough', 'opacity', 'outline', 'sw'];
   for (const [k, s] of Object.entries(core.STYLES)) {

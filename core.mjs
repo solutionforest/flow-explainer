@@ -1296,6 +1296,59 @@ export const STYLES=/** @type {Record<string,DiagramStyle>} */(JSON.parse("{\"or
 /* ---- end generated STYLES ---- */
 export let DS=STYLES.original,DSK='original';
 export const UI_ICON={check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>',chev:'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>'};
+export const CUSTOM_STYLE_KEY='custom';
+const STYLE_NEED=['name','desc','bg','bg2','blocks','neutral','ink','edge','edge3d','accent','accentFg','plate','plateFg','plateBd','on','onFg','muted','zone','zoneBd','chip','labShadow','shadow','gridOp','grid3','ground','mat','rough','opacity','outline','sw'];
+const STYLE_MAT=new Set(['standard','toon','basic','glass']);
+/**
+ * Parse a single style object or a flow-explainer.diagram-styles pack into one DiagramStyle.
+ * @param {string} text
+ * @returns {DiagramStyle}
+ */
+export function parseStyleJson(text){
+  let raw;
+  try{raw=JSON.parse(String(text||''))}catch(e){throw new Error('That file is not valid JSON.',{cause:e})}
+  /** @type {unknown} */
+  let style=raw;
+  if(raw&&typeof raw==='object'&&raw.format==='flow-explainer.diagram-styles'&&raw.styles&&typeof raw.styles==='object'){
+    const keys=Object.keys(raw.styles);
+    if(!keys.length)throw new Error('The pack has no styles.');
+    style=raw.styles[keys.includes(CUSTOM_STYLE_KEY)?CUSTOM_STYLE_KEY:keys[0]];
+  }
+  if(!style||typeof style!=='object'||Array.isArray(style))throw new Error('Expected a style object (or a diagram-styles pack).');
+  const s=/** @type {Record<string,unknown>} */({.../** @type {object} */(style)});
+  delete s.$schema;
+  for(const f of STYLE_NEED)if(s[f]===undefined)throw new Error('Style is missing "'+f+'".');
+  if(!Array.isArray(s.blocks)||!s.blocks.length)throw new Error('Style "blocks" must be a non-empty colour list.');
+  if(!STYLE_MAT.has(/** @type {string} */(s.mat)))throw new Error('Style "mat" must be standard, toon, basic or glass.');
+  return /** @type {DiagramStyle} */(s);
+}
+/** Install a custom style (key `custom`), persist it, and select it. @param {DiagramStyle} style */
+export function installCustomStyle(style){
+  STYLES[CUSTOM_STYLE_KEY]=style;
+  try{localStorage.setItem('flowx.styleCustom',JSON.stringify(style))}catch(e){}
+  if(DSK===CUSTOM_STYLE_KEY){useStyle(CUSTOM_STYLE_KEY);if(page.S&&page.S.scene)page.restyle()}
+  else setStyle(CUSTOM_STYLE_KEY);
+  buildSettings();
+}
+/** Remove the custom style from this browser. */
+export function clearCustomStyle(){
+  delete STYLES[CUSTOM_STYLE_KEY];
+  try{localStorage.removeItem('flowx.styleCustom')}catch(e){}
+  if(DSK===CUSTOM_STYLE_KEY){
+    useStyle('original');
+    try{localStorage.setItem('flowx.style','original')}catch(e){}
+    if(/[#&]s=/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+location.hash.replace(/([#&])s=[\w-]+/,'$1s=original'));
+    if(page.S&&page.S.scene)page.restyle();
+  }
+  buildSettings();
+}
+export function loadCustomFromStorage(){
+  try{
+    const raw=localStorage.getItem('flowx.styleCustom');
+    if(!raw)return;
+    STYLES[CUSTOM_STYLE_KEY]=parseStyleJson(raw);
+  }catch(e){try{localStorage.removeItem('flowx.styleCustom')}catch(e2){}}
+}
 export const hashStyle=()=>{const m=location.hash.match(/[#&]s=([\w-]+)/);return m&&STYLES[m[1]]?m[1]:null};
 /** @param {string|null} k */
 export function useStyle(k){
@@ -1312,10 +1365,16 @@ export function setStyle(k){
   if(!STYLES[k]||k===DSK)return;useStyle(k);
   try{localStorage.setItem('flowx.style',k)}catch(e){}
   if(/[#&]s=/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+location.hash.replace(/([#&])s=[\w-]+/,'$1s='+k));
-  if(page.S.scene)page.restyle();
+  if(page.S&&page.S.scene)page.restyle();
 }
-export function initStyle(){let k=hashStyle();if(!k)try{k=localStorage.getItem('flowx.style')}catch(e){}useStyle(k);
-  const hi=location.hash.match(/[#&]i=([01])/);let ic=hi?hi[1]:null;if(ic==null)try{ic=localStorage.getItem('flowx.icons')}catch(e){}ICONS_ON=ic!=='0'}
+export function initStyle(){
+  loadCustomFromStorage();
+  let k=hashStyle();if(!k)try{k=localStorage.getItem('flowx.style')}catch(e){}
+  // &s=custom with no saved style falls back to original
+  if(k&&!STYLES[k])k='original';
+  useStyle(k);
+  const hi=location.hash.match(/[#&]i=([01])/);let ic=hi?hi[1]:null;if(ic==null)try{ic=localStorage.getItem('flowx.icons')}catch(e){}ICONS_ON=ic!=='0';
+}
 // emoji icons on the blocks: on by default; saved in the browser and carried in client links as &i=0
 export let ICONS_ON=true;
 /** @param {boolean} on */
@@ -1323,13 +1382,17 @@ export function setIcons(on){
   if(on===ICONS_ON)return;ICONS_ON=on;markIcons();
   try{localStorage.setItem('flowx.icons',on?'1':'0')}catch(e){}
   if(/[#&]i=/.test(location.hash))history.replaceState(null,'',location.pathname+location.search+location.hash.replace(/([#&])i=[01]/,'$1i='+(on?1:0)));
-  if(page.S.scene)page.restyle();
+  if(page.S&&page.S.scene)page.restyle();
 }
 export const markIcons=()=>/** @type {NodeListOf<HTMLElement>} */(document.querySelectorAll('#iconSel button')).forEach(b=>b.classList.toggle('on',(b.dataset.i==='1')===ICONS_ON));
 export function buildSettings(){
-  $('#styleSel').innerHTML=Object.entries(STYLES).map(([k,s])=>'<button class="opt" role="radio" data-s="'+k+'"><span class="radio"></span><span class="ot"><b>'+esc(s.name)+(k==='original'?' <em>Default</em>':'')+'</b><small>'+esc(s.desc)+'</small></span><span class="sw">'
-    +[s.bg,...s.blocks.slice(0,3),s.edge,s.accent].map(c=>'<i style="background:'+c+'"></i>').join('')+'</span></button>').join('');
+  const order=Object.keys(STYLES).filter(k=>k!==CUSTOM_STYLE_KEY).concat(STYLES[CUSTOM_STYLE_KEY]?[CUSTOM_STYLE_KEY]:[]);
+  $('#styleSel').innerHTML=order.map(k=>{const s=STYLES[k];return '<button class="opt" role="radio" data-s="'+k+'"><span class="radio"></span><span class="ot"><b>'+esc(s.name)+(k==='original'?' <em>Default</em>':k===CUSTOM_STYLE_KEY?' <em>Custom</em>':'')+'</b><small>'+esc(s.desc||'')+'</small></span><span class="sw">'
+    +[s.bg,...s.blocks.slice(0,3),s.edge,s.accent].map(c=>'<i style="background:'+c+'"></i>').join('')+'</span></button>'}).join('');
   $('#viewSel').querySelectorAll('button').forEach((/** @type {HTMLElement} */b)=>b.classList.toggle('on',b.dataset.v===document.body.dataset.view));
+  const clr=$('#styleClear'),hint=$('#styleHint');
+  if(clr)clr.hidden=!STYLES[CUSTOM_STYLE_KEY];
+  if(hint)hint.textContent=STYLES[CUSTOM_STYLE_KEY]?'Custom style saved in this browser. Client links use &s=custom (viewer needs the same file).':'Load a style JSON (one style or a diagram-styles pack).';
   useStyle(DSK);
 }
 /** @param {string|null} name */
@@ -1464,6 +1527,16 @@ export function wireUi(){
   $('#btnSet').onclick=(/** @type {MouseEvent} */e)=>{e.stopPropagation();openPop($('#settings').classList.contains('open')?null:'set')};
   $('#setClose').onclick=$('#shareClose').onclick=$('#popScrim').onclick=()=>openPop(null);
   $('#styleSel').onclick=(/** @type {MouseEvent} */e)=>{const b=/** @type {HTMLElement|null} */(tgt(e).closest('.opt'));if(b)setStyle(b.dataset.s||'')};
+  const styleFile=$('#styleFile');
+  if(styleFile)styleFile.onchange=async(/** @type {Event} */e)=>{
+    const inp=/** @type {HTMLInputElement} */(e.target),f=inp.files&&inp.files[0];
+    inp.value='';
+    if(!f)return;
+    try{installCustomStyle(parseStyleJson(await f.text()));page.toast&&page.toast('Custom style applied')}
+    catch(err){page.toast?page.toast(err instanceof Error?err.message:String(err)):alert(err instanceof Error?err.message:String(err))}
+  };
+  const styleClear=$('#styleClear');
+  if(styleClear)styleClear.onclick=()=>{clearCustomStyle();page.toast&&page.toast('Custom style removed')};
   markIcons();$('#iconSel').onclick=(/** @type {MouseEvent} */e)=>{const b=/** @type {HTMLElement|null} */(tgt(e).closest('button'));if(b)setIcons(b.dataset.i==='1')};
   $('#viewSel').onclick=(/** @type {MouseEvent} */e)=>{const b=/** @type {HTMLElement|null} */(tgt(e).closest('button'));if(b&&b.dataset.v!==document.body.dataset.view)$('#btnMode').click()};
   $('#btnShare').onclick=async()=>{

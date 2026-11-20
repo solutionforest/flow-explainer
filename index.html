@@ -357,10 +357,13 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 <body data-view="2d">
 <script>(function(){const p=location.pathname,q=location.search;if(/(?:^|\/)embed(?:\/|$)/.test(p)||/(?:^|[?&])embed(?:=1)?(?:&|$)/.test(q))document.body.classList.add('embed','client')})()</script>
 <script>
-/* Solution Forest console easter egg */
+/* Solution Forest console easter egg (skipped in embeds) */
 ;(function(){
   try{
-    console.log('%c'+
+    if(document.body.classList.contains('embed'))return;
+    const mono='font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.25';
+    console.log(
+'%c'+
 '        .\n'+
 '       /|\\\n'+
 '      / | \\\n'+
@@ -369,14 +372,14 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 '   /|\\  |  /|\\\n'+
 '  / | \\ | / | \\\n'+
 ' /  |  \\|/  |  \\\n'+
-'.---+---+---+---.',
-      'color:#007c90;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11px;line-height:1.2');
-    console.log('%cFlow Explainer%c · made by %cSolution Forest',
-      'color:#0f172a;font:700 13px Inter,ui-sans-serif,system-ui,sans-serif',
-      'color:#64748b;font:12px Inter,ui-sans-serif,system-ui,sans-serif',
-      'color:#007c90;font:700 12px Inter,ui-sans-serif,system-ui,sans-serif');
-    console.log('%cHong Kong · https://solutionforest.net/ · MIT',
-      'color:#64748b;font:11px ui-monospace,Menlo,Consolas,monospace');
+'.---+---+---+---.\n'+
+'%cFlow Explainer%c · made by %cSolution Forest%c\n'+
+'Hong Kong · https://solutionforest.net/ · MIT',
+      'color:#007c90;'+mono,
+      'color:#5eead4;font:700 13px Inter,ui-sans-serif,system-ui,sans-serif',
+      'color:#94a3b8;font:12px Inter,ui-sans-serif,system-ui,sans-serif',
+      'color:#fcaf17;font:700 12px Inter,ui-sans-serif,system-ui,sans-serif',
+      'color:#94a3b8;'+mono);
   }catch(_){}
 })();
 </script>
@@ -439,7 +442,10 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 <div class="pop-scrim" id="popScrim"></div>
 <div class="pop settings" id="settings" role="dialog" aria-label="Settings">
   <div class="pop-h"><b>Settings</b><button class="btn ghost" id="setClose" aria-label="Close settings">✕</button></div>
-  <div class="set-sec"><div class="set-l">Diagram style <span>3D &amp; 2D</span></div><div class="opts" id="styleSel" role="radiogroup" aria-label="Diagram style"></div></div>
+  <div class="set-sec"><div class="set-l">Diagram style <span>3D &amp; 2D</span></div><div class="opts" id="styleSel" role="radiogroup" aria-label="Diagram style"></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn">Load JSON<input type="file" id="styleFile" accept=".json,application/json" hidden></label><button class="btn ghost" id="styleClear" type="button" hidden>Remove custom</button></div>
+    <p class="set-hint" id="styleHint" style="margin:0;font-size:12px;color:var(--muted);line-height:1.45"></p>
+  </div>
   <div class="set-sec"><div class="set-l">Icons <span>emoji on the blocks</span></div><div class="segc" id="iconSel"><button data-i="1">Show</button><button data-i="0">Hide</button></div></div>
   <div class="set-sec"><div class="set-l">View</div><div class="segc" id="viewSel"><button data-v="3d">3D</button><button data-v="2d">2D</button></div></div>
   <div class="set-foot">Saved in this browser · included in client links</div>
@@ -1084,6 +1090,7 @@ function findIssues(labs,blocks){
 }
 
 /* ---------- state + render ---------- */
+/** @type {any} */
 const S={doc:null,scene:null,si:0,step:0,playing:false,timer:null,home:null,vb:null};
 const svg=$('#scene'),world=$('#world');
 
@@ -1104,7 +1111,7 @@ function buildScene(raw){
 }
 
 function render(){
-  const g=S.scene;let h='';colorize(g);
+  const g=S.scene;if(!g)return;let h='';colorize(g);
   const xs=g.nodes.map(n=>n.gx),ys=g.nodes.map(n=>n.gy),x0=Math.min(...xs)-1.5,x1=Math.max(...xs)+1.5,y0=Math.min(...ys)-1.5,y1=Math.max(...ys)+1.5;
   h+='<g opacity="'+DS.gridOp+'" stroke="'+DS.ink+'" stroke-width="1">';
   for(let x=Math.ceil(x0);x<=x1;x++){const a=P(x,y0),b=P(x,y1);h+='<line x1="'+a[0]+'" y1="'+a[1]+'" x2="'+b[0]+'" y2="'+b[1]+'"/>'}
@@ -1226,7 +1233,7 @@ function focusStep(cur){
 }
 
 function go(i,fromPlay){
-  const g=S.scene,n=g.steps.length;i=Math.max(0,Math.min(n,i));S.step=i;
+  const g=S.scene;if(!g)return;const n=g.steps.length;i=Math.max(0,Math.min(n,i));S.step=i;
   if(!fromPlay)stopPlay();
   const reached=new Set(),done=new Set();
   for(let k=0;k<i;k++){g.steps[k].nodes.forEach(x=>reached.add(x));if(g.steps[k].kind==='edge')done.add(g.steps[k].link)}
@@ -1256,7 +1263,7 @@ function go(i,fromPlay){
   panel();
 }
 function panel(){
-  const g=S.scene,i=S.step,n=g.steps.length,by=id=>g.nodes.find(x=>x.id===id);let h;
+  const g=S.scene;if(!g)return;const i=S.step,n=g.steps.length,by=id=>g.nodes.find(x=>x.id===id);let h;
   if(!i){
     h='<div class="kicker">Overview</div><h2>'+esc(g.title||S.doc.docTitle||'How it works')+'</h2>'
       +'<p>'+(g.intro?mdInline(g.intro):'This picture has <b>'+g.nodes.length+' parts</b> and <b>'+n+' steps</b>. Press <b>Play</b> to watch it run, or <b>Next</b> to go one step at a time.')+'</p>';
@@ -1404,7 +1411,7 @@ function sceneCss(){
   return css.replace(/var\((--[\w-]+)\)/g,(m,v)=>rs.getPropertyValue(v).trim()).replace(/(animation|transition)[^;}]*;?/g,'');
 }
 async function makeSnapshot(o){
-  const g=S.scene,v=o.frame==='now'?{...S.vb}:{...S.home},c=world.cloneNode(true);
+  const g=S.scene;if(!g)return;const v=o.frame==='now'?{...S.vb}:{...S.home},c=world.cloneNode(true);
   c.querySelector('#packets')?.remove();
   if(o.frame!=='now'){
     c.querySelectorAll('.ghost,.active,.source,.rev').forEach(e=>e.classList.remove('ghost','active','source','rev'));
@@ -1452,7 +1459,7 @@ async function refreshSnap(){
     +(small.length?'<span class="tip">Also '+small.length+' minor: label'+(small.length>1?'s':'')+' sitting on an arrow line.</span><br>':'')+'<span class="tip">'+FIX_HINT+'</span>';
 }
 function readmeText(){
-  const g=S.scene,t=g.title||S.doc.docTitle||'How it works';
+  const g=S.scene;if(!g)return;const t=g.title||S.doc.docTitle||'How it works';
   return '!['+t.replace(/[[\]]/g,'')+']('+snapName()+')\n\n'+g.steps.map((s,i)=>(i+1)+'. **'+s.title+'** — '+s.text.replace(/\s+/g,' ').trim()).join('\n')+'\n';
 }
 $('#btnSnap').onclick=()=>{stopPlay();$('#snap').classList.add('open');refreshSnap()};
@@ -1464,7 +1471,7 @@ $('#snapDl').onclick=()=>{if(!SN.url)return;const a=document.createElement('a');
 $('#snapCopyImg').onclick=async()=>{try{await navigator.clipboard.write([new ClipboardItem({'image/png':SN.blob})]);toast('Image copied')}catch(e){toast('This browser can’t copy images — use Download')}};
 $('#snapCopyMd').onclick=async()=>{const t=readmeText();try{await navigator.clipboard.writeText(t);toast('README text copied')}catch(e){prompt('Copy this text',t)}};
 function drawHeader(ctx,W,k){
-  const g=S.scene,t=g.title||S.doc.docTitle||'How it works',sub=g.nodes.length+' parts · '+g.steps.length+' steps';
+  const g=S.scene;if(!g)return;const t=g.title||S.doc.docTitle||'How it works',sub=g.nodes.length+' parts · '+g.steps.length+' steps';
   const fg=DS.dark?'#e2e8f0':'#1f2430';ctx.fillStyle=fg;ctx.font='700 '+(22*k)+'px ui-monospace, "SF Mono", Menlo, monospace';ctx.textBaseline='alphabetic';
   let tt=t;while(ctx.measureText(tt).width>W-48*k&&tt.length>4)tt=tt.slice(0,-2);if(tt!==t)tt+='…';
   ctx.fillText(tt,24*k,40*k);
@@ -1472,7 +1479,7 @@ function drawHeader(ctx,W,k){
   ctx.strokeStyle=fg;ctx.lineWidth=1.5*k;ctx.beginPath();ctx.moveTo(0,78*k);ctx.lineTo(W,78*k);ctx.stroke();
 }
 function drawLegend(ctx,W,H,k){
-  const g=S.scene,items=g.groups.map((gr,i)=>g.nodes.some(n=>n.group===i)?[gr.title,DS.blocks[i%DS.blocks.length]]:null).filter(Boolean);
+  const g=S.scene;if(!g)return;const items=g.groups.map((gr,i)=>g.nodes.some(n=>n.group===i)?[gr.title,DS.blocks[i%DS.blocks.length]]:null).filter(Boolean);
   let x=20*k;const y=H-20*k;ctx.font='600 '+(11*k)+'px ui-monospace, Menlo, monospace';ctx.textBaseline='middle';
   items.forEach(([t,c])=>{const w=ctx.measureText(t).width+30*k;ctx.fillStyle=DS.plate;ctx.strokeStyle=DS.dark?DS.plateBd:'#d9d2c3';ctx.lineWidth=k;rrect(ctx,x,y-10*k,w,20*k,10*k);ctx.fill();ctx.stroke();
     ctx.fillStyle=c;ctx.strokeStyle=DS.ink;rrect(ctx,x+8*k,y-4.5*k,9*k,9*k,2.5*k);ctx.fill();ctx.stroke();ctx.fillStyle=DS.plateFg;ctx.fillText(t,x+22*k,y+.5*k);x+=w+6*k});

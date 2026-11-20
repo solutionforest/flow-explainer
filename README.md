@@ -264,9 +264,9 @@ Open **⚙ Settings** to change how the diagram looks. The same style is used in
 Styles live in the **[`diagram-styles/`](diagram-styles/)** folder — **one JSON file per style** (`original.json`, `teal.json`, …) plus [`pack.json`](diagram-styles/pack.json) for order. Schema: [`diagram-styles.schema.json`](diagram-styles.schema.json) (format id `flow-explainer.diagram-styles`). Root [`diagram-styles.json`](diagram-styles.json) is a **generated** bundle for publishing; do not edit it by hand. `core.mjs` embeds the pack so the player needs no runtime fetch. To add or edit a style:
 
 1. Add or edit `diagram-styles/<id>.json` and list `<id>` in `pack.json` `order` (keep `original` — it must stay pixel-identical to the old look).
-2. Run `npm run styles:sync` (rebuilds the bundle, writes into `index.html`, syncs `3d.html`).
+2. Run `npm run styles:sync` (rebuilds the bundle and embeds it into `core.mjs`).
 
-Client links still use `&s=<id>` (e.g. `&s=teal`). Loading arbitrary custom JSON in the browser is not supported yet — this ships the file format first. The site chrome always uses Solution Forest colours; only the diagram changes.
+Client links use `&s=<id>` (e.g. `&s=teal`). In **⚙ Settings** you can also **Load JSON** — a single style object or a `flow-explainer.diagram-styles` pack — which becomes a local **Custom** style (`&s=custom`, saved in this browser). The site chrome always uses Solution Forest colours; only the diagram changes.
 
 **Icons:** the emoji on the blocks (🧑 💳 🗄️ …) are **shown by default**. **⚙ Settings → Icons → Hide** turns them off for a cleaner look. The choice is saved in your browser, and a client link made while they are hidden adds `&i=0` so the client sees the same.
 
