@@ -1392,8 +1392,60 @@ export function buildSettings(){
   $('#viewSel').querySelectorAll('button').forEach((/** @type {HTMLElement} */b)=>b.classList.toggle('on',b.dataset.v===document.body.dataset.view));
   const clr=$('#styleClear'),hint=$('#styleHint');
   if(clr)clr.hidden=!STYLES[CUSTOM_STYLE_KEY];
-  if(hint)hint.textContent=STYLES[CUSTOM_STYLE_KEY]?'Custom style saved in this browser. Client links use &s=custom (viewer needs the same file).':'Load a style JSON (one style or a diagram-styles pack).';
+  if(hint)hint.textContent=STYLES[CUSTOM_STYLE_KEY]?'Custom style saved in this browser. Client links use &s=custom (viewer needs the same file).':'Edit JSON for a live preview, or load a style file (one style or a diagram-styles pack).';
   useStyle(DSK);
+}
+/** Pretty JSON seed for the style editor (current custom, else active style). */
+export function styleEditorSeed(){
+  const s=STYLES[CUSTOM_STYLE_KEY]||STYLES[DSK]||STYLES.original;
+  const copy=/** @type {Record<string,unknown>} */({...s});
+  delete copy.$schema;
+  return JSON.stringify(copy,null,2);
+}
+export const styleEdOpen=()=>{const el=$('#styleEd');return !!(el&&el.classList.contains('open'))};
+/**
+ * Paint the mini style preview card.
+ * @param {DiagramStyle|null} style
+ * @param {string} [err]
+ */
+export function paintStylePreview(style,err){
+  const el=$('#stylePrev');if(!el)return;
+  if(err||!style){
+    el.classList.add('bad');
+    el.innerHTML='<div class="sty-err">'+esc(err||'Invalid JSON')+'</div>';
+    return;
+  }
+  el.classList.remove('bad');
+  const blocks=style.blocks.slice(0,4);
+  const op=style.opacity<1?'opacity:'+style.opacity+';':'';
+  el.innerHTML='<div class="sty-card" style="background:radial-gradient(circle at 50% 38%,'+style.bg2+' 0,'+style.bg+' 72%)">'
+    +'<div class="sty-row">'+blocks.map(c=>'<span class="sty-blk" style="background:'+c+';border-color:'+style.edge+';'+op+'"></span>').join('')+'</div>'
+    +'<div class="sty-line" style="background:'+style.edge+'"></div>'
+    +'<span class="sty-badge" style="background:'+style.accent+';color:'+style.accentFg+'">1</span>'
+    +'</div><div class="sty-lab"><b>'+esc(style.name)+'</b><small>'+esc(style.desc||'')+'</small></div>';
+}
+/** Refresh preview from the editor textarea. @returns {DiagramStyle|null} */
+export function refreshStylePreview(){
+  const ta=$('#styleJson');if(!ta)return null;
+  try{const s=parseStyleJson(ta.value);paintStylePreview(s);const st=$('#styleEdStatus');if(st){st.textContent='Looks good';st.className='sty-st ok'}return s}
+  catch(e){const msg=e instanceof Error?e.message:String(e);paintStylePreview(null,msg);const st=$('#styleEdStatus');if(st){st.textContent=msg;st.className='sty-st bad'}return null}
+}
+let styleEdTimer=0;
+export function openStyleEditor(){
+  const ed=$('#styleEd'),ta=$('#styleJson');if(!ed||!ta)return;
+  openPop(null);
+  ta.value=styleEditorSeed();
+  refreshStylePreview();
+  ed.classList.add('open');
+  requestAnimationFrame(()=>{ta.focus();ta.setSelectionRange(0,0)});
+}
+export function closeStyleEditor(){const ed=$('#styleEd');if(ed)ed.classList.remove('open')}
+export function applyStyleEditor(){
+  const s=refreshStylePreview();
+  if(!s){page.toast&&page.toast('Fix the JSON before applying');return}
+  installCustomStyle(s);
+  closeStyleEditor();
+  page.toast&&page.toast('Custom style applied');
 }
 /** @param {string|null} name */
 export function openPop(name){
@@ -1532,11 +1584,23 @@ export function wireUi(){
     const inp=/** @type {HTMLInputElement} */(e.target),f=inp.files&&inp.files[0];
     inp.value='';
     if(!f)return;
-    try{installCustomStyle(parseStyleJson(await f.text()));page.toast&&page.toast('Custom style applied')}
-    catch(err){page.toast?page.toast(err instanceof Error?err.message:String(err)):alert(err instanceof Error?err.message:String(err))}
+    try{
+      const text=await f.text(),s=parseStyleJson(text);
+      const ta=$('#styleJson');if(ta){ta.value=JSON.stringify(s,null,2)}
+      installCustomStyle(s);page.toast&&page.toast('Custom style applied');
+    }catch(err){page.toast?page.toast(err instanceof Error?err.message:String(err)):alert(err instanceof Error?err.message:String(err))}
   };
   const styleClear=$('#styleClear');
   if(styleClear)styleClear.onclick=()=>{clearCustomStyle();page.toast&&page.toast('Custom style removed')};
+  const styleEdit=$('#styleEdit');
+  if(styleEdit)styleEdit.onclick=()=>openStyleEditor();
+  const styleEdClose=$('#styleEdClose'),styleEdCancel=$('#styleEdCancel'),styleEdApply=$('#styleEdApply'),styleJson=$('#styleJson');
+  if(styleEdClose)styleEdClose.onclick=()=>closeStyleEditor();
+  if(styleEdCancel)styleEdCancel.onclick=()=>closeStyleEditor();
+  if(styleEdApply)styleEdApply.onclick=()=>applyStyleEditor();
+  if(styleJson)styleJson.addEventListener('input',()=>{clearTimeout(styleEdTimer);styleEdTimer=setTimeout(refreshStylePreview,180)});
+  const styleEd=$('#styleEd');
+  if(styleEd)styleEd.addEventListener('click',(/** @type {MouseEvent} */e)=>{if(e.target===styleEd)closeStyleEditor()});
   markIcons();$('#iconSel').onclick=(/** @type {MouseEvent} */e)=>{const b=/** @type {HTMLElement|null} */(tgt(e).closest('button'));if(b)setIcons(b.dataset.i==='1')};
   $('#viewSel').onclick=(/** @type {MouseEvent} */e)=>{const b=/** @type {HTMLElement|null} */(tgt(e).closest('button'));if(b&&b.dataset.v!==document.body.dataset.view)$('#btnMode').click()};
   $('#btnShare').onclick=async()=>{

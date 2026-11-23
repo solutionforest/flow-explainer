@@ -203,6 +203,37 @@ body.embed .panel h2{font-size:18px}
 .segc button{flex:1;border:0;background:transparent;min-height:30px;border-radius:7px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer}
 .segc button.on{background:var(--brand);color:#fff;box-shadow:var(--shadow-sm)}
 .set-foot{padding:10px 16px 12px;font:11px var(--mono);color:var(--muted)}
+/* custom style JSON editor */
+.sty-ed{position:fixed;inset:0;z-index:66;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.4);padding:16px}
+.sty-ed.open{display:flex}
+.sty-card-wrap{width:min(720px,100%);max-height:100%;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);display:grid;grid-template-columns:1fr 200px}
+.sty-ed-main{padding:16px 18px;display:flex;flex-direction:column;gap:10px;min-width:0;border-right:1px solid var(--line)}
+.sty-ed-main h3{margin:0;font:700 16px var(--head)}
+.sty-ed-main p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.45}
+#styleJson{width:100%;min-height:280px;resize:vertical;border:1px solid var(--line-2);border-radius:10px;padding:10px 12px;font:12px/1.45 var(--mono);background:var(--paper);color:var(--ink)}
+#styleJson:focus{outline:2px solid var(--brand-100);border-color:var(--brand)}
+.sty-ed-side{padding:16px 14px;display:flex;flex-direction:column;gap:12px;background:var(--paper)}
+.sty-ed-side .set-l{margin:0}
+#stylePrev{display:flex;flex-direction:column;gap:8px}
+#stylePrev.bad .sty-err{font-size:12.5px;line-height:1.45;color:#b42318;background:#fef3f2;border:1px solid #fecdca;border-radius:8px;padding:8px 10px}
+.sty-card{position:relative;border-radius:10px;border:1px solid var(--line);min-height:110px;padding:14px 12px 16px;overflow:hidden}
+.sty-row{display:flex;gap:8px;align-items:flex-end;min-height:48px}
+.sty-blk{width:28px;height:34px;border-radius:6px;border:1.5px solid;box-shadow:0 2px 0 rgba(15,23,42,.08);transform:skewX(-8deg)}
+.sty-blk:nth-child(2){height:42px}
+.sty-blk:nth-child(3){height:28px}
+.sty-line{position:absolute;left:12px;right:12px;bottom:28px;height:2px;border-radius:2px;opacity:.85}
+.sty-badge{position:absolute;right:10px;top:10px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font:700 11px var(--mono);box-shadow:0 1px 2px rgba(15,23,42,.15)}
+.sty-lab b{display:block;font-size:13px;font-weight:600;color:var(--ink)}
+.sty-lab small{display:block;font-size:11.5px;color:var(--muted);line-height:1.35}
+.sty-st{font:11.5px var(--mono);line-height:1.4;color:var(--muted)}
+.sty-st.ok{color:var(--ok)}
+.sty-st.bad{color:#b42318}
+.sty-ed-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+@media (max-width:640px){
+  .sty-card-wrap{grid-template-columns:1fr}
+  .sty-ed-main{border-right:0;border-bottom:1px solid var(--line)}
+  #styleJson{min-height:200px}
+}
 .set-about{margin-top:auto;padding:12px 16px 14px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
 .set-about a{color:var(--ink-2);text-decoration:none;font-weight:600}
 .set-about a.gh{display:inline-flex;align-items:center;gap:6px}
@@ -421,11 +452,22 @@ button.brand:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
     </div>
   </div>
 </div>
+<div class="sty-ed" id="styleEd" role="dialog" aria-modal="true" aria-labelledby="styleEdTitle">
+  <div class="sty-card-wrap">
+    <div class="sty-ed-main">
+      <div class="row" style="justify-content:space-between;align-items:center"><h3 id="styleEdTitle">Custom style JSON</h3><button class="btn ghost icon" id="styleEdClose" aria-label="Close">✕</button></div>
+      <p>Edit a style object (or paste a diagram-styles pack). Preview updates as you type. Apply saves it as <b>Custom</b> in this browser.</p>
+      <textarea id="styleJson" spellcheck="false" aria-label="Style JSON"></textarea>
+      <div class="sty-ed-actions"><button class="btn primary" id="styleEdApply" type="button">Apply</button><button class="btn ghost" id="styleEdCancel" type="button">Cancel</button><span class="sty-st" id="styleEdStatus"></span></div>
+    </div>
+    <div class="sty-ed-side"><div class="set-l">Preview</div><div id="stylePrev"></div></div>
+  </div>
+</div>
 <div class="pop-scrim" id="popScrim"></div>
 <div class="pop settings" id="settings" role="dialog" aria-label="Settings">
   <div class="pop-h"><b>Settings</b><button class="btn ghost" id="setClose" aria-label="Close settings">✕</button></div>
   <div class="set-sec"><div class="set-l">Diagram style <span>3D &amp; 2D</span></div><div class="opts" id="styleSel" role="radiogroup" aria-label="Diagram style"></div>
-    <div class="row" style="gap:8px;flex-wrap:wrap"><label class="btn">Load JSON<input type="file" id="styleFile" accept=".json,application/json" hidden></label><button class="btn ghost" id="styleClear" type="button" hidden>Remove custom</button></div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn" id="styleEdit" type="button">Edit JSON</button><label class="btn">Load file<input type="file" id="styleFile" accept=".json,application/json" hidden></label><button class="btn ghost" id="styleClear" type="button" hidden>Remove custom</button></div>
     <p class="set-hint" id="styleHint" style="margin:0;font-size:12px;color:var(--muted);line-height:1.45"></p>
   </div>
   <div class="set-sec"><div class="set-l">Icons <span>emoji on the blocks</span></div><div class="segc" id="iconSel"><button data-i="1">Show</button><button data-i="0">Hide</button></div></div>
@@ -972,7 +1014,8 @@ import * as THREE from './vendor/three.module.js';
 import {
   $, esc, mdInline, parseMarkdown, parseMermaid, layout,
   DS, ICONS_ON, setStyle, initStyle, wireUi, stepsHtml,
-  isEmbed, viewHref, fetchMarkdown, urlLink, bindPage, openPop, popOpen
+  isEmbed, viewHref, fetchMarkdown, urlLink, bindPage, openPop, popOpen,
+  closeStyleEditor, styleEdOpen
 } from './core.mjs';
 
 /* ---------- 3D scene (three.js) ---------- */
@@ -1452,6 +1495,7 @@ $('#panel').onclick=e=>{
 };
 addEventListener('keydown',e=>{
   if($('#about').classList.contains('open')){if(e.key==='Escape')$('#about').classList.remove('open');return}
+  if(styleEdOpen()){if(e.key==='Escape')closeStyleEditor();return}
   if(popOpen()){if(e.key==='Escape')openPop(null);return}
   if(snapOpen()){if(e.key==='Escape')$('#snap').classList.remove('open');return}
   if(/TEXTAREA|INPUT|SELECT/.test(/** @type {HTMLElement} */(e.target).tagName))return;
